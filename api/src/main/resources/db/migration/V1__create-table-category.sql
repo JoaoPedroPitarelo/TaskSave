@@ -1,0 +1,6 @@
+CREATE TABLE category (
+	id SERIAL PRIMARY KEY,
+	description TEXT NOT NULL UNIQUE,
+	color TEXT NOT NULL
+);
+
