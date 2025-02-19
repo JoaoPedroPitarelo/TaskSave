@@ -17,6 +17,7 @@ public class SubtaskService {
     // Create
     public void createSubtask(@Valid CreateSubTask subtask, Task task) {
         Subtask newSubTask = new Subtask(subtask, task);
+        newSubTask.setCompleted(false);
         subTaskRepository.save(newSubTask);
     }
 
@@ -29,8 +30,14 @@ public class SubtaskService {
         subtask.setDeadline(modifiedSubtask.deadline() != null ? modifiedSubtask.deadline() : subtask.getDeadline());
         subtask.setLastModification(modifiedSubtask.lastModification());
         subtask.setPriority(modifiedSubtask.priority() != null ? modifiedSubtask.priority() : subtask.getPriority());
-        subtask.setStatus(modifiedSubtask.status() != null ? modifiedSubtask.status() : subtask.getStatus());
         subtask.setReminderType(modifiedSubtask.reminderType() != null ? modifiedSubtask.reminderType() : subtask.getReminderType());
+
+        subTaskRepository.save(subtask);
+    }
+
+    public void deleteSubtask(Long id) {
+        Subtask subtask = subTaskRepository.getReferenceById(id);
+        subtask.setCompleted(true);
 
         subTaskRepository.save(subtask);
     }

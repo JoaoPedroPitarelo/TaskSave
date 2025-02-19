@@ -9,6 +9,6 @@ public record CreateCategory(
 
         @NotBlank
         // @Pattern(regexp = "^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$\n") // TODO refazer isso aqui
-        String color)
-{
-}
+        String color
+)
+{ }

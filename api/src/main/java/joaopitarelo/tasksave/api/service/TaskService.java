@@ -3,7 +3,6 @@ package joaopitarelo.tasksave.api.service;
 import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.dto.task.UpdateTask;
 import joaopitarelo.tasksave.api.model.Category;
-import joaopitarelo.tasksave.api.model.Status;
 import joaopitarelo.tasksave.api.model.Task;
 import joaopitarelo.tasksave.api.repository.CategoryRepository;
 import joaopitarelo.tasksave.api.repository.TaskRepository;
@@ -22,17 +21,18 @@ public class TaskService {
 
     // GetAll
     public List<Task> getTasks() {
-        return taskRepository.findAllByStatus(Status.PENDING);
+        return taskRepository.findByCompletedFalse();
     }
 
     // Create
     public void createTask(Task task) {
+        task.setCompleted(false);
         taskRepository.save(task);
     }
 
     // GetById
     public Task getTaskById(Long idTask) {
-        return taskRepository.findByIdAndStatus(idTask, Status.PENDING);
+        return taskRepository.findByIdAndCompletedFalse(idTask);
     }
 
     // Métodu para atualizar a task vinda do APP como UpdateTask DTO
@@ -51,17 +51,17 @@ public class TaskService {
 
         task.setCategory(category);
         task.setPriority(modifiedTask.priority() != null ? modifiedTask.priority() : task.getPriority());
-        task.setStatus(modifiedTask.status() != null ? modifiedTask.status() : task.getStatus());
         task.setReminderType(modifiedTask.reminderType() != null ? modifiedTask.reminderType() : task.getReminderType());
 
         taskRepository.save(task);
     }
 
+    // Delete
     public void deleteTask(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Task não encontrada"));
 
-        task.setStatus(Status.COMPLETED);
+        task.setCompleted(true);
 
         taskRepository.save(task);
     }

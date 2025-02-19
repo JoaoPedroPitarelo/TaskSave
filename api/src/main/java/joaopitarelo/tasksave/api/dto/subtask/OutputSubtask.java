@@ -11,7 +11,7 @@ public record OutputSubtask(
         Date deadline,
         Date lastModification,
         Priority priority,
-        Status status,
+        boolean completed,
         ReminderType reminderType
 ) {
     public OutputSubtask(Subtask subtask) {
@@ -21,7 +21,7 @@ public record OutputSubtask(
                 subtask.getDeadline(),
                 subtask.getLastModification(),
                 subtask.getPriority(),
-                subtask.getStatus(),
+                subtask.isCompleted(),
                 subtask.getReminderType()
         );
     }

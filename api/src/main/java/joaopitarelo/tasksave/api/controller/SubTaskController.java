@@ -22,8 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("subtask")
 public class SubTaskController {
 
-    // TODO delete  []
-
     @Autowired
     private SubtaskService subtaskService;
     @Autowired
@@ -47,5 +45,11 @@ public class SubTaskController {
         return ResponseEntity.ok("Subtarefa modificada"); // TODO melhorar esse retorno
     }
 
-
+    // Delete
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        subtaskService.deleteSubtask(id);
+        return ResponseEntity.ok("Subtarefa deletada com sucesso");
+    }
 }

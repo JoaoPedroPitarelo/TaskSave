@@ -22,8 +22,6 @@ import java.util.List;
 @RequestMapping("task")
 public class TaskController {
 
-    // TODO delete  []
-
     @Autowired
     private TaskService taskService;
     @Autowired
@@ -40,6 +38,7 @@ public class TaskController {
     @Transactional
     public ResponseEntity<String> create(@RequestBody @Valid CreateTask taskDTO) {
         Category category = categoryService.getCategoryById(taskDTO.categoryId());
+
         if (category == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
 
         taskService.createTask(new Task(taskDTO, category));

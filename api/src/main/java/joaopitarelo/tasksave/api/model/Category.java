@@ -27,6 +27,9 @@ public class Category {
     @Column(name = "color", unique = false, nullable = false, length = 7)
     private String color;
 
+    @Column(name = "ativo", nullable = false)
+    private boolean ativo;
+
     @OneToMany(mappedBy = "category")
     @JsonIgnore
     private List<Task> tasks;

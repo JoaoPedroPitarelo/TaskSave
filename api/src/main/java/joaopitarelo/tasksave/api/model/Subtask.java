@@ -1,6 +1,5 @@
 package joaopitarelo.tasksave.api.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import joaopitarelo.tasksave.api.dto.subtask.CreateSubTask;
 import lombok.*;
@@ -33,9 +32,8 @@ public class Subtask {
     @Column(nullable = false)
     private Priority priority;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;
+    private boolean completed;
 
     @Enumerated(EnumType.STRING)
     private ReminderType reminderType;
@@ -52,8 +50,7 @@ public class Subtask {
         this.deadline = subTask.deadline();
         this.lastModification = subTask.lastModification();
         this.priority = subTask.priority();
-        this.status = subTask.status();
+        this.completed = false;
         this.reminderType = task.getReminderType();
     }
-
 }

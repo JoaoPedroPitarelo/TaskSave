@@ -18,7 +18,7 @@ public class CategoryService {
 
     // GetAll
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        return categoryRepository.findByAtivoTrue();
     }
 
     // GetById
@@ -28,6 +28,7 @@ public class CategoryService {
 
     // Create
     public void createCategory(Category category) {
+        category.setAtivo(true);
         categoryRepository.save(category);
     }
 
@@ -38,5 +39,9 @@ public class CategoryService {
         category.setColor(modifiedCategory.color() != null ? modifiedCategory.color() : category.getColor());
 
         categoryRepository.save(category);
+    }
+
+    public void deleteCategory(Long id) {
+        // Terminar
     }
 }

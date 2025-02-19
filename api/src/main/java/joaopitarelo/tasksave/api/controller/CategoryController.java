@@ -57,4 +57,12 @@ public class CategoryController {
         return ResponseEntity.ok("Categoria Modificada!"); // TODO melhorar esse return
     }
 
+    // Delete
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.ok("Categoria excluída com sucesso");
+    }
+
 }

@@ -2,9 +2,7 @@ package joaopitarelo.tasksave.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.dto.task.CreateTask;
-import joaopitarelo.tasksave.api.dto.task.UpdateTask;
 import lombok.*;
 
 import java.util.Date;
@@ -40,9 +38,8 @@ public class Task {
     @JoinColumn(name = "category_id", nullable = false) // nome da coluna que irá armazenar a referência da categoria
     private Category category;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "status")
-    private Status status;
+    @Column(nullable = false, columnDefinition = "completed")
+    private boolean completed;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "reminder_type")
@@ -61,7 +58,6 @@ public class Task {
         this.lastModification = task.lastModification();
         this.priority = task.priority();
         this.category = category;
-        this.status = task.status();
         this.reminderType = task.reminderType();
     }
 

@@ -15,7 +15,7 @@ public record OutputTask(
         Date lastModification,
         OutputCategory category,
         Priority priority,
-        Status status,
+        boolean completed,
         ReminderType reminderType,
         List<OutputSubtask> subtasks
 ) {
@@ -27,10 +27,13 @@ public record OutputTask(
                 task.getLastModification(),
                 new OutputCategory(task.getCategory()),
                 task.getPriority(),
-                task.getStatus(),
+                task.isCompleted(),
                 task.getReminderType(),
                 task.getSubtasks() != null
-                        ? task.getSubtasks().stream().map(OutputSubtask::new).toList()
+                        ? task.getSubtasks().stream()
+                            .map(OutputSubtask::new)
+                            .filter(subtask -> !subtask.completed())
+                            .toList()
                         : List.of() // senão retornar uma lista vazia
         );
     }
