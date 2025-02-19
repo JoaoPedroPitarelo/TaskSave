@@ -4,16 +4,14 @@ package joaopitarelo.tasksave.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import joaopitarelo.tasksave.api.dto.category.CreateCategory;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity(name = "Category")
 @Table(name = "category")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id") // Faz o equals e o hashcode encima do id e não de todos os atributos

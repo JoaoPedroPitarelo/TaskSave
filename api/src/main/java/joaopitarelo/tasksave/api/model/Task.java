@@ -1,21 +1,19 @@
 package joaopitarelo.tasksave.api.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.dto.task.CreateTask;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import joaopitarelo.tasksave.api.dto.task.UpdateTask;
+import lombok.*;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 @Entity(name = "Task")
 @Table(name = "task")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -55,7 +53,7 @@ public class Task {
     @JsonIgnore
     private List<Subtask> subtasks;
 
-    // Construtor do DTO
+    // Construtor para DTO de criação
     public Task(CreateTask task, Category category) {
         this.title = task.title();
         this.description = task.description();
@@ -66,4 +64,6 @@ public class Task {
         this.status = task.status();
         this.reminderType = task.reminderType();
     }
+
+
 }
