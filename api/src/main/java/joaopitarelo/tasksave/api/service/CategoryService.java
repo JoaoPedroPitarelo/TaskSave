@@ -3,7 +3,9 @@ package joaopitarelo.tasksave.api.service;
 import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.dto.category.UpdateCategory;
 import joaopitarelo.tasksave.api.model.Category;
+import joaopitarelo.tasksave.api.model.Task;
 import joaopitarelo.tasksave.api.repository.CategoryRepository;
+import joaopitarelo.tasksave.api.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.List;
 public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private TaskRepository taskRepository;
 
     // GetAll
     public List<Category> getAllCategories() {
@@ -23,7 +27,7 @@ public class CategoryService {
 
     // GetById
     public Category getCategoryById(Long idCategory) {
-        return categoryRepository.findById(idCategory).orElse(null);
+        return categoryRepository.findByIdAndAtivoTrue(idCategory);
     }
 
     // Create
@@ -41,7 +45,15 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
+    // Delete -  todas as tarefas contidas nelas serão  deletadas também
     public void deleteCategory(Long id) {
-        // Terminar
+        Category category = categoryRepository.getReferenceById(id);
+        List<Task> task_list = category.getTasks();
+
+        task_list.forEach(task -> {
+            task.setCompleted(true);
+            taskRepository.save(task);
+        });
+        category.setAtivo(false);
     }
 }
