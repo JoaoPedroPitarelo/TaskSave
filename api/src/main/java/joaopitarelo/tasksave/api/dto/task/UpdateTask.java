@@ -8,8 +8,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 public record UpdateTask(
-        @NotNull
-        Long id,
         String title,
         String description,
         Date deadline,

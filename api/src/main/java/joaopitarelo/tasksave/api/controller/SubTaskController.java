@@ -4,6 +4,7 @@ package joaopitarelo.tasksave.api.controller;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.dto.subtask.CreateSubTask;
+import joaopitarelo.tasksave.api.dto.subtask.OutputSubtask;
 import joaopitarelo.tasksave.api.dto.subtask.UpdateSubtask;
 import joaopitarelo.tasksave.api.model.Subtask;
 import joaopitarelo.tasksave.api.model.Task;
@@ -27,7 +28,7 @@ public class SubTaskController {
     @Autowired
     private TaskService taskService;
 
-    // Create
+    // Create ----------------------------------------
     @PostMapping("/create")
     public ResponseEntity<String> create(@RequestBody @Valid CreateSubTask subTaskDTO) {
         Task task = taskService.getTaskById(subTaskDTO.parentTaskId());
@@ -37,15 +38,18 @@ public class SubTaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Subtask adiciona à tarefa" + String.valueOf(task.getId()));
     }
 
-    // Update
-    @PutMapping
+    // Update ----------------------------------------
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> update(@RequestBody @Valid UpdateSubtask subtask) {
-        subtaskService.updateSubtask(subtask);
-        return ResponseEntity.ok("Subtarefa modificada"); // TODO melhorar esse retorno
+    public ResponseEntity<?> update(@RequestBody @Valid UpdateSubtask modifiedSubtask, @PathVariable Long id) {
+        Subtask subtask = subtaskService.getById(id);
+        if (subtask == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Subtask not found");
+
+        subtaskService.updateSubtask(modifiedSubtask, subtask);
+        return ResponseEntity.ok(new OutputSubtask(subtask));
     }
 
-    // Delete
+    // Delete ---------------------------------------
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<String> delete(@PathVariable Long id) {

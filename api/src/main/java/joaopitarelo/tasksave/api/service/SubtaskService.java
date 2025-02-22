@@ -21,10 +21,13 @@ public class SubtaskService {
         subTaskRepository.save(newSubTask);
     }
 
-    // Update
-    public void updateSubtask(@Valid UpdateSubtask modifiedSubtask) {
-        Subtask subtask = subTaskRepository.getReferenceById(modifiedSubtask.id());
+    // GetById
+    public Subtask getById(Long subtaskId) {
+        return subTaskRepository.findByIdAndCompletedFalse(subtaskId);
+    }
 
+    // Update
+    public void updateSubtask(@Valid UpdateSubtask modifiedSubtask, Subtask subtask) {
         subtask.setTitle(modifiedSubtask.title() != null ? modifiedSubtask.title() : subtask.getTitle());
         subtask.setDescription(modifiedSubtask.description() != null ? modifiedSubtask.description() : subtask.getDescription());
         subtask.setDeadline(modifiedSubtask.deadline() != null ? modifiedSubtask.deadline() : subtask.getDeadline());
@@ -35,6 +38,7 @@ public class SubtaskService {
         subTaskRepository.save(subtask);
     }
 
+    // Delete
     public void deleteSubtask(Long id) {
         Subtask subtask = subTaskRepository.getReferenceById(id);
         subtask.setCompleted(true);

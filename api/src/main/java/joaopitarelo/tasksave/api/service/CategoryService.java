@@ -37,15 +37,14 @@ public class CategoryService {
     }
 
     // Update
-    public void updateCategory(@Valid UpdateCategory modifiedCategory) {
-        Category category = categoryRepository.getReferenceById(modifiedCategory.id());
+    public void updateCategory(Category category, @Valid UpdateCategory modifiedCategory) {
         category.setDescription(modifiedCategory.description() != null ? modifiedCategory.description() : category.getDescription());
         category.setColor(modifiedCategory.color() != null ? modifiedCategory.color() : category.getColor());
 
         categoryRepository.save(category);
     }
 
-    // Delete -  todas as tarefas contidas nelas serão  deletadas também
+    // Delete - todas as tarefas contidas nelas serão deletadas também
     public void deleteCategory(Long id) {
         Category category = categoryRepository.getReferenceById(id);
         List<Task> task_list = category.getTasks();

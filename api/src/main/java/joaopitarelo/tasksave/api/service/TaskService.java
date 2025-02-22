@@ -36,19 +36,11 @@ public class TaskService {
     }
 
     // Métodu para atualizar a task vinda do APP como UpdateTask DTO
-    public void updateTask(@Valid UpdateTask modifiedTask) {
-        Task task = taskRepository.getReferenceById(modifiedTask.id());
-
+    public void updateTask(Task task, @Valid UpdateTask modifiedTask, Category category) {
         task.setTitle(modifiedTask.title() != null ? modifiedTask.title() : task.getTitle());
         task.setDescription(modifiedTask.description() != null ? modifiedTask.description() : task.getDescription());
         task.setDeadline(modifiedTask.deadline() != null ? modifiedTask.deadline() : task.getDeadline());
         task.setLastModification(modifiedTask.lastModification());
-
-        System.out.println(modifiedTask.categoryId());
-
-        Category category = categoryRepository.findById(modifiedTask.categoryId())
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
-
         task.setCategory(category);
         task.setPriority(modifiedTask.priority() != null ? modifiedTask.priority() : task.getPriority());
         task.setReminderType(modifiedTask.reminderType() != null ? modifiedTask.reminderType() : task.getReminderType());

@@ -27,13 +27,13 @@ public class TaskController {
     @Autowired
     private CategoryService categoryService;
 
-    // GetAll
+    // GetAll ------------------------------------
     @GetMapping
     public ResponseEntity<List<OutputTask>> getAll() {
         return ResponseEntity.ok(taskService.getTasks().stream().map(OutputTask::new).toList());
     }
 
-    // Create
+    // Create ------------------------------------
     @PostMapping("/create")
     @Transactional
     public ResponseEntity<String> create(@RequestBody @Valid CreateTask taskDTO) {
@@ -45,7 +45,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Tarefa criada com sucesso");
     }
 
-    // GetById
+    // GetById -------------------------------------
     @GetMapping("/{id}")
     public ResponseEntity<OutputTask> getById(@PathVariable Long id) {
         Task task = taskService.getTaskById(id);
@@ -55,20 +55,25 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    // Update
-    @PutMapping
+    // Update -------------------------------------
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> update(@RequestBody @Valid UpdateTask modifiedTask) {
-        taskService.updateTask(modifiedTask);
-        return ResponseEntity.ok("Tarefa modificado"); // TODO melhorar esse retorno
+    public ResponseEntity<?> update(@RequestBody @Valid UpdateTask modifiedTask, @PathVariable Long id) {
+        Task task = taskService.getTaskById(id);
+        if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+
+        Category category = categoryService.getCategoryById(modifiedTask.categoryId());
+        if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
+
+        taskService.updateTask(task, modifiedTask, category);
+        return ResponseEntity.ok(new OutputTask(task));
     }
 
-    // Delete
+    // Delete -------------------------------------
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<String> delete(@PathVariable Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.status(HttpStatus.OK).body("Tarefa remvida com sucesso");
     }
-
 }
