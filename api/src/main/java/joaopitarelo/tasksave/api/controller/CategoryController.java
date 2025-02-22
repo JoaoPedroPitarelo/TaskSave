@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -42,9 +43,15 @@ public class CategoryController {
     // Create ------------------------------------------
     @PostMapping("/create")
     @Transactional
-    public ResponseEntity<String> create(@RequestBody @Valid CreateCategory category) { // O parâmetro @RequestBody só pode ter um, pois cada requisição há somente um corpo
-        categoryService.createCategory(new Category(category));
-        return ResponseEntity.ok("Category criada com sucesso");
+    public ResponseEntity<OutputCategory> create(@RequestBody @Valid CreateCategory newCategory, UriComponentsBuilder uriBuilder) { // O parâmetro @RequestBody só pode ter um, pois cada requisição há somente um corpo
+        Category category = new Category(newCategory);
+        categoryService.createCategory(category);
+
+        // O que o uriBuilder faz esse pagar o endereço em que o servidor está a rodar que poderá mudar dependendo
+        // do ip do servidor, se for local, seria 127.0.0.1, se for uma cloud vai ser alguma coisa 192.168...
+        var uri = uriBuilder.path("/category/{id}").buildAndExpand(category.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(new OutputCategory(category));
     }
 
     // Update ------------------------------------------

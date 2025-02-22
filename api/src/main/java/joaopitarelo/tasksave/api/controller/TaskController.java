@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import joaopitarelo.tasksave.api.dto.task.CreateTask;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -36,13 +37,17 @@ public class TaskController {
     // Create ------------------------------------
     @PostMapping("/create")
     @Transactional
-    public ResponseEntity<String> create(@RequestBody @Valid CreateTask taskDTO) {
-        Category category = categoryService.getCategoryById(taskDTO.categoryId());
+    public ResponseEntity<?> create(@RequestBody @Valid CreateTask newTask, UriComponentsBuilder uriBuilder) {
+        Category category = categoryService.getCategoryById(newTask.categoryId());
 
-        if (category == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada");
+        if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
 
-        taskService.createTask(new Task(taskDTO, category));
-        return ResponseEntity.status(HttpStatus.CREATED).body("Tarefa criada com sucesso");
+        Task task = new Task(newTask, category);
+        taskService.createTask(task);
+
+        var uri = uriBuilder.path("/task/{id}").buildAndExpand(task.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(new OutputTask(task));
     }
 
     // GetById -------------------------------------

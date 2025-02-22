@@ -15,10 +15,9 @@ public class SubtaskService {
     private SubTaskRepository subTaskRepository;
 
     // Create
-    public void createSubtask(@Valid CreateSubTask subtask, Task task) {
-        Subtask newSubTask = new Subtask(subtask, task);
-        newSubTask.setCompleted(false);
-        subTaskRepository.save(newSubTask);
+    public void createSubtask(Subtask subtask) {
+        subtask.setCompleted(false);
+        subTaskRepository.save(subtask);
     }
 
     // GetById

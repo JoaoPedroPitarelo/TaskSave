@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.dto.subtask.CreateSubTask;
 import joaopitarelo.tasksave.api.dto.subtask.OutputSubtask;
 import joaopitarelo.tasksave.api.dto.subtask.UpdateSubtask;
+import joaopitarelo.tasksave.api.dto.task.OutputTask;
 import joaopitarelo.tasksave.api.model.Subtask;
 import joaopitarelo.tasksave.api.model.Task;
 import joaopitarelo.tasksave.api.repository.SubTaskRepository;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("subtask")
@@ -28,14 +30,30 @@ public class SubTaskController {
     @Autowired
     private TaskService taskService;
 
+
+    // GetById --------------------------------------
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        Subtask subtask = subtaskService.getById(id);
+
+        if (subtask == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Subtask  not found");
+
+        return ResponseEntity.ok(new OutputSubtask(subtask));
+    }
+
+
     // Create ----------------------------------------
     @PostMapping("/create")
-    public ResponseEntity<String> create(@RequestBody @Valid CreateSubTask subTaskDTO) {
-        Task task = taskService.getTaskById(subTaskDTO.parentTaskId());
-        if (task == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarefa pai não encontrada");
+    public ResponseEntity<?> create(@RequestBody @Valid CreateSubTask newSubtask, UriComponentsBuilder uriBuilder) {
+        Task task = taskService.getTaskById(newSubtask.parentTaskId());
+        if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parent Task not found");
 
-        subtaskService.createSubtask(subTaskDTO, task);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Subtask adiciona à tarefa" + String.valueOf(task.getId()));
+        Subtask subtask = new Subtask(newSubtask, task);
+        subtaskService.createSubtask(subtask);
+
+        var uri = uriBuilder.path("/subtask/{id}").buildAndExpand(subtask.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(new OutputSubtask(subtask));
     }
 
     // Update ----------------------------------------
