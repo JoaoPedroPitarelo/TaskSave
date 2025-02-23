@@ -79,6 +79,6 @@ public class TaskController {
     @Transactional
     public ResponseEntity<String> delete(@PathVariable Long id) {
         taskService.deleteTask(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Tarefa remvida com sucesso");
+        return ResponseEntity.noContent().build();
     }
 }

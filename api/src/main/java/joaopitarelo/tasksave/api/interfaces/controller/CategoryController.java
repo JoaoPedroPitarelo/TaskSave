@@ -33,6 +33,7 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
+
         if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
 
         return ResponseEntity.ok(new OutputCategory(category));

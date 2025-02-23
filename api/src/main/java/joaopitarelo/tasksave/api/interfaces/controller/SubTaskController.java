@@ -68,6 +68,6 @@ public class SubTaskController {
     @Transactional
     public ResponseEntity<String> delete(@PathVariable Long id) {
         subtaskService.deleteSubtask(id);
-        return ResponseEntity.ok("Subtarefa deletada com sucesso");
+        return ResponseEntity.noContent().build();
     }
 }
