@@ -3,6 +3,7 @@ package joaopitarelo.tasksave.api.domain.subtask;
 import jakarta.persistence.*;
 import joaopitarelo.tasksave.api.domain.enums.Priority;
 import joaopitarelo.tasksave.api.domain.enums.ReminderType;
+import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.interfaces.dtos.subtask.CreateSubTask;
 import joaopitarelo.tasksave.api.domain.task.Task;
 import lombok.*;
@@ -44,6 +45,10 @@ public class Subtask {
     @ManyToOne
     @JoinColumn(name = "parent_task_id", nullable = false) // nome da coluna que irá armazenar a referencia da task
     private Task parentTask;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true) // TODO mudar para false depois quando tiver usuarios
+    private User user;
 
     // Construtor do DTO
     public Subtask(CreateSubTask subTask, Task task) {

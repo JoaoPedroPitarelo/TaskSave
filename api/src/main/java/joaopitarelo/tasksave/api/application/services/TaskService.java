@@ -2,6 +2,7 @@ package joaopitarelo.tasksave.api.application.services;
 
 import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.domain.task.Task;
+import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.infraestruture.persistence.TaskJpaRepository;
 import joaopitarelo.tasksave.api.interfaces.dtos.task.UpdateTask;
 import joaopitarelo.tasksave.api.domain.category.Category;
@@ -20,19 +21,20 @@ public class TaskService {
     private CategoryJpaRepository categoryRepository;
 
     // GetAll
-    public List<Task> getTasks() {
-        return taskRepository.findByCompletedFalse();
+    public List<Task> getTasks(Long userId) {
+        return taskRepository.findByCompletedFalseAndUserId(userId);
     }
 
     // Create
-    public void createTask(Task task) {
+    public void createTask(Task task, User user) {
         task.setCompleted(false);
+        task.setUser(user);
         taskRepository.save(task);
     }
 
     // GetById
-    public Task getTaskById(Long idTask) {
-        return taskRepository.findByIdAndCompletedFalse(idTask);
+    public Task getTaskById(Long idTask, Long userId) {
+        return taskRepository.findByIdAndUserIdAndCompletedFalse(idTask, userId);
     }
 
     // Métodu para atualizar a task vinda do APP como UpdateTask DTO

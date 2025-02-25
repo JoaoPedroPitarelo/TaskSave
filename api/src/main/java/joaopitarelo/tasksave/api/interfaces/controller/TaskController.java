@@ -2,6 +2,7 @@ package joaopitarelo.tasksave.api.interfaces.controller;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.interfaces.dtos.task.OutputTask;
 import joaopitarelo.tasksave.api.interfaces.dtos.task.UpdateTask;
 import joaopitarelo.tasksave.api.domain.category.Category;
@@ -11,6 +12,7 @@ import joaopitarelo.tasksave.api.application.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import joaopitarelo.tasksave.api.interfaces.dtos.task.CreateTask;
@@ -29,15 +31,15 @@ public class TaskController {
 
     // GetAll ------------------------------------
     @GetMapping
-    public ResponseEntity<List<OutputTask>> getAll() {
+    public ResponseEntity<List<OutputTask>> getAll(@AuthenticationPrincipal User user) {
         // TODO Tratar a exceção = "e se não tiver nenhuma tarefa?"
-        return ResponseEntity.ok(taskService.getTasks().stream().map(OutputTask::new).toList());
+        return ResponseEntity.ok(taskService.getTasks(user.getId()).stream().map(OutputTask::new).toList());
     }
 
     // GetById -------------------------------------
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        Task task = taskService.getTaskById(id);
+    @GetMapping("/{taskId}")
+    public ResponseEntity<?> getById(@PathVariable Long taskId, @AuthenticationPrincipal User user) {
+        Task task = taskService.getTaskById(taskId, user.getId());
 
         if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
 
@@ -47,13 +49,15 @@ public class TaskController {
     // Create ------------------------------------
     @PostMapping("/create")
     @Transactional
-    public ResponseEntity<?> create(@RequestBody @Valid CreateTask newTask, UriComponentsBuilder uriBuilder) {
-        Category category = categoryService.getCategoryById(newTask.categoryId());
+    public ResponseEntity<?> create(@RequestBody @Valid CreateTask newTask,
+                                    UriComponentsBuilder uriBuilder,
+                                    @AuthenticationPrincipal User user) {
+        Category category = categoryService.getCategoryById(newTask.categoryId(), user.getId());
 
         if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
 
         Task task = new Task(newTask, category);
-        taskService.createTask(task);
+        taskService.createTask(task, user);
 
         var uri = uriBuilder.path("/task/{id}").buildAndExpand(task.getId()).toUri();
 
@@ -63,11 +67,15 @@ public class TaskController {
     // Update -------------------------------------
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> update(@RequestBody @Valid UpdateTask modifiedTask, @PathVariable Long id) {
-        Task task = taskService.getTaskById(id);
+    public ResponseEntity<?> update(@RequestBody @Valid UpdateTask modifiedTask,
+                                    @PathVariable Long id,
+                                    @AuthenticationPrincipal User user) {
+        Task task = taskService.getTaskById(id, user.getId());
         if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
 
-        Category category = categoryService.getCategoryById(modifiedTask.categoryId());
+
+        // TODO Arrumar essa parada aqui, pois da forma que está, toda vez que for fazer o update tem que mandar o id da categoria e não é isso que eu quero. Quero que mande somente o que for mudar
+        Category category = categoryService.getCategoryById(modifiedTask.categoryId(), user.getId());
         if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
 
         taskService.updateTask(task, modifiedTask, category);

@@ -1,0 +1,25 @@
+package joaopitarelo.tasksave.api.application.services;
+
+import joaopitarelo.tasksave.api.domain.user.User;
+import joaopitarelo.tasksave.api.infraestruture.persistence.UserJpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthenticationService implements UserDetailsService { // interface do Spring Security
+
+    @Autowired
+    private UserJpaRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        return userRepository.findByLogin(login);
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+}

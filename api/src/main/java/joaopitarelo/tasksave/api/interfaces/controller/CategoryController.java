@@ -2,6 +2,7 @@ package joaopitarelo.tasksave.api.interfaces.controller;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.interfaces.dtos.category.CreateCategory;
 import joaopitarelo.tasksave.api.interfaces.dtos.category.OutputCategory;
 import joaopitarelo.tasksave.api.interfaces.dtos.category.UpdateCategory;
@@ -10,6 +11,7 @@ import joaopitarelo.tasksave.api.application.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -24,15 +26,14 @@ public class CategoryController {
 
     // GetAll --------------------------------------------
     @GetMapping
-    public ResponseEntity<List<OutputCategory >> getAll() {
-        // TODO Tratar a exceção = "e se não tiver nenhuma tarefa?"
-        return ResponseEntity.ok(categoryService.getAllCategories().stream().map(OutputCategory::new).toList());
+    public ResponseEntity<List<OutputCategory >> getAll(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(categoryService.getAllCategories(user.getId()).stream().map(OutputCategory::new).toList());
     }
 
     // GetById ------------------------------------------
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
+    public ResponseEntity<?> getById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        Category category = categoryService.getCategoryById(id, user.getId());
 
         if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
 
@@ -42,8 +43,12 @@ public class CategoryController {
     // Create ------------------------------------------
     @PostMapping("/create")
     @Transactional
-    public ResponseEntity<OutputCategory> create(@RequestBody @Valid CreateCategory newCategory, UriComponentsBuilder uriBuilder) { // O parâmetro @RequestBody só pode ter um, pois cada requisição há somente um corpo
+    public ResponseEntity<OutputCategory> create(@RequestBody @Valid CreateCategory newCategory,
+                                                 UriComponentsBuilder uriBuilder,
+                                                 @AuthenticationPrincipal User user) { // O parâmetro @RequestBody só pode ter um, pois cada requisição há somente um corpo
+
         Category category = new Category(newCategory);
+        category.setUser(user);
         categoryService.createCategory(category);
 
         // O que o uriBuilder faz esse pagar o endereço em que o servidor está a rodar que poderá mudar dependendo
@@ -54,10 +59,12 @@ public class CategoryController {
     }
 
     // Update ------------------------------------------
-    @PutMapping("/{id}")
+    @PutMapping("/{categoryId}")
     @Transactional
-    public ResponseEntity<?> update(@RequestBody @Valid UpdateCategory modifiedCategory, @PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
+    public ResponseEntity<?> update(@RequestBody @Valid UpdateCategory modifiedCategory,
+                                    @PathVariable Long categoryId,
+                                    @AuthenticationPrincipal User user) {
+        Category category = categoryService.getCategoryById(categoryId, user.getId());
 
         if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
 
@@ -66,11 +73,10 @@ public class CategoryController {
     }
 
     // Delete ----------------------------------------
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{categoryId}")
     @Transactional
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+    public ResponseEntity<String> delete(@PathVariable Long categoryId, @AuthenticationPrincipal User user) {
+        categoryService.deleteCategory(categoryId, user.getId());
         return ResponseEntity.noContent().build();
     }
-
 }

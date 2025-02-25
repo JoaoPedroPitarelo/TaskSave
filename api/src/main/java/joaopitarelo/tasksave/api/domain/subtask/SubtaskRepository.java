@@ -2,5 +2,5 @@ package joaopitarelo.tasksave.api.domain.subtask;
 
 
 public interface SubtaskRepository {
-    Subtask findByIdAndCompletedFalse(Long id);
+    Subtask findByIdAndUserIdAndCompletedFalse(Long id, Long userId);
 }

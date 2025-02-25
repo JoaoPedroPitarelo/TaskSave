@@ -19,8 +19,8 @@ public class SubtaskService {
     }
 
     // GetById
-    public Subtask getById(Long subtaskId) {
-        return subtaskRepository.findByIdAndCompletedFalse(subtaskId);
+    public Subtask getById(Long subtaskId, Long userId) {
+        return subtaskRepository.findByIdAndUserIdAndCompletedFalse(subtaskId, userId);
     }
 
     // Update
@@ -36,8 +36,8 @@ public class SubtaskService {
     }
 
     // Delete
-    public void deleteSubtask(Long id) {
-        Subtask subtask = subtaskRepository.getReferenceById(id);
+    public void deleteSubtask(Long id, Long userId) {
+        Subtask subtask = subtaskRepository.findByIdAndUserIdAndCompletedFalse(id, userId);
         subtask.setCompleted(true);
 
         subtaskRepository.save(subtask);

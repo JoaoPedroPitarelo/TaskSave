@@ -6,6 +6,7 @@ import joaopitarelo.tasksave.api.domain.category.Category;
 import joaopitarelo.tasksave.api.domain.enums.Priority;
 import joaopitarelo.tasksave.api.domain.enums.ReminderType;
 import joaopitarelo.tasksave.api.domain.subtask.Subtask;
+import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.interfaces.dtos.task.CreateTask;
 import lombok.*;
 
@@ -49,6 +50,10 @@ public class Task {
     @Column(columnDefinition = "reminder_type")
     private ReminderType reminderType;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true) // TODO mudar para false quando tiver usuários
+    private User user;
+
     @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true)
     // mappedBy = nome do atributo que fará essa relação ou seja no caso de Subtasks quem fará isso será o atributo task
     @JsonIgnore
@@ -64,6 +69,4 @@ public class Task {
         this.category = category;
         this.reminderType = task.reminderType();
     }
-
-
 }

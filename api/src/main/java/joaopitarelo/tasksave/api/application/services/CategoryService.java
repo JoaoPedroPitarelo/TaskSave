@@ -21,13 +21,13 @@ public class CategoryService {
     private TaskJpaRepository taskRepository;
 
     // GetAll
-    public List<Category> getAllCategories() {
-        return categoryRepository.findByAtivoTrue();
+    public List<Category> getAllCategories(Long userId) {
+        return categoryRepository.findByAtivoTrueAndUserId(userId);
     }
 
     // GetById
-    public Category getCategoryById(Long idCategory) {
-        return categoryRepository.findByIdAndAtivoTrue(idCategory);
+    public Category getCategoryById(Long idCategory, Long idUser) {
+        return categoryRepository.findByIdAndUserIdAndAtivoTrue(idCategory, idUser);
     }
 
     // Create
@@ -45,8 +45,8 @@ public class CategoryService {
     }
 
     // Delete - todas as tarefas contidas nelas serão deletadas também
-    public void deleteCategory(Long id) {
-        Category category = categoryRepository.getReferenceById(id);
+    public void deleteCategory(Long categoryId, Long userId) {
+        Category category = categoryRepository.findByIdAndUserIdAndAtivoTrue(categoryId, userId);
         List<Task> task_list = category.getTasks();
 
         task_list.forEach(task -> {
