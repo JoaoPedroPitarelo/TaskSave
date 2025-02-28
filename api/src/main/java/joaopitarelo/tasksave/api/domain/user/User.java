@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import joaopitarelo.tasksave.api.domain.category.Category;
 import joaopitarelo.tasksave.api.domain.subtask.Subtask;
 import joaopitarelo.tasksave.api.domain.task.Task;
+import joaopitarelo.tasksave.api.interfaces.dtos.user.CreateLogin;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,11 +17,13 @@ import java.util.List;
 @Table(name = "users")
 @Entity(name = "User")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
 
+    // Atributos próprios
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
@@ -39,6 +42,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user",  cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Subtask> subtaskList;
+
+    // Construtor para o DTO de create
+    public User(CreateLogin newUser) {
+        this.login = newUser.login();
+        this.password = newUser.password();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

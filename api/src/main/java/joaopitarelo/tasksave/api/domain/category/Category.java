@@ -33,7 +33,7 @@ public class Category {
     private boolean ativo;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true) // TODO mudar para false depois quanto tiver usuário
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "category")

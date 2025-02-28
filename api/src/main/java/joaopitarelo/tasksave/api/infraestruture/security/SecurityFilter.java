@@ -9,6 +9,7 @@ import joaopitarelo.tasksave.api.application.services.TokenService;
 import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.interfaces.dtos.user.TokenData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,8 +23,13 @@ public class SecurityFilter extends OncePerRequestFilter { // "paraCadaRequisiç
 
     @Autowired
     private TokenService tokenService;
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
+
+    // @Lazy faz com que o securityFilter só seja intanciado quando necessário, evitando o ciclo de dependências
+    // Exemplo: serviceA -> serviceB | serviceB -> serviceA
+    public SecurityFilter(@Lazy AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

@@ -47,7 +47,7 @@ public class Subtask {
     private Task parentTask;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true) // TODO mudar para false depois quando tiver usuarios
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // Construtor do DTO

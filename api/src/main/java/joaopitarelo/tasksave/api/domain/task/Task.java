@@ -51,7 +51,7 @@ public class Task {
     private ReminderType reminderType;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true) // TODO mudar para false quando tiver usuários
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true)
