@@ -30,5 +30,4 @@ public class AuthenticationService implements UserDetailsService { // interface 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
-
 }
