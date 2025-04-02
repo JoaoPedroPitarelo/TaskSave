@@ -51,7 +51,7 @@ public class CategoryController {
         category.setUser(user);
         categoryService.createCategory(category);
 
-        // O que o uriBuilder faz esse pagar o endereço em que o servidor está a rodar que poderá mudar dependendo
+        // O que o uriBuilder faz é pegar o endereço em que o servidor está a rodar que poderá mudar dependendo
         // do ip do servidor, se for local, seria 127.0.0.1, se for uma cloud vai ser alguma coisa 192.168...
         var uri = uriBuilder.path("/category/{id}").buildAndExpand(category.getId()).toUri();
 

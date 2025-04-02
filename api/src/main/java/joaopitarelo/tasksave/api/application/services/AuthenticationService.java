@@ -22,12 +22,23 @@ public class AuthenticationService implements UserDetailsService { // interface 
         return userRepository.findByLogin(login);
     }
 
+    public User loadUserByLogin(String login) throws UsernameNotFoundException {
+        return userRepository.findByLogin(login);
+    }
+
+
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
     public void createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setUserVerified(false);
+        userRepository.save(user);
+    }
+
+    public void setUserVerified(User user) {
+        user.setUserVerified(true);
         userRepository.save(user);
     }
 
