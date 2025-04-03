@@ -32,6 +32,7 @@ public class SecurityConfig {
            .authorizeHttpRequests(req -> {
                req.requestMatchers("/login").permitAll(); // liberando todas as requisições para /login
                req.requestMatchers("/login/create").permitAll();
+               req.requestMatchers("/login/verifyemail/**").permitAll();
                req.anyRequest().authenticated(); // todas as outra precisam estar autenticadas
            })
            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class); // use securityFilter antes de ...

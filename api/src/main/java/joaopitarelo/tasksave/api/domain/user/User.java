@@ -30,6 +30,8 @@ public class User implements UserDetails {
     private String login;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = true) // TODO mudar depois de realizar todo o sistema de envio de email
+    private boolean userVerified;
 
     @OneToMany(mappedBy = "user",  cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

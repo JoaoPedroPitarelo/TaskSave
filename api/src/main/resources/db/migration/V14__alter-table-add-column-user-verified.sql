@@ -1,0 +1,2 @@
+ALTER TABLE users
+ADD COLUMN user_verified BOOLEAN DEFAULT FALSE;
