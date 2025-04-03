@@ -15,11 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("login")
@@ -33,20 +34,34 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    TemplateEngine templateEngine;
 
     @PostMapping("/create")
     public ResponseEntity<?> createLogin(@RequestBody @Valid CreateLogin newUser) throws NoSuchAlgorithmException, MessagingException {
+
+        if (authenticationService.loadUserByLogin(newUser.login()) != null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Este email já esta sendo usado em outra conta");
+        }
+
         User user = new User(newUser);
+        // Atribuí o id e salva no banco
         authenticationService.createUser(user);
 
         String hashEmail = HashUtil.generateHash(user.getLogin());
         String verificationLink = "http://localhost:8080/login/verifyemail/" + user.getId() + "/" + hashEmail;
-        emailService.sendHtmlEmail(newUser.login(), "E-mail verification", verificationLink);
+
+        Map<String, Object> variables = Map.of(
+        "verificationUrl", verificationLink
+        );
+
+        emailService.sendHtmlEmail(newUser.login(), "E-mail verification", variables);
 
         return ResponseEntity.ok().body("User are create successfully");
     }
 
     @GetMapping("/verifyemail/{id}/{emailHash}")
+    @ResponseBody
     public ResponseEntity<?> verifyEmail(@PathVariable Long id, @PathVariable String emailHash) throws NoSuchAlgorithmException {
         User user = authenticationService.getUserById(id);
 
@@ -63,7 +78,10 @@ public class AuthenticationController {
 
         authenticationService.setUserVerified(user);
 
-        return ResponseEntity.ok().body(emailHash);
+        Context context = new Context();
+        String htmlContent = templateEngine.process("verification-succefull-template", context);
+
+        return ResponseEntity.ok().body(htmlContent);
     }
 
     @PostMapping

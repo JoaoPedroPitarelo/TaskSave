@@ -26,7 +26,6 @@ public class AuthenticationService implements UserDetailsService { // interface 
         return userRepository.findByLogin(login);
     }
 
-
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
