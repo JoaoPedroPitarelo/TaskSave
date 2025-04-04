@@ -38,6 +38,7 @@ public class TokenService {
     }
 
     private Instant expirationDate() {
+        // Configurado para durar duas horas sem a necessidade de logar denovo
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 

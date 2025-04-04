@@ -40,5 +40,4 @@ public class AuthenticationService implements UserDetailsService { // interface 
         user.setUserVerified(true);
         userRepository.save(user);
     }
-
 }
