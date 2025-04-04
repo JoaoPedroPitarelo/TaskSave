@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: joaopitarelo.tasksave.api.application.services.CategoryServiceTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.017 s -- in joaopitarelo.tasksave.api.application.services.CategoryServiceTest
