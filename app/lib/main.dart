@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
                 Locale('pt')
               ],
               locale: Locale('pt'),
-              initialRoute: '/welcomeScreen1',// snapshot.data!, 
+              initialRoute: '/welcomeScreen2',   
               routes: AppRoutes.routes,
             );
           } else {
