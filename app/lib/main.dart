@@ -1,4 +1,4 @@
-import 'package:app/services/auth_service.dart';
+  import 'package:app/services/auth_service.dart';
 import 'package:app/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,11 +17,9 @@ class MyApp extends StatelessWidget {
   final authService = AuthService(); // Só para testes
 
   Future<String> getInitialRoute() async {
-    await authService.doLogin('gclp2004@gmail.com', 'Password123!'); // só para testes, isso aqui vai ocorrer na tela de login
+    await authService.doLogin('jpspitarelo14@gmail.com', 'Password123!'); // só para testes, isso aqui vai ocorrer na tela de login
     final token = await secureStorage.read(key: "jwtUser");
-
-    print(token);
-
+    
     if (token != null) {
       return "/home";
     } else {

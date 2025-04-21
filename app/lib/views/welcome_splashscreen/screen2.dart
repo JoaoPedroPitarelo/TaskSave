@@ -1,6 +1,11 @@
+import 'package:app/models/category_vo.dart';
+import 'package:app/models/enums/priority_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app/views/common/task_widget.dart';
+
+
 
 class Screen2 extends StatelessWidget {
   const Screen2({super.key});
@@ -28,9 +33,10 @@ class Screen2 extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 50, left: 80, right: 80),
+                    padding: const EdgeInsets.only(top: 0, left: 80, right: 80),
                     child: Text(
                       AppLocalizations.of(context)!.addYourTask,
                       textAlign: TextAlign.center,
@@ -43,93 +49,24 @@ class Screen2 extends StatelessWidget {
                           )),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 96, 96, 96),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    width: 320,
-                    child: IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch, 
-                        children: [
-                          Container(
-                            width: 30,
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10))
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Color.fromARGB(255, 62, 62, 62),
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(20),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Comprar ingredientes bolo',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              inherit: false,
-                                              color: Colors.white),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Container(
-                                          width: 120,
-                                          height: 24,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                                            color:Color.fromARGB(255, 44, 44, 44)
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(left: 6.0),
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.date_range, color: Colors.white, size: 16),
-                                                Text("|", style: TextStyle(fontSize: 10, color: Colors.white, inherit: false)),
-                                                Text("05/11/2024", style: TextStyle(fontSize: 10, color: Colors.white, inherit: false))    
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Color.fromARGB(255, 42, 42, 42),
-                                    borderRadius: BorderRadius.only(
-                                      bottomRight: Radius.circular(20),
-                                    ),
-                                  ),
-                                  padding: EdgeInsets.all(12),
-                                  child: Text(
-                                    '1kg de farinha de trigo, 1L de óleo, 1 fermento biológico',
-                                    style: TextStyle(color: Colors.white, fontSize: 15, inherit: false),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
+                  TaskWidget(
+                    title: AppLocalizations.of(context)!.makeCakeTitle, 
+                    description: AppLocalizations.of(context)!.makeCakeDescription,
+                    deadline: DateTime(2025, 10, 10),
+                    priority: PriorityEnum.neutral,
+                    category: CategoryVo(id: 0, description: '', color: '', activate: true)),
+                  TaskWidget(
+                    title: AppLocalizations.of(context)!.walkWithMyDogTitle, 
+                    description: AppLocalizations.of(context)!.walkWithMyDogDescription,
+                    deadline: DateTime(2025, 10, 06),
+                    priority: PriorityEnum.low,
+                    category: CategoryVo(id: 0, description: '', color: '', activate: true)),
+                  TaskWidget(
+                    title: AppLocalizations.of(context)!.finishMathWorkTile, 
+                    description: AppLocalizations.of(context)!.finishMathWorkDescription,
+                    deadline: DateTime(2025, 05, 02),
+                    priority: PriorityEnum.high,
+                    category: CategoryVo(id: 0, description: '', color: '', activate: true)),
                 ],
               ),
             ),
@@ -153,14 +90,9 @@ class Screen2 extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16),
               child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward_ios_outlined,
-                    color: Colors.white,
-                    size: 40,
-                    weight: 200.0,
+                  icon: Icon( Icons.arrow_forward_ios_outlined, color: Colors.white, size: 40, weight: 200.0,
                   ),
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed('/welcomeScreen3')),
+                  onPressed: () => Navigator.of(context).pushNamed('/welcomeScreen3')),
             ),
           ],
         )

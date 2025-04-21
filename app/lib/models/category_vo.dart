@@ -1,7 +1,7 @@
 
 class CategoryVo {
   // Atributos
-  final String id;
+  final int id;
   final String description;
   final String color;
   final bool activate;

@@ -1,5 +1,11 @@
 {
     "@@locale": "en",
     "welcomeText": "Saving your tasks and appointments",
-    "addYourTask": "Add your Tasks!"
+    "addYourTask": "Add your Tasks!",
+    "makeCakeTitle": "Buy cake ingredients",
+      "makeCakeDescription": "1kg of wheat flour, 1L of oil, 1 biological yeast",
+    "walkWithMyDogTitle": "Walk with my dog",
+      "walkWithMyDogDescription": "Walk with my dog Tom today",
+    "finishMathWorkTile": "Finish math Work",
+      "finishMathWorkDescription": "Research how to do square roots and do the exercises in the professor's math booklet"
 }

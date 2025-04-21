@@ -1,5 +1,11 @@
 {
     "@@locale": "pt",
     "welcomeText": "Salvando seus afazeres e compromissos do esquecimento...",
-    "addYourTask": "Adicione suas tarefas!"
+    "addYourTask": "Adicione suas tarefas!",
+    "makeCakeTitle": "Comprar ingredientes bolo",
+      "makeCakeDescription": "1kg de farinha de trigo, 1L de óleo, 1 fermento biológico",
+    "walkWithMyDogTitle": "Caminhar com meu cachorro",
+      "walkWithMyDogDescription": "Caminhar com meu cachorro Tom hoje",
+    "finishMathWorkTile": "Terminar trabalho de matemática",
+      "finishMathWorkDescription": "Pesquisar como fazer ráiz quadrada e fazer os exercícios da apostila de matematica do professor"
 }
