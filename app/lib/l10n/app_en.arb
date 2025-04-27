@@ -7,5 +7,11 @@
     "walkWithMyDogTitle": "Walk with my dog",
       "walkWithMyDogDescription": "Walk with my dog Tom today",
     "finishMathWorkTile": "Finish math Work",
-      "finishMathWorkDescription": "Research how to do square roots and do the exercises in the professor's math booklet"
+      "finishMathWorkDescription": "Research how to do square roots and do the exercises in the professor's math booklet",
+    "createYourCategories": "Create Your Categories!",
+    "university": "University",
+    "personal": "Personal",
+    "job": "Job",
+    "lobby": "Lobby",
+    "notified": "Get Notified!"
 }

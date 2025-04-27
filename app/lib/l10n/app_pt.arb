@@ -7,5 +7,11 @@
     "walkWithMyDogTitle": "Caminhar com meu cachorro",
       "walkWithMyDogDescription": "Caminhar com meu cachorro Tom hoje",
     "finishMathWorkTile": "Terminar trabalho de matemática",
-      "finishMathWorkDescription": "Pesquisar como fazer ráiz quadrada e fazer os exercícios da apostila de matematica do professor"
+      "finishMathWorkDescription": "Pesquisar como fazer raíz quadrada e fazer os exercícios da apostila de matematica do professor",
+    "createYourCategories": "Crie suas categorias!",
+    "university": "Faculdade",
+    "personal": "Pessoal",
+    "job": "Trabalho",
+    "lobby": "Entrada",
+    "notified": "Seja Notificado!"
 }

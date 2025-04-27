@@ -1,6 +1,7 @@
 import 'package:app/models/category_vo.dart';
 import 'package:app/models/enums/priority_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 // TODO melhorar isso aqui para produção, por enquanto este widget esta sendo somente para visualização
@@ -70,11 +71,11 @@ class TaskWidget extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: TextStyle(
-                                fontSize: 20,
-                                inherit: false,
-                                color: Colors.white),
-                          ),
+                            style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white,
+                              fontSize: 24,
+                              textStyle: TextStyle(inherit: false))),
                           SizedBox(height: 8),
                           Container(
                             width: 140,
@@ -110,7 +111,7 @@ class TaskWidget extends StatelessWidget {
                     padding: EdgeInsets.all(12),
                     child: Text(
                       description,
-                      style: TextStyle(color: Colors.white, fontSize: 15, inherit: false),
+                      style: GoogleFonts.roboto(color: Colors.white, fontSize: 15, textStyle: TextStyle(inherit: false)),
                       textAlign: TextAlign.start,
                     ),
                   ),

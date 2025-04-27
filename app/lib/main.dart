@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
                 Locale('pt')
               ],
               locale: Locale('pt'),
-              initialRoute: '/welcomeScreen2',   
+              initialRoute: '/welcomeScreen4',   
               routes: AppRoutes.routes,
             );
           } else {

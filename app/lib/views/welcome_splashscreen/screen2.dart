@@ -90,8 +90,7 @@ class Screen2 extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16),
               child: IconButton(
-                  icon: Icon( Icons.arrow_forward_ios_outlined, color: Colors.white, size: 40, weight: 200.0,
-                  ),
+                  icon: Icon( Icons.arrow_forward_ios_outlined, color: Colors.white, size: 40, weight: 200.0),
                   onPressed: () => Navigator.of(context).pushNamed('/welcomeScreen3')),
             ),
           ],
