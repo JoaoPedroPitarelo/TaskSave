@@ -17,13 +17,12 @@ class MyApp extends StatelessWidget {
   final authService = AuthService(); // Só para testes
 
   Future<String> getInitialRoute() async {
-    await authService.doLogin('jpspitarelo14@gmail.com', 'Password123!'); // só para testes, isso aqui vai ocorrer na tela de login
     final token = await secureStorage.read(key: "jwtUser");
-    
+
     if (token != null) {
       return "/home";
     } else {
-      return "/login";
+      return "/welcomeScreen1";
     }
   }
 
@@ -48,8 +47,8 @@ class MyApp extends StatelessWidget {
                 Locale('en'),
                 Locale('pt')
               ],
-              locale: Locale('pt'),
-              initialRoute: '/welcomeScreen4',   
+              locale: Locale('en'),
+              initialRoute: snapshot.data,   
               routes: AppRoutes.routes,
             );
           } else {
@@ -59,6 +58,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// TODO melhorar isso aqui
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

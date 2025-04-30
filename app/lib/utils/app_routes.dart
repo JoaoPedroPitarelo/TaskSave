@@ -4,6 +4,7 @@ import 'package:app/views/welcome_splashscreen/screen1.dart';
 import 'package:app/views/welcome_splashscreen/screen2.dart';
 import 'package:app/views/welcome_splashscreen/screen3.dart';
 import 'package:app/views/welcome_splashscreen/screen4.dart';
+import 'package:app/views/welcome_splashscreen/screen5_final.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -12,6 +13,8 @@ class AppRoutes {
     "/welcomeScreen2": (_) => Screen2(),
     "/welcomeScreen3": (_) => Screen3(),
     "/welcomeScreen4": (_) => Screen4(),
+    "/finalWelcomeScreen": (_) => Screen5Final(),
+    
     "/login": (_) => LoginScreen(),
     "/home": (_) => HomeScreen()
   };

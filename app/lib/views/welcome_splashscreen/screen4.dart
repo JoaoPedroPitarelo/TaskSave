@@ -68,7 +68,7 @@ class Screen4 extends StatelessWidget {
                 icon: Icon(Icons.arrow_forward_ios_outlined,
                     color: Colors.white, size: 40, weight: 200.0),
                 onPressed: () =>
-                    Navigator.of(context).pushNamed('/welcomeScreen')),
+                    Navigator.of(context).pushNamed('/finalWelcomeScreen')),
           ),
         ]
       )

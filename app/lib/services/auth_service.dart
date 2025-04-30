@@ -23,15 +23,14 @@ class AuthService {
       })
     );
 
-    if (requestResponse.statusCode == 200) {
+    if (requestResponse.statusCode.toInt() == 200) {
       final token = jsonDecode(requestResponse.body)["token"];
       await secureStorage.write(key: "jwtUser", value: token);
       
       Map<String, dynamic> jwtPayload = Jwt.parseJwt(token);
 
       return UserVo(login: jwtPayload['sub']);
-    }
-    else {
+    } else {
       return null;
     }
   }

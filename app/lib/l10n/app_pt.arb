@@ -13,5 +13,8 @@
     "personal": "Pessoal",
     "job": "Trabalho",
     "lobby": "Entrada",
-    "notified": "Seja Notificado!"
+    "notified": "Seja Notificado!",
+    "titleTask": "Eai, bora começar?",
+    "descriptionTask": "Organizar suas tarefas nunca foi tão fácil!",
+    "taskCompleted": "Completar tarefa..."
 }

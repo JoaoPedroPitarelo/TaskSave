@@ -47,6 +47,7 @@ class Screen3 extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
+                          boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 10, spreadRadius: 1, offset: Offset(0, 8))],
                           color: Color.fromARGB(255, 61, 66, 254),
                           borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(20),
@@ -101,6 +102,7 @@ class Screen3 extends StatelessWidget {
                       width: 270,
                       decoration: BoxDecoration(
                           color: Color.fromARGB(255, 61, 66, 254),
+                          boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 10, spreadRadius: 2, offset: Offset(0, 8))],
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(20),
                               bottomRight: Radius.circular(20))),
@@ -140,8 +142,7 @@ class Screen3 extends StatelessWidget {
                                     ),
                                   ),
                                 ]),
-                            Container(
-                                color: Colors.white, width: 200, height: 1.2),
+                            Container(color: Colors.white, width: 200, height: 1.2),
                             Row(children: [
                               Padding(
                                 padding: const EdgeInsets.only(

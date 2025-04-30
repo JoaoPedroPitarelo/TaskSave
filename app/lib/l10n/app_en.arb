@@ -13,5 +13,8 @@
     "personal": "Personal",
     "job": "Job",
     "lobby": "Lobby",
-    "notified": "Get Notified!"
+    "notified": "Get Notified!",
+    "titleTask": "Let's start?",
+    "descriptionTask": "Organizing your tasks has never been easier!",
+    "taskCompleted": "Completed Task..."
 }
