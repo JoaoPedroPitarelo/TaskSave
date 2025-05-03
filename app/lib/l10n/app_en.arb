@@ -16,5 +16,14 @@
     "notified": "Get Notified!",
     "titleTask": "Let's start?",
     "descriptionTask": "Organizing your tasks has never been easier!",
-    "taskCompleted": "Completed Task..."
+    "taskCompleted": "Completed Task...",
+    "enterEmail": "E-mail:",
+    "enterEmailExample": "tom@email.com",
+    "enterPassword": "Pasword:",
+    "confirmPassoword": "Confirm password",
+    "forgetPassword": "Forgot your password?",
+    "login": "Login",
+    "dontHaveAccount": "Don't have account yet? ",
+    "createNow": "Create Now!",
+    "register": "Register"
 }

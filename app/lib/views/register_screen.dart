@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formkey = GlobalKey<FormState>();
 
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   bool _obscureText = true;
 
@@ -22,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _passwordController.dispose();
     _loginController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
   
@@ -34,11 +36,23 @@ class _LoginScreenState extends State<LoginScreen> {
             spacing: 20,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset('assets/images/tasksave_logo.png', width: 250, height: 250, alignment: Alignment.center),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, bottom: 0, left: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_outlined, color: Colors.white, size: 30),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              Image.asset('assets/images/tasksave_logo.png', width: 250, height: 154, alignment: Alignment.topCenter),
               Column(
                 children: [
                   Text(
-                    "Login",
+                    "Register",
                     style: GoogleFonts.roboto(
                       color: Colors.white,
                       fontSize: 38
@@ -100,21 +114,32 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         autofillHints: [AutofillHints.password],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              // TODO Fazer tela de redefinição de tela
-                              print("defenir senha...");
-                            },
-                            child: Text(
-                              AppLocalizations.of(context)!.forgetPassword,
-                              textAlign: TextAlign.end,
-                              style: GoogleFonts.roboto(color: Colors.white, decoration: TextDecoration.underline),
-                            ),
+                      TextFormField(
+                        obscureText: _obscureText,
+                        controller: _passwordController,
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.password_outlined, color: Colors.white,),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            }, 
+                            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off, color: Colors.white,),
                           ),
-                        ],
+                          fillColor: const Color.fromARGB(31, 187, 187, 187),
+                          labelText: AppLocalizations.of(context)!.confirmPassoword,
+                        ),
+                        keyboardType: TextInputType.visiblePassword,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Password is a obrigatory values";
+                          } 
+                          // TODO fazer verificação para ver se é um email válido
+                          return null;
+                        },
+                        autofillHints: [AutofillHints.password],
                       )
                     ],
                   ),
@@ -127,48 +152,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(15)
                   ),
                   minimumSize: Size(350, 50),
-                  backgroundColor: Color.fromARGB(255, 61, 64, 254)
+                  backgroundColor: Color.fromARGB(255, 61, 254, 116)
                 ),
                 child: Text(
-                  AppLocalizations.of(context)!.login,
+                  AppLocalizations.of(context)!.register,
                   style: GoogleFonts.roboto(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 30
                   ),
                 ),
               ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 25),
-                      child: RichText(
-                        text: TextSpan(
-                          text: AppLocalizations.of(context)!.dontHaveAccount,
-                          style: GoogleFonts.roboto(
-                            fontSize: 16
-                          ),
-                          children: [
-                            TextSpan(
-                              text: AppLocalizations.of(context)!.createNow,
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 35, 39, 255),
-                                textStyle: TextStyle(inherit: true)
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.of(context).pushNamed("/register");
-                                },
-                            )
-                          ]
-                        ),
-                      ),
-                    )
-                  ],
-                )
-              )
+             
             ],
           ),
       ),

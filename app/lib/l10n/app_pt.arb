@@ -16,5 +16,14 @@
     "notified": "Seja Notificado!",
     "titleTask": "Eai, bora começar?",
     "descriptionTask": "Organizar suas tarefas nunca foi tão fácil!",
-    "taskCompleted": "Completar tarefa..."
+    "taskCompleted": "Completar tarefa...",
+    "enterEmail": "E-mail",
+    "enterEmailExample": "fulano@email.com",
+    "enterPassword": "Senha:",
+    "confirmPassoword": "Confirmar senha:",
+    "forgetPassword": "Esqueceu sua senha?",
+    "login": "Entrar",
+    "dontHaveAccount": "Ainda não tem uma conta? ",
+    "createNow": "Crie agora!",
+    "register": "Cadastrar-se"
 }

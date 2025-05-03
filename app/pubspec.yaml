@@ -36,8 +36,6 @@ flutter:
 
   assets:
     - assets/images/tasksave_logo.png
-    - assets/sounds/amoungs.mp3
-    - assets/sounds/peumeum.mp3
     - assets/sounds/taskCompleted.mp3
 
   # To add assets to your application, add an assets section, like this:

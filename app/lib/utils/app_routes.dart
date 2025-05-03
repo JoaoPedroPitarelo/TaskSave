@@ -1,5 +1,6 @@
 import 'package:app/views/home_screen.dart';
 import 'package:app/views/login_screen.dart';
+import 'package:app/views/register_screen.dart';
 import 'package:app/views/welcome_splashscreen/screen1.dart';
 import 'package:app/views/welcome_splashscreen/screen2.dart';
 import 'package:app/views/welcome_splashscreen/screen3.dart';
@@ -15,6 +16,7 @@ class AppRoutes {
     "/welcomeScreen4": (_) => Screen4(),
     "/finalWelcomeScreen": (_) => Screen5Final(),
     
+    "/register": (_) => RegisterScreen(),
     "/login": (_) => LoginScreen(),
     "/home": (_) => HomeScreen()
   };
