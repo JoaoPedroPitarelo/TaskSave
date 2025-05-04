@@ -29,10 +29,16 @@ class AuthService {
       
       Map<String, dynamic> jwtPayload = Jwt.parseJwt(token);
 
-      return UserVo(login: jwtPayload['sub']);
+      return UserVo(id: jwtPayload['id'], login: jwtPayload['sub']);
     } else {
       return null;
     }
+  }
+
+  Future<bool> isAuthenticate() async {
+    final jwtToken = await secureStorage.read(key: "jwtUser");
+
+    if (jwtToken == null) { return false; }
   }
 
   Future<String?> getToken() async{
@@ -40,6 +46,7 @@ class AuthService {
     return token;
   }
 
+  // Logout a gente delete do Flutter secrete_storage
   Future<void> logout() async {
     await secureStorage.delete(key: 'jwtUser');
   }

@@ -26,7 +26,7 @@ public class CategoryController {
 
     // GetAll --------------------------------------------
     @GetMapping
-    public ResponseEntity<List<OutputCategory >> getAll(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<OutputCategory>> getAll(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(categoryService.getAllCategories(user.getId()).stream().map(OutputCategory::new).toList());
     }
 

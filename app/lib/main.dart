@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
             return CircularProgressIndicator();
           } else if (snapshot.hasData) {
             return MaterialApp(
+              // TODO Jogar o tema do app para outro arquivo
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 61, 64, 254)),
                 fontFamily: GoogleFonts.roboto.toString(),

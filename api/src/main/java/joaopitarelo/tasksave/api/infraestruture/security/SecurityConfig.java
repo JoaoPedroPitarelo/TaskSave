@@ -30,9 +30,10 @@ public class SecurityConfig {
            .csrf(csrf -> csrf.disable()) // Desabilitando a proteção contra ataques csrf (statefull)
            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Definindo a sesssão como stateless
            .authorizeHttpRequests(req -> {
-               req.requestMatchers("/login").permitAll(); // liberando todas as requisições para /login
+               req.requestMatchers("/login/**").permitAll(); // liberando todas as requisições para /login
                req.requestMatchers("/login/create").permitAll();
                req.requestMatchers("/login/verifyemail/**").permitAll();
+               req.requestMatchers("/login/refresh").permitAll();
                req.anyRequest().authenticated(); // todas as outra precisam estar autenticadas
            })
            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class); // use securityFilter antes de ...

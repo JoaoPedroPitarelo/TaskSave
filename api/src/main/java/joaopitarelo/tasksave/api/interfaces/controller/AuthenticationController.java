@@ -9,7 +9,8 @@ import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.infraestruture.security.HashUtil;
 import joaopitarelo.tasksave.api.interfaces.dtos.user.CreateLogin;
 import joaopitarelo.tasksave.api.interfaces.dtos.user.DoLogin;
-import joaopitarelo.tasksave.api.interfaces.dtos.user.outputToken;
+import joaopitarelo.tasksave.api.interfaces.dtos.user.TokenData;
+import joaopitarelo.tasksave.api.interfaces.dtos.user.OutputToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,8 +96,26 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuário não verificado, por favor verifique seu e-mail");
         }
 
-        String jwtToken = tokenService.generateToken((User) authentication.getPrincipal());
+        String accessToken = tokenService.generateAccessToken((User) authentication.getPrincipal());
+        String refreshToken = tokenService.generateRefreshToken((User) authentication.getPrincipal());
 
-        return ResponseEntity.ok(new outputToken(jwtToken));
+        return ResponseEntity.ok(new OutputToken(accessToken, refreshToken));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+
+        if (!tokenService.isRefreshTokenValid(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token inválido ou expirado");
+        }
+
+        TokenData refreshTokenUserInfo = tokenService.getSubject(refreshToken, false);
+        User user = authenticationService.loadUserByLogin(refreshTokenUserInfo.subject());
+
+        String newAccessToken = tokenService.generateAccessToken(user);
+        String newRefreshToken = tokenService.generateRefreshToken(user);
+
+        return ResponseEntity.ok(new OutputToken(newAccessToken, newRefreshToken));
     }
 }

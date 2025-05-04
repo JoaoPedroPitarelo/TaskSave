@@ -31,14 +31,24 @@ public class SecurityFilter extends OncePerRequestFilter { // "paraCadaRequisiç
         this.authenticationService = authenticationService;
     }
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        String requestPath = request.getRequestURI();
+
+        // Separando o filtro pois o refreshToken não pode cair no mesmo filtro das outras requisições que irão usar o accessToken
+        if (requestPath.startsWith("/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String tokenJWT = getTokenFromRequest(request);
 
         if (tokenJWT != null) {
-            TokenData userInformation = tokenService.getSubject(tokenJWT);
+            TokenData userInformation = tokenService.getSubject(tokenJWT, true);
 
             System.out.println(userInformation);
             User user = authenticationService.getUserById(userInformation.id());
@@ -54,9 +64,9 @@ public class SecurityFilter extends OncePerRequestFilter { // "paraCadaRequisiç
     private String getTokenFromRequest(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null)
+        if (authorizationHeader != null) {
             return authorizationHeader.replace("Bearer ", "").trim();
-
+        }
         return null;
     }
 }

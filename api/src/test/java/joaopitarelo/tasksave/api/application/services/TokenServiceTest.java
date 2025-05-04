@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -31,7 +28,7 @@ class TokenServiceTest {
 
     @Test
     @DisplayName("Testa se o Token seta sendo gerado adequadamente")
-    void generateToken_ShouldGenerateTokenCorrectly() {
+    void generateToken_ShouldGenerateAccessTokenCorrectly() {
         // Criando um usuário
         User user = new User();
         user.setLogin("fulano.silva@email.com");
@@ -39,7 +36,7 @@ class TokenServiceTest {
         authenticationService.createUser(user);
 
         // Testando a geração de TokensJWT
-        String token = tokenService.generateToken(user);
+        String token = tokenService.generateAccessToken(user);
         assertNotNull(token);
     }
 
@@ -53,10 +50,10 @@ class TokenServiceTest {
         authenticationService.createUser(user);
 
         // Gerando o tokenJWT
-        String token = tokenService.generateToken(user);
+        String token = tokenService.generateAccessToken(user);
 
         // Capturando o Subject da requisição
-        TokenData tokenData = tokenService.getSubject(token);
+        TokenData tokenData = tokenService.getSubject(token, true);
 
         // Verificando se o subject não é Null
         assertNotNull(tokenData);
