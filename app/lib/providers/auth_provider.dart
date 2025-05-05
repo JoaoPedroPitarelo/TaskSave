@@ -2,8 +2,8 @@ import 'package:app/models/user_vo.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
-// TODO Classe AuthViewModel mockada para construção das telas
-class AuthViewModel extends ChangeNotifier {
+
+class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
   // Atributos
@@ -13,31 +13,27 @@ class AuthViewModel extends ChangeNotifier {
 
   // Gets
   UserVo? get user => _user;
+  String? get errorMessage => _errorMessage;
   bool get isLoading {return _loading;}
 
-  Future<UserVo?> doDogin(String login, String password) async {
+  Future<UserVo?> doLogin(String login, String password) async {
     _loading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
       final user = await _authService.doLogin(login, password);
+      _user = user;
       _loading = false;
       return user;
     } catch (e) {
-      _errorMessage = "Erro ao fazer o login $e";
+      _errorMessage = "$e";
       return null;
     } finally {
       _loading = false;
       notifyListeners();
     }
   }
-
-  Future<bool> isAuthenticate() async {
-
-  }
-
-
 
   void clearError() {
     _errorMessage = null;

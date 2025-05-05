@@ -1,26 +1,32 @@
-  import 'package:app/services/auth_service.dart';
+import 'package:app/services/auth_service.dart';
 import 'package:app/utils/app_routes.dart';
+import 'package:app/utils/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: Providers.providersList, 
+      child: MyApp()
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  final secureStorage = FlutterSecureStorage();
-  final authService = AuthService(); // Só para testes
+  final authService = AuthService(); 
+
 
   Future<String> getInitialRoute() async {
-    final token = await secureStorage.read(key: "jwtUser");
+    // TODO Desfazendo o login para trabalhar na tela de login
+    authService.logout();
 
-    if (token != null) {
+    if (await authService.isAuthenticated()) {
       return "/home";
     } else {
       return "/welcomeScreen1";

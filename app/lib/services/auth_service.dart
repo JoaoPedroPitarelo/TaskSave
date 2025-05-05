@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:app/core/exceptions/user_not_found_exception.dart';
 import 'package:app/models/user_vo.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -23,31 +26,71 @@ class AuthService {
       })
     );
 
-    if (requestResponse.statusCode.toInt() == 200) {
-      final token = jsonDecode(requestResponse.body)["token"];
-      await secureStorage.write(key: "jwtUser", value: token);
-      
-      Map<String, dynamic> jwtPayload = Jwt.parseJwt(token);
+    if (requestResponse.statusCode == 200) {
+      final accessToken = jsonDecode(requestResponse.body)["accessToken"];
+      final refreshToken = jsonDecode(requestResponse.body)["refreshToken"];
 
-      return UserVo(id: jwtPayload['id'], login: jwtPayload['sub']);
-    } else {
-      return null;
+      await secureStorage.write(key: "accessToken", value: accessToken);
+      await secureStorage.write(key: "refreshToken", value: refreshToken);
+
+      Map<String, dynamic> jwtSub = Jwt.parseJwt(accessToken);
+     
+      return UserVo(id: jwtSub['id'].toString(), login: jwtSub['sub']);
+    } 
+
+    if (requestResponse.statusCode == 401 || requestResponse.statusCode == 500) {
+      throw UserNotFoundException();
     }
   }
 
-  Future<bool> isAuthenticate() async {
-    final jwtToken = await secureStorage.read(key: "jwtUser");
+  Future<bool> isAuthenticated() async {
+    final refreshToken = await secureStorage.read(key: "refreshToken");
+    
+    if (refreshToken != null) {
+      refreshAccessToken();
+      return true;
+    }
 
-    if (jwtToken == null) { return false; }
+    return false;
+  }
+ 
+  Future<void> refreshAccessToken() async {
+    final refreshToken = await secureStorage.read(key: "refreshToken");
+    final http.Response response;
+
+    if (refreshToken == null) {
+      throw Exception("RefreshToken not found");
+    }
+
+    try {
+      response = await http.post(
+        Uri.parse("$apiurl/login/refresh"), 
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "refreshToken": refreshToken
+          })
+        );
+    } on SocketException {
+      throw SocketException("server connection not found");
+    } on TimeoutException {
+      throw TimeoutException("the server took to long for respond");
+    }
+
+    if (response.statusCode.toInt() == 200) {
+      final accessToken = jsonDecode(response.body)["accessToken"];
+      final refreshToken = jsonDecode(response.body)["refreshToken"];
+
+      await secureStorage.write(key: "accessToken", value: accessToken);
+      await secureStorage.write(key: "refreshToken", value: refreshToken);
+    } else {
+      throw Exception("Error in request ${response.statusCode.toString()}");
+    }
   }
 
-  Future<String?> getToken() async{
-    final token = secureStorage.read(key: "jwtUser");
-    return token;
-  }
-
-  // Logout a gente delete do Flutter secrete_storage
   Future<void> logout() async {
-    await secureStorage.delete(key: 'jwtUser');
+    await secureStorage.delete(key: 'accessToken');
+    await secureStorage.delete(key: 'refreshToken');
   }
 }
