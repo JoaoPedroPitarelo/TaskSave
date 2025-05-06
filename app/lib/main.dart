@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
                 Locale('pt')
               ],
               locale: Locale('pt'),
-              initialRoute: '/login',//snapshot.data,   
+              initialRoute: '/login', //snapshot.data,   
               routes: AppRoutes.routes,
             );
           } else {

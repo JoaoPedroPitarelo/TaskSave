@@ -27,7 +27,7 @@ class AuthProvider extends ChangeNotifier {
       _loading = false;
       return user;
     } catch (e) {
-      _errorMessage = "$e";
+      _errorMessage = e.toString();
       return null;
     } finally {
       _loading = false;

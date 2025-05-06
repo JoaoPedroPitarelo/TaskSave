@@ -11,7 +11,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:app/utils/contants.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
-// TODO acredito que esteja funcionando, porém ainda falta testes melhores
 class AuthService {
   final secureStorage = FlutterSecureStorage();
 
@@ -36,10 +35,10 @@ class AuthService {
       Map<String, dynamic> jwtSub = Jwt.parseJwt(accessToken);
      
       return UserVo(id: jwtSub['id'].toString(), login: jwtSub['sub']);
-    } 
-
-    if (requestResponse.statusCode == 401 || requestResponse.statusCode == 500) {
-      throw UserNotFoundException();
+    } else if (requestResponse.statusCode == 401) {
+      throw UserNotFoundException("User not found");
+    } else {
+      throw Exception('Erro desconhecido: ${requestResponse.body}');
     }
   }
 
