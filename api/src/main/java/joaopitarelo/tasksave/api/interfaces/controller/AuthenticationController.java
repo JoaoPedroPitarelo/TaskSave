@@ -93,7 +93,7 @@ public class AuthenticationController {
         User user = authenticationService.loadUserByLogin(data.login());
 
         if (!user.isUserVerified()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuário não verificado, por favor verifique seu e-mail");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não verificado, por favor verifique seu e-mail");
         }
 
         String accessToken = tokenService.generateAccessToken((User) authentication.getPrincipal());
