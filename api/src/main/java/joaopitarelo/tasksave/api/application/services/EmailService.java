@@ -3,6 +3,7 @@ package joaopitarelo.tasksave.api.application.services;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 @Service
@@ -22,7 +24,6 @@ public class EmailService {
     private TemplateEngine templateEngine;
 
     public EmailService() {
-
     }
 
     public void SendEmailTest(String to, String subject, String text) {
@@ -35,7 +36,7 @@ public class EmailService {
         emailSender.send(message);
     }
 
-    public void sendHtmlEmail(String to, String subject, Map<String, Object> variables) throws MessagingException {
+    public void sendHtmlEmail(String to, String subject, Map<String, Object> variables) throws MessagingException, IOException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -49,12 +50,12 @@ public class EmailService {
 
         helper.setText(htmlContent, true);
 
-        File image = new File("src/main/resources/static/images/logo.png");
+        InputStream image = getClass().getClassLoader().getResourceAsStream("static/images/logo.png");
 
-        if (!image.exists()) {
-            throw new RuntimeException("Imagem não encontrada: " + image.getAbsolutePath());
+        if (image == null) {
+            throw new RuntimeException("Imagem não encontrada para o envio do e-mail");
         }
-        helper.addInline("logo", image);
+        helper.addInline("logo", new ByteArrayResource(image.readAllBytes()), "image/png");
 
         emailSender.send(message);
     }

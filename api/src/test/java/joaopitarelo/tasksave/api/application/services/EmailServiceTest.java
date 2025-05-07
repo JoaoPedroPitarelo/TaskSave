@@ -14,6 +14,6 @@ class EmailServiceTest {
 
     @Test
     void sendEmailTest() {
-        emailService.SendEmailTest("jpspitarelo14@gmail.com", "Teste", "<h1>TESTE</h1>");
+        emailService.SendEmailTest("noreply.tasksaveapp@gmail.com", "Teste", "<h1>Teste da api</h1>");
     }
 }
