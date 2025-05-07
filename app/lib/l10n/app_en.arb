@@ -25,5 +25,6 @@
     "login": "Login",
     "dontHaveAccount": "Don't have account yet? ",
     "createNow": "Create Now!",
-    "register": "Register"
+    "register": "Register",
+    "userNotfound": "Incorrect email or password!"
 }

@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  "Email ou senha incorretos!",
+                  AppLocalizations.of(context)!.userNotfound,
                   style: GoogleFonts.roboto(
                     fontWeight: FontWeight.bold,
                     fontSize: 15
@@ -62,9 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   label: "OK",
                   textColor: Colors.white,
                 ),
-                duration: Duration(seconds: 10),
+                duration: Duration(seconds: 2),
                 backgroundColor: const Color.fromARGB(255, 176, 35, 24),),
             );
+            auth.clearError(); // impede que mostre o snackbar toda hora
           });
         }
 
@@ -153,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        // TODO Fazer tela de redefinição de tela
+                                        // TODO Fazer tela de redefinição de senha
                                         print("redefenir senha...");
                                       },
                                       child: Text(

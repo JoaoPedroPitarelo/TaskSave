@@ -7,19 +7,18 @@ import joaopitarelo.tasksave.api.application.services.EmailService;
 import joaopitarelo.tasksave.api.application.services.TokenService;
 import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.infraestruture.security.HashUtil;
-import joaopitarelo.tasksave.api.interfaces.dtos.user.CreateLogin;
-import joaopitarelo.tasksave.api.interfaces.dtos.user.DoLogin;
-import joaopitarelo.tasksave.api.interfaces.dtos.user.TokenData;
-import joaopitarelo.tasksave.api.interfaces.dtos.user.OutputToken;
+import joaopitarelo.tasksave.api.interfaces.dtos.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -39,10 +38,11 @@ public class AuthenticationController {
     TemplateEngine templateEngine;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createLogin(@RequestBody @Valid CreateLogin newUser) throws NoSuchAlgorithmException, MessagingException {
+    public ResponseEntity<?> createLogin(@RequestBody @Valid CreateLogin newUser,
+                                         UriComponentsBuilder uriBuilder) throws NoSuchAlgorithmException, MessagingException, IOException {
 
         if (authenticationService.loadUserByLogin(newUser.login()) != null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Este email já esta sendo usado em outra conta");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este email já esta sendo usado em outra conta");
         }
 
         User user = new User(newUser);
@@ -58,7 +58,20 @@ public class AuthenticationController {
 
         emailService.sendHtmlEmail(newUser.login(), "E-mail verification", variables);
 
-        return ResponseEntity.ok().body("User are create successfully");
+        var uri = uriBuilder.path("/login/{id}").buildAndExpand(user.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(new OutputUser(user.getId(), user.getLogin(),verificationLink, user.isUserVerified()));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        User user = authenticationService.getUserById(id);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new OutputUser(user.getId(), user.getLogin(), null, user.isUserVerified()));
     }
 
     @GetMapping("/verifyemail/{id}/{emailHash}")

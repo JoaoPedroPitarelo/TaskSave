@@ -42,6 +42,19 @@ class AuthService {
     }
   }
 
+  Future<UserVo?> createLogin(String email, String password) async {
+    final requestResponse = await http.post(
+      Uri.parse("$apiurl/login/create"),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: {
+        "login": email,
+        "password": password
+      }
+    );
+  }
+
   Future<bool> isAuthenticated() async {
     final refreshToken = await secureStorage.read(key: "refreshToken");
     

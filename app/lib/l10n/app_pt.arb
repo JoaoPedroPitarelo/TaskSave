@@ -25,5 +25,6 @@
     "login": "Entrar",
     "dontHaveAccount": "Ainda não tem uma conta? ",
     "createNow": "Crie agora!",
-    "register": "Cadastrar-se"
+    "register": "Cadastrar-se",
+    "userNotfound": "E-mail ou senha incorretos!"
 }
