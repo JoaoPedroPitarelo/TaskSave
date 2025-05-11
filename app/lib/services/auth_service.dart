@@ -2,13 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:app/core/exceptions/duplicated_user_exception.dart';
 import 'package:app/core/exceptions/user_not_found_exception.dart';
+import 'package:app/core/exceptions/user_not_verified_exception.dart';
 import 'package:app/models/user_vo.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // Project
-import 'package:app/utils/contants.dart';
+import 'package:app/utils/constants.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class AuthService {
@@ -25,7 +27,7 @@ class AuthService {
       })
     );
 
-    if (requestResponse.statusCode == 200) {
+    if (requestResponse.statusCode == 200) { // OK
       final accessToken = jsonDecode(requestResponse.body)["accessToken"];
       final refreshToken = jsonDecode(requestResponse.body)["refreshToken"];
 
@@ -35,8 +37,10 @@ class AuthService {
       Map<String, dynamic> jwtSub = Jwt.parseJwt(accessToken);
      
       return UserVo(id: jwtSub['id'].toString(), login: jwtSub['sub']);
-    } else if (requestResponse.statusCode == 401) {
-      throw UserNotFoundException("User not found");
+    } else if (requestResponse.statusCode == 401) { // UNUATHORIZED
+      throw UserNotFoundException("Invalid credential");
+    } if (requestResponse.statusCode == 403) { // FORBIDDEN
+      throw UserNotVerifiedException("User not verified");
     } else {
       throw Exception('Erro desconhecido: ${requestResponse.body}');
     }
@@ -48,11 +52,23 @@ class AuthService {
       headers: {
         "Content-Type": "application/json"
       },
-      body: {
+      body: jsonEncode({
         "login": email,
         "password": password
-      }
+      })
     );
+
+    if (requestResponse.statusCode == 201) {
+      
+      Map<String, dynamic> responseBody = jsonDecode(requestResponse.body);
+      return UserVo(id: responseBody['id'].toString(), login: responseBody['email']);
+    } else if (requestResponse.statusCode == 409) {
+      
+      throw DuplicatedUserException("There is already a user registered with that email");
+    } else {
+      
+      throw Exception('Unknown Error: ${requestResponse.body}');
+    }
   }
 
   Future<bool> isAuthenticated() async {

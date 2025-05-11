@@ -8,12 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: Providers.providersList, 
-      child: MyApp()
-    )
-  );
+  runApp(MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
@@ -75,11 +71,11 @@ class MyApp extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate
               ],
               supportedLocales: [
-                Locale('en'),
+                //Locale('en'),
                 Locale('pt')
               ],
               locale: Locale('pt'),
-              initialRoute: '/login', //snapshot.data,   
+              initialRoute: "/login",//snapshot.data,   
               routes: AppRoutes.routes,
             );
           } else {
