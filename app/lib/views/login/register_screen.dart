@@ -50,7 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         if (auth.user != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) { 
-            Navigator.of(context).pushReplacementNamed("/confirmEmail");
+            Navigator.of(context).pushNamed("/confirmEmail");
           });
         }
 

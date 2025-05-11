@@ -1,11 +1,9 @@
 import 'package:app/services/auth_service.dart';
 import 'package:app/utils/app_routes.dart';
-import 'package:app/utils/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -72,10 +70,10 @@ class MyApp extends StatelessWidget {
               ],
               supportedLocales: [
                 //Locale('en'),
-                Locale('pt')
+                Locale("pt")
               ],
-              locale: Locale('pt'),
-              initialRoute: "/login",//snapshot.data,   
+              locale: Locale("pt"),
+              initialRoute: "/confirmEmail",//snapshot.data,   
               routes: AppRoutes.routes,
             );
           } else {

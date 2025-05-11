@@ -38,5 +38,7 @@
     "duplicatedUser": "Já existe um usuário com esse e-mail!",
     "passwordAreNotTheSame": "As senha não são iguais!",
     "unknownError": "Erro desconhecido :(",
-    "userNotVerified": "Usuário não verificado! Por favor veja sua caixa de e-mail"
+    "userNotVerified": "Usuário não verificado! Por favor veja sua caixa de e-mail",
+    "good": "Boa!",
+    "confirmEmail": "Agora confirme seu E-mail!"
 }
