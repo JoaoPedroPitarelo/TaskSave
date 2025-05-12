@@ -2,6 +2,7 @@ package joaopitarelo.tasksave.api.domain.task;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import joaopitarelo.tasksave.api.domain.attachment.Attachment;
 import joaopitarelo.tasksave.api.domain.category.Category;
 import joaopitarelo.tasksave.api.domain.enums.Priority;
 import joaopitarelo.tasksave.api.domain.enums.ReminderType;
@@ -58,6 +59,10 @@ public class Task {
     // mappedBy = nome do atributo que fará essa relação ou seja no caso de Subtasks quem fará isso será o atributo task
     @JsonIgnore
     private List<Subtask> subtasks;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Attachment> attachments;
 
     // Construtor para DTO de criação
     public Task(CreateTask task, Category category) {
