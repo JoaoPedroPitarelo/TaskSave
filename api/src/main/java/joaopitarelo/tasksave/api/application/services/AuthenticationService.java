@@ -56,7 +56,8 @@ public class AuthenticationService implements UserDetailsService { // interface 
     }
 
     private void createUploadDir(Long userId) {
-        Path dir = Paths.get("storage/user_uploads", "user_" + userId);
+        String basePath = Paths.get("/app/storage", "user_uploads", "user_" + userId).toString();
+        Path dir = Paths.get(basePath);
 
         try {
             if (!Files.exists(dir)) {

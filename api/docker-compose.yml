@@ -8,23 +8,30 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: tasksave
+      POSTGRES_DB: tasksave_test
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 
   tasksave_api:
     build: .
     container_name: api_tasksave
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tasksave
-      SPRING_DATASOURCE_USERNAME: admin
-      SPRING_DATASOURCE_PASSWORD: admin123
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tasksave_test
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: 123
     ports:
       - "8080:8080"
     restart: always
+    volumes:
+      - ./storage:/app/storage
+    user: "0"
 
-volumes:
-  postgres_data:

@@ -49,8 +49,9 @@ public class AttachmentService {
         }
 
         // Salvando o anexo na pasta do usuário
-        String basePath = Paths.get("").toAbsolutePath().toString();
-        Path dir = Paths.get(basePath,"storage/user_uploads/user_" + userId);
+        String basePath = Paths.get("/app/storage", "user_uploads", "user_" + userId).toString();
+        Path dir = Paths.get(basePath);
+
         Files.createDirectories(dir);
 
         String fileName = "task_" + taskId + "_" + System.currentTimeMillis() + "." + extension;
@@ -60,7 +61,7 @@ public class AttachmentService {
 
         // Salvando a entidade e então salvando no banco de dados
 
-        Path relativePath = Paths.get("storage", "user_uploads", "user_" + userId, fileName);
+        Path relativePath = Paths.get("/app/storage", "user_uploads", "user_" + userId, fileName);
 
         Attachment attachment = new Attachment();
         attachment.setTask(task);
