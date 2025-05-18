@@ -6,13 +6,13 @@ services:
     container_name: db_tasksave
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: 123
+      POSTGRES_USER: ADMIN
+      POSTGRES_PASSWORD: vhWzeEoUw0OwsL
       POSTGRES_DB: tasksave_test
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ "CMD", "pg_isready"]
+      test: [ "CMD", "pg_isready", "-U", "ADMIN", "-d", "tasksave_test"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -25,13 +25,17 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      JWT_ACCESS_SECRET: GFwm11PeX3hXCY
+      JWT_REFRESH_SECRET: XqkebSG21JR1lh
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tasksave_test
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: 123
+      SPRING_DATASOURCE_USERNAME: ADMIN
+      SPRING_DATASOURCE_PASSWORD: vhWzeEoUw0OwsL
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: noreply.tasksaveapp@gmail.com
+      SPRING_MAIL_PASSWORD: aznxfeznzklwzqwb
     ports:
       - "8080:8080"
     restart: always
     volumes:
       - ./storage:/app/storage
-    user: "0"
-
