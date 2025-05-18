@@ -65,14 +65,18 @@ public class AuthenticationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) throws NoSuchAlgorithmException {
         User user = authenticationService.getUserById(id);
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(new OutputUser(user.getId(), user.getLogin(), null, user.isUserVerified()));
+        String hashEmail = HashUtil.generateHash(user.getLogin());
+        // TODO quando for para produção esse link tem que ser dinâmico da onde estiver rodando a API
+        String verificationLink = "http://localhost:8080/login/verifyemail/" + user.getId() + "/" + hashEmail;
+
+        return ResponseEntity.status(HttpStatus.OK).body(new OutputUser(user.getId(), user.getLogin(), verificationLink, user.isUserVerified()));
     }
 
     @GetMapping("/verifyemail/{id}/{emailHash}")
