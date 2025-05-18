@@ -50,6 +50,7 @@ public class AuthenticationController {
         authenticationService.createUser(user);
 
         String hashEmail = HashUtil.generateHash(user.getLogin());
+        // TODO quando for para produção esse link tem que ser dinâmico da onde estiver rodando a API
         String verificationLink = "http://localhost:8080/login/verifyemail/" + user.getId() + "/" + hashEmail;
 
         Map<String, Object> variables = Map.of(

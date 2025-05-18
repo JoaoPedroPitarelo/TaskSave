@@ -6,6 +6,10 @@ import joaopitarelo.tasksave.api.domain.task.TaskRepository;
 import joaopitarelo.tasksave.api.infraestruture.persistence.AttachmentJpaRepository;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +27,15 @@ public class AttachmentService {
     @Autowired
     TaskRepository taskRepository;
 
-    public String saveAttachment(Long userId, Long taskId, MultipartFile file) throws IOException {
+    public Attachment getById(Long id) {
+        Attachment attachment = attachmentRepository.getReferenceById(id);
+
+        if (attachment == null) throw new RuntimeException("Attchament not found");
+
+        return attachment;
+    }
+
+    public Attachment saveAttachment(Long userId, Long taskId, MultipartFile file) throws IOException {
         // Verificando se a tarefa existe
         Task task = taskRepository.findByIdAndUserIdAndCompletedFalse(taskId, userId);
 
@@ -55,8 +67,14 @@ public class AttachmentService {
         attachment.setFilePath(relativePath.toString());
         attachment.setFileName(file.getOriginalFilename());
         attachment.setFileType(extension);
+        attachment.setAtivo(true);
         attachmentRepository.save(attachment);
 
-        return fileName;
+        return attachment;
+    }
+
+    public void delete(Attachment attachment) {
+        attachment.setAtivo(false);
+        attachmentRepository.save(attachment);
     }
 }

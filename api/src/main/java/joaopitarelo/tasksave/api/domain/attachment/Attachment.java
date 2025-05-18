@@ -30,4 +30,6 @@ public class Attachment {
     private String fileType;
 
     private LocalDateTime uploadedAt = LocalDateTime.now();
+
+    private boolean ativo;
 }

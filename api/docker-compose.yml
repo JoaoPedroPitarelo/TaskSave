@@ -6,8 +6,8 @@ services:
     container_name: db_tasksave
     restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 123
       POSTGRES_DB: tasksave
     ports:
       - "5432:5432"

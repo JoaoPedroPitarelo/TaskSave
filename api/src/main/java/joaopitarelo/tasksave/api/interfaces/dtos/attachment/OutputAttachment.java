@@ -1,0 +1,27 @@
+package joaopitarelo.tasksave.api.interfaces.dtos.attachment;
+
+import joaopitarelo.tasksave.api.domain.attachment.Attachment;
+
+import java.time.LocalDateTime;
+
+public record OutputAttachment(
+        Long id,
+        String filePath,
+        String fileName,
+        String fileType,
+        String downloadEndPoint,
+        LocalDateTime uploadedAt,
+        boolean ativo
+) {
+    public OutputAttachment(Attachment attachment) {
+        this(
+            attachment.getId(),
+            attachment.getFilePath(),
+            attachment.getFileName(),
+            attachment.getFileType(),
+            "/task/attachment/" + attachment.getId(),
+            attachment.getUploadedAt(),
+            attachment.isAtivo()
+        );
+    }
+}
