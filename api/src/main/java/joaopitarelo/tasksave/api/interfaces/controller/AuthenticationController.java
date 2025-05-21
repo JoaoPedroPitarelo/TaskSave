@@ -1,5 +1,6 @@
 package joaopitarelo.tasksave.api.interfaces.controller;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.application.services.AuthenticationService;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
@@ -22,7 +25,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("login")
 public class AuthenticationController {
 
@@ -37,6 +40,7 @@ public class AuthenticationController {
     @Autowired
     TemplateEngine templateEngine;
 
+    @ResponseBody
     @PostMapping("/create")
     public ResponseEntity<?> createLogin(@RequestBody @Valid CreateLogin newUser,
                                          UriComponentsBuilder uriBuilder) throws NoSuchAlgorithmException, MessagingException, IOException {
@@ -57,7 +61,7 @@ public class AuthenticationController {
         "verificationUrl", verificationLink
         );
 
-        emailService.sendHtmlEmail(newUser.login(), "E-mail verification", variables);
+        emailService.sendVerificationEmail(newUser.login(), "E-mail verification", variables);
 
         var uri = uriBuilder.path("/login/{id}").buildAndExpand(user.getId()).toUri();
 
@@ -65,6 +69,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/{id}")
+    @ResponseBody
     public ResponseEntity<?> getById(@PathVariable Long id) throws NoSuchAlgorithmException {
         User user = authenticationService.getUserById(id);
 
@@ -98,12 +103,13 @@ public class AuthenticationController {
         authenticationService.setUserVerified(user);
 
         Context context = new Context();
-        String htmlContent = templateEngine.process("verification-succefull-template", context);
+        String htmlContent = templateEngine.process("successfully-verification-email-template", context);
 
         return ResponseEntity.ok().body(htmlContent);
     }
 
     @PostMapping
+    @ResponseBody
     public ResponseEntity<?> doLogin(@RequestBody @Valid DoLogin data) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var authentication = manager.authenticate(authenticationToken);
@@ -121,14 +127,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> request) {
+    @ResponseBody
+    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> request) { // TODO fazer um DTO para isso
         String refreshToken = request.get("refreshToken");
 
         if (!tokenService.isRefreshTokenValid(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token inválido ou expirado");
         }
 
-        TokenData refreshTokenUserInfo = tokenService.getSubject(refreshToken, false);
+        TokenData refreshTokenUserInfo = tokenService.getSubject(refreshToken, "refresh");
         User user = authenticationService.loadUserByLogin(refreshTokenUserInfo.subject());
 
         String newAccessToken = tokenService.generateAccessToken(user);
@@ -136,4 +143,57 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(new OutputToken(newAccessToken, newRefreshToken));
     }
+
+    // Recuperação de senha 1° - Envio do e-mail de recuperação
+    @PostMapping("/rescue")
+    @ResponseBody
+    public ResponseEntity<?> rescueUser(@RequestBody @Valid RescueLogin data) throws MessagingException, IOException{
+        // Verifica se existe algum usuário com esse login(email)
+        User user = authenticationService.getUserByLogin(data.email());
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        String rescueJwtToken = tokenService.generateRescueToken(user);
+
+        // Quem irá receber esse link é o app Flutter
+        String link = "http://localhost:8080/login/rescue/open-app?token=" + rescueJwtToken;
+
+        Map<String, Object> variables = Map.of(
+                "rescueUrl", link
+        );
+
+        try {
+            emailService.sendRescueEmail(user.getLogin(), "Recuperação de senha", variables);
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "E-mail enviado com sucesso"));
+        } catch (MessagingException | IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error during send the e-mail",
+                                 "error", e));
+        }
+    }
+
+    // Recuperação de senha 2° - validacao do JWT e redirecionamento para o App
+    @GetMapping("/rescue/open-app")
+    public String redirectForApp(@RequestParam String token, Model model) {
+        TokenData userInfo;
+
+        try {
+            userInfo = tokenService.getSubject(token, "rescue");
+        } catch (JWTVerificationException e) {
+            // TODO fazer o template para caso não for autorizado
+            return "";
+        }
+
+        System.out.println(userInfo);
+        User user = authenticationService.getUserById(userInfo.id());
+
+        model.addAttribute("rescueUrl", "tasksave://rescue-login?token=" + token);
+        model.addAttribute("emailUser", user.getLogin());
+
+        return "rescue-login-redirect-template";  // nome do template HTML
+    }
+    
+
 }

@@ -68,4 +68,8 @@ public class AuthenticationService implements UserDetailsService { // interface 
             System.err.println("Error when creating user folder " + exc.getMessage());
         }
     }
+
+    public User getUserByLogin(String email) {
+        return userRepository.findByLogin(email) != null ? userRepository.findByLogin(email) : null;
+    }
 }

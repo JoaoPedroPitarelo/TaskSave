@@ -53,7 +53,7 @@ class TokenServiceTest {
         String token = tokenService.generateAccessToken(user);
 
         // Capturando o Subject da requisição
-        TokenData tokenData = tokenService.getSubject(token, true);
+        TokenData tokenData = tokenService.getSubject(token, "access");
 
         // Verificando se o subject não é Null
         assertNotNull(tokenData);

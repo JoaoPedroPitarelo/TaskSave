@@ -46,4 +46,5 @@
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/DoLogin.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/OutputToken.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/OutputUser.java
+/home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/RescueLogin.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/TokenData.java

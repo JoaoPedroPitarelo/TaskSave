@@ -48,7 +48,7 @@ public class SecurityFilter extends OncePerRequestFilter { // "paraCadaRequisiç
         String tokenJWT = getTokenFromRequest(request);
 
         if (tokenJWT != null) {
-            TokenData userInformation = tokenService.getSubject(tokenJWT, true);
+            TokenData userInformation = tokenService.getSubject(tokenJWT, "access");
 
             System.out.println(userInformation);
             User user = authenticationService.getUserById(userInformation.id());

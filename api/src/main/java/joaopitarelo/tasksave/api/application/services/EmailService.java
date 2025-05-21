@@ -36,7 +36,7 @@ public class EmailService {
         emailSender.send(message);
     }
 
-    public void sendHtmlEmail(String to, String subject, Map<String, Object> variables) throws MessagingException, IOException {
+    public void sendVerificationEmail(String to, String subject, Map<String, Object> variables) throws MessagingException, IOException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -46,7 +46,7 @@ public class EmailService {
 
         Context context = new Context();
         context.setVariables(variables);
-        String htmlContent = templateEngine.process("email-verification-template", context);
+        String htmlContent = templateEngine.process("verification-email-template", context);
 
         helper.setText(htmlContent, true);
 
@@ -55,6 +55,31 @@ public class EmailService {
         if (image == null) {
             throw new RuntimeException("Imagem não encontrada para o envio do e-mail");
         }
+        helper.addInline("logo", new ByteArrayResource(image.readAllBytes()), "image/png");
+
+        emailSender.send(message);
+    }
+
+    public void sendRescueEmail(String to, String subject, Map<String, Object> variables) throws MessagingException, IOException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setFrom("noreply.tasksaveapp@gmail.com");
+
+        Context context = new Context();
+        context.setVariables(variables);
+        String htmlContent = templateEngine.process("rescue-login-email-template", context);
+
+        helper.setText(htmlContent, true);
+
+        InputStream image = getClass().getClassLoader().getResourceAsStream("static/images/logo.png");
+
+        if (image == null) {
+            throw new RuntimeException("Imagem não encontrada para o envio do e-mail");
+        }
+
         helper.addInline("logo", new ByteArrayResource(image.readAllBytes()), "image/png");
 
         emailSender.send(message);

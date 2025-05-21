@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Email Verification</title>
@@ -8,7 +8,7 @@
         body {
             background-color: rgb(61, 66, 254);
         }
-        
+
         body > .content {
             margin: 5%;
         }
@@ -43,19 +43,14 @@
 </head>
 <body>
     <img src="cid:logo" alt="Logo TaskSave" width="250px">
-    
-    <div class="content">
-      <h1>Olá! Parabéns e Bem vindo!</h1>
-        
-      <hr>
-      <p>Estamos muito felizes por confiar no TaskSave! Para garantir que você possa acessar todos os nossos recursos, precisamos confirmar que este endereço de e-mail pertence a você.</p>
-      
-      <a th:href="${verificationUrl}" class="verify-email">
-        <button>Verificar E-mail</button>
-     </a>
-    
 
-      <p style="font-size: small; font-weight: lighter; margin-top: 100px; color: rgb(255, 255, 255);">Se você não solicitou esse e-mail por favor <b>ignore<b></p>
+    <div class="content">
+        <h1>Recuperação de senha</h1>
+    <hr>
+
+    <a th:href="${rescueUrl}" class="rescue-email"> <button>Recuperar senha</button> </a>
+
+    <p style="font-size: small; font-weight: lighter; margin-top: 100px; color: rgb(255, 255, 255);">Se você não solicitou esse e-mail por favor <b>ignore</b></p>
     </div>
 </body>
 </html>
