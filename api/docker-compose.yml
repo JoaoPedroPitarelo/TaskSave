@@ -29,6 +29,7 @@ services:
     environment:
       JWT_ACCESS_SECRET: GFwm11PeX3hXCY
       JWT_REFRESH_SECRET: XqkebSG21JR1lh
+      JWT_RESCUE_SECRET: ESggO6VcIxWytY
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tasksave_test
       SPRING_DATASOURCE_USERNAME: ADMIN
       SPRING_DATASOURCE_PASSWORD: vhWzeEoUw0OwsL

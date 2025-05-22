@@ -35,6 +35,7 @@ public class SecurityConfig {
                req.requestMatchers("/login/verifyemail/**").permitAll();
                req.requestMatchers("/login/refresh").permitAll();
                req.requestMatchers("/login/rescue").permitAll();
+               req.requestMatchers("/rescue/open-app").permitAll();
                req.anyRequest().authenticated(); // todas as outra precisam estar autenticadas
            })
            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class); // use securityFilter antes de ...

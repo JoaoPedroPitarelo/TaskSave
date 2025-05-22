@@ -183,7 +183,7 @@ public class AuthenticationController {
             userInfo = tokenService.getSubject(token, "rescue");
         } catch (JWTVerificationException e) {
             // TODO fazer o template para caso não for autorizado
-            return "";
+            return "rescue-login-unauthorized";
         }
 
         System.out.println(userInfo);
