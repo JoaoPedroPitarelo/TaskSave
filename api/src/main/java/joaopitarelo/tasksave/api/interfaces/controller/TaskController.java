@@ -1,20 +1,20 @@
 package joaopitarelo.tasksave.api.interfaces.controller;
 
-import joaopitarelo.tasksave.api.domain.attachment.Attachment;
-import joaopitarelo.tasksave.api.interfaces.dtos.attachment.OutputAttachment;
-import org.apache.coyote.Response;
-import org.springframework.core.io.Resource;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+
 import joaopitarelo.tasksave.api.application.services.AttachmentService;
-import joaopitarelo.tasksave.api.domain.user.User;
-import joaopitarelo.tasksave.api.interfaces.dtos.task.OutputTask;
-import joaopitarelo.tasksave.api.interfaces.dtos.task.UpdateTask;
-import joaopitarelo.tasksave.api.domain.category.Category;
-import joaopitarelo.tasksave.api.domain.task.Task;
 import joaopitarelo.tasksave.api.application.services.CategoryService;
 import joaopitarelo.tasksave.api.application.services.TaskService;
+import joaopitarelo.tasksave.api.domain.attachment.Attachment;
+import joaopitarelo.tasksave.api.domain.category.Category;
+import joaopitarelo.tasksave.api.domain.task.Task;
+import joaopitarelo.tasksave.api.domain.user.User;
+import joaopitarelo.tasksave.api.interfaces.dtos.attachment.OutputAttachment;
+import joaopitarelo.tasksave.api.interfaces.dtos.task.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import joaopitarelo.tasksave.api.interfaces.dtos.task.CreateTask;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,6 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("task")
@@ -48,9 +48,9 @@ public class TaskController {
 
     // GetAll ------------------------------------
     @GetMapping
-    public ResponseEntity<List<OutputTask>> getAll(@AuthenticationPrincipal User user) {
-        // TODO Tratar a exceção = "e se não tiver nenhuma tarefa?"
-        return ResponseEntity.ok(taskService.getTasks(user.getId()).stream().map(OutputTask::new).toList());
+    public ResponseEntity<Map<String, List<OutputTask>>> getAll(@AuthenticationPrincipal User user) {
+        Map<String, List<OutputTask>> listTasks = Map.of("tasks", taskService.getTasks(user.getId()).stream().map(OutputTask::new).toList());
+        return ResponseEntity.ok(listTasks);
     }
 
     // GetById -------------------------------------
@@ -58,9 +58,9 @@ public class TaskController {
     public ResponseEntity<?> getById(@PathVariable Long taskId, @AuthenticationPrincipal User user) {
         Task task = taskService.getTaskById(taskId, user.getId());
 
-        if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+        if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        return ResponseEntity.ok(new OutputTask(task));
+        return ResponseEntity.ok(Map.of("task", new OutputTask(task)));
     }
 
     // Create ------------------------------------
@@ -69,37 +69,46 @@ public class TaskController {
     public ResponseEntity<?> create(@RequestBody @Valid CreateTask newTask,
                                     UriComponentsBuilder uriBuilder,
                                     @AuthenticationPrincipal User user) {
-        Category category = categoryService.getCategoryById(newTask.categoryId(), user.getId());
+        Category category = categoryService.getById(newTask.categoryId(), user.getId());
 
-        if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
+        if (category == null)  {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "category not found"));
+        }
 
         Task task = new Task(newTask, category);
         taskService.createTask(task, user);
 
         var uri = uriBuilder.path("/task/{id}").buildAndExpand(task.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new OutputTask(task));
+        return ResponseEntity.created(uri).body(Map.of("task", new OutputTask(task)));
     }
 
-    // Update -------------------------------------
+    // Update ----------------------------------------
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<?> update(@RequestBody @Valid UpdateTask modifiedTask,
                                     @PathVariable Long id,
                                     @AuthenticationPrincipal User user) {
         Task task = taskService.getTaskById(id, user.getId());
-        if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
 
+        if (task == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+        }
 
-        // TODO Arrumar essa parada aqui, pois da forma que está, toda vez que for fazer o update tem que mandar o id da categoria e não é isso que eu quero. Quero que mande somente o que for mudar
-        Category category = categoryService.getCategoryById(modifiedTask.categoryId(), user.getId());
-        if (category == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
+        if (modifiedTask.categoryId() != null) {
+            Category category = categoryService.getById(modifiedTask.categoryId(), user.getId());
+            if (category == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
+            }
+            taskService.updateTask(task, modifiedTask, category);
+        } else {
+            taskService.updateTask(task, modifiedTask, null);
+        }
 
-        taskService.updateTask(task, modifiedTask, category);
-        return ResponseEntity.ok(new OutputTask(task));
+        return ResponseEntity.ok(Map.of("task", new OutputTask(task)));
     }
 
-    // Upload de anexos
+    // Upload de anexos -------------------------------
     @PostMapping("/attachment/upload") // subir o arquivo
     public ResponseEntity<?> uploadAttachment(
             @RequestParam("file") MultipartFile file,
@@ -118,7 +127,7 @@ public class TaskController {
         }
     }
 
-    // Download de anexo
+    // Download de anexo -------------------------------
     @GetMapping("/attachment/{attachmentId}")
     public ResponseEntity<Resource> downloadAttachment(
         @PathVariable Long attachmentId,
@@ -153,6 +162,7 @@ public class TaskController {
         }
     }
 
+    // Delete de anexo ---------------------------------
     @DeleteMapping("/attachment/{attachmentId}")
     public ResponseEntity<?> deleteAttachment(@PathVariable Long attachmentId) {
         Attachment attachment;

@@ -42,6 +42,7 @@
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/task/CreateTask.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/task/OutputTask.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/task/UpdateTask.java
+/home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/ChangePassword.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/CreateLogin.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/DoLogin.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/OutputToken.java

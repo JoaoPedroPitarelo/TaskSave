@@ -6,8 +6,6 @@ import joaopitarelo.tasksave.api.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -29,7 +27,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    void getCategoryById() {
+    void getById() {
     }
 
     @Test
@@ -43,7 +41,7 @@ class CategoryServiceTest {
         categoryService.createCategory(category);
 
         // Buscando o categoria salvo no balco
-        var savedCategory = categoryService.getCategoryById(category.getId(), user.getId());
+        var savedCategory = categoryService.getById(category.getId(), user.getId());
 
         // Validando se a categoria salvo foi encontrado
         assertNotNull(savedCategory);

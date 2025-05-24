@@ -43,7 +43,7 @@ public class TaskService {
         task.setDescription(modifiedTask.description() != null ? modifiedTask.description() : task.getDescription());
         task.setDeadline(modifiedTask.deadline() != null ? modifiedTask.deadline() : task.getDeadline());
         task.setLastModification(modifiedTask.lastModification());
-        task.setCategory(category);
+        task.setCategory(category != null ? category : task.getCategory());
         task.setPriority(modifiedTask.priority() != null ? modifiedTask.priority() : task.getPriority());
         task.setReminderType(modifiedTask.reminderType() != null ? modifiedTask.reminderType() : task.getReminderType());
 

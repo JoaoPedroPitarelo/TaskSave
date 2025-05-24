@@ -6,13 +6,15 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import joaopitarelo.tasksave.api.domain.user.User;
-import joaopitarelo.tasksave.api.interfaces.dtos.user.TokenData;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
+import joaopitarelo.tasksave.api.domain.user.User;
+import joaopitarelo.tasksave.api.interfaces.dtos.user.TokenData;
+
 import java.util.Date;
+
 
 @Service
 public class TokenService {
@@ -33,7 +35,6 @@ public class TokenService {
 
             return JWT.create()
                     .withIssuer("TASKSAVE API")
-                    .withSubject(user.getLogin())
                     .withClaim("id", user.getId())
                     .withClaim("tokenType", "access")
                     .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 30)) // 30 minutos
@@ -49,7 +50,6 @@ public class TokenService {
 
             return JWT.create()
                     .withIssuer("TASKSAVE API")
-                    .withSubject(user.getLogin())
                     .withClaim("id", user.getId())
                     .withClaim("tokenType", "refresh")
                     .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 10)) // 10 dias de duração
@@ -63,16 +63,12 @@ public class TokenService {
         DecodedJWT decodedJWT;
         try {
             Algorithm algorithm = Algorithm.HMAC256(refreshSecret);
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("TASKSAVE API")
-                    .build();
+            JWTVerifier verifier = JWT.require(algorithm).withIssuer("TASKSAVE API").build();
 
             decodedJWT = verifier.verify(refreshToken);
 
             // Bloqueando os token do tipo accessToken
-            if (decodedJWT.getClaim("tokenType").asString().equals("access")) return false;
-
-            return true;
+            return !decodedJWT.getClaim("tokenType").asString().equals("access");
         } catch (JWTVerificationException exception) {
             return false;
         }
@@ -90,20 +86,14 @@ public class TokenService {
             case "rescue" -> {
                 return Algorithm.HMAC256(rescueSecret);
             }
-            default -> {
-                throw new RuntimeException("Type is invalid");
-            }
+            default -> throw new RuntimeException("Type is invalid");
         }
     }
 
     public TokenData getSubject(String tokenJWT, String type) {
         DecodedJWT decodedJWT;
-
         try {
-
-            JWTVerifier verifier = JWT.require(getAlgorithm(type))
-                        .withIssuer("TASKSAVE API")
-                        .build();
+            JWTVerifier verifier = JWT.require(getAlgorithm(type)).withIssuer("TASKSAVE API").build();
 
                 // JWT decodificado
                 decodedJWT = verifier.verify(tokenJWT);
@@ -113,7 +103,7 @@ public class TokenService {
 
                 return new TokenData(id, subject);
         } catch (JWTVerificationException exception){
-            throw new JWTVerificationException("JWT token is invalid or are experied");
+            throw new JWTVerificationException("JWT token is invalid or are experienced");
         }
     }
 
@@ -123,7 +113,6 @@ public class TokenService {
 
             return JWT.create()
                     .withIssuer("TASKSAVE API")
-                    .withSubject(user.getLogin())
                     .withClaim("id", user.getId())
                     .withClaim("tokenType", "rescue")
                     .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 15)) // 15 min

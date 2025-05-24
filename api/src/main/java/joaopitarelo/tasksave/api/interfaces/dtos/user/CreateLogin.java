@@ -10,8 +10,8 @@ public record CreateLogin(
         String login,
         @NotBlank
         @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            message = "The password must be at least 8 characters long and one special character "
+            regexp  = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            message = "The password must be at least 8 characters long and one special character"
         )
         String password
 ) {

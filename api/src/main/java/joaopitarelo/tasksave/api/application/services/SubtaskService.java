@@ -1,6 +1,7 @@
 package joaopitarelo.tasksave.api.application.services;
 
 import jakarta.validation.Valid;
+import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.infraestruture.persistence.SubTaskJpaRepository;
 import joaopitarelo.tasksave.api.domain.subtask.Subtask;
 import joaopitarelo.tasksave.api.interfaces.dtos.subtask.UpdateSubtask;
@@ -13,8 +14,9 @@ public class SubtaskService {
     private SubTaskJpaRepository subtaskRepository;
 
     // Create
-    public void createSubtask(Subtask subtask) {
+    public void create(Subtask subtask, User user) {
         subtask.setCompleted(false);
+        subtask.setUser(user);
         subtaskRepository.save(subtask);
     }
 
@@ -24,7 +26,7 @@ public class SubtaskService {
     }
 
     // Update
-    public void updateSubtask(@Valid UpdateSubtask modifiedSubtask, Subtask subtask) {
+    public void update(@Valid UpdateSubtask modifiedSubtask, Subtask subtask) {
         subtask.setTitle(modifiedSubtask.title() != null ? modifiedSubtask.title() : subtask.getTitle());
         subtask.setDescription(modifiedSubtask.description() != null ? modifiedSubtask.description() : subtask.getDescription());
         subtask.setDeadline(modifiedSubtask.deadline() != null ? modifiedSubtask.deadline() : subtask.getDeadline());
@@ -36,7 +38,7 @@ public class SubtaskService {
     }
 
     // Delete
-    public void deleteSubtask(Long id, Long userId) {
+    public void delete(Long id, Long userId) {
         Subtask subtask = subtaskRepository.findByIdAndUserIdAndCompletedFalse(id, userId);
         subtask.setCompleted(true);
 

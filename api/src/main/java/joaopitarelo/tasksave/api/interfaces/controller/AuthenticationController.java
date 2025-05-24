@@ -1,15 +1,17 @@
 package joaopitarelo.tasksave.api.interfaces.controller;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+
 import com.auth0.jwt.exceptions.JWTVerificationException;
+
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import joaopitarelo.tasksave.api.application.services.AuthenticationService;
-import joaopitarelo.tasksave.api.application.services.EmailService;
-import joaopitarelo.tasksave.api.application.services.TokenService;
-import joaopitarelo.tasksave.api.domain.user.User;
-import joaopitarelo.tasksave.api.infraestruture.security.HashUtil;
-import joaopitarelo.tasksave.api.interfaces.dtos.user.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,9 +23,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
+import joaopitarelo.tasksave.api.application.services.AuthenticationService;
+import joaopitarelo.tasksave.api.application.services.EmailService;
+import joaopitarelo.tasksave.api.application.services.TokenService;
+import joaopitarelo.tasksave.api.domain.user.User;
+import joaopitarelo.tasksave.api.infraestruture.security.HashUtil;
+import joaopitarelo.tasksave.api.interfaces.dtos.user.*;
+
 
 @Controller
 @RequestMapping("login")
@@ -40,32 +46,34 @@ public class AuthenticationController {
     @Autowired
     TemplateEngine templateEngine;
 
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     @ResponseBody
+    @Transactional
     @PostMapping("/create")
     public ResponseEntity<?> createLogin(@RequestBody @Valid CreateLogin newUser,
-                                         UriComponentsBuilder uriBuilder) throws NoSuchAlgorithmException, MessagingException, IOException {
+                                         UriComponentsBuilder uriBuilder) throws NoSuchAlgorithmException {
 
         if (authenticationService.loadUserByLogin(newUser.login()) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este email já esta sendo usado em outra conta");
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message","This e-mail has been used for another account"));
         }
 
         User user = new User(newUser);
-        // Atribuí o id e salva no banco
         authenticationService.createUser(user);
 
         String hashEmail = HashUtil.generateHash(user.getLogin());
-        // TODO quando for para produção esse link tem que ser dinâmico da onde estiver rodando a API
-        String verificationLink = "http://localhost:8080/login/verifyemail/" + user.getId() + "/" + hashEmail;
+        String verificationLink = baseUrl + "/login/verifyEmail/" + user.getId() + "/" + hashEmail;
 
-        Map<String, Object> variables = Map.of(
-        "verificationUrl", verificationLink
-        );
-
+        Map<String, Object> variables = Map.of("verificationUrl", verificationLink);
         emailService.sendVerificationEmail(newUser.login(), "E-mail verification", variables);
 
         var uri = uriBuilder.path("/login/{id}").buildAndExpand(user.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new OutputUser(user.getId(), user.getLogin(),verificationLink, user.isUserVerified()));
+        return ResponseEntity.created(uri).body(
+                Map.of("user", new OutputUser(user.getId(), user.getLogin(), verificationLink, user.isUserVerified()))
+        );
     }
 
     @GetMapping("/{id}")
@@ -78,34 +86,32 @@ public class AuthenticationController {
         }
 
         String hashEmail = HashUtil.generateHash(user.getLogin());
-        // TODO quando for para produção esse link tem que ser dinâmico da onde estiver rodando a API
-        String verificationLink = "http://localhost:8080/login/verifyemail/" + user.getId() + "/" + hashEmail;
+        String verificationLink = baseUrl + "/login/verifyEmail/" + user.getId() + "/" + hashEmail;
 
-        return ResponseEntity.status(HttpStatus.OK).body(new OutputUser(user.getId(), user.getLogin(), verificationLink, user.isUserVerified()));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Map.of("user", new OutputUser(user.getId(), user.getLogin(), verificationLink, user.isUserVerified())));
     }
 
-    @GetMapping("/verifyemail/{id}/{emailHash}")
-    @ResponseBody
-    public ResponseEntity<?> verifyEmail(@PathVariable Long id, @PathVariable String emailHash) throws NoSuchAlgorithmException {
+    @GetMapping("/verifyEmail/{id}/{emailHash}")
+    public String verifyEmail(@PathVariable Long id, @PathVariable String emailHash) throws NoSuchAlgorithmException {
         User user = authenticationService.getUserById(id);
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+            // TODO criar template de link de verificação inválido
+            return "";
         }
 
         String userEmail = user.getLogin();
         String userEmailHash = HashUtil.generateHash(userEmail);
 
         if (!userEmailHash.equals(emailHash)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Hashes não batem");
+            // TODO criar template de link de verificação inválido
+            return "";
         }
 
         authenticationService.setUserVerified(user);
 
-        Context context = new Context();
-        String htmlContent = templateEngine.process("successfully-verification-email-template", context);
-
-        return ResponseEntity.ok().body(htmlContent);
+        return "successfully-verification-email-template";
     }
 
     @PostMapping
@@ -117,7 +123,8 @@ public class AuthenticationController {
         User user = authenticationService.loadUserByLogin(data.login());
 
         if (!user.isUserVerified()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuário não verificado, por favor verifique seu e-mail");
+            return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED)
+                    .body(Map.of("message", "e-mail not verified"));
         }
 
         String accessToken = tokenService.generateAccessToken((User) authentication.getPrincipal());
@@ -128,15 +135,13 @@ public class AuthenticationController {
 
     @PostMapping("/refresh")
     @ResponseBody
-    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> request) { // TODO fazer um DTO para isso
-        String refreshToken = request.get("refreshToken");
-
-        if (!tokenService.isRefreshTokenValid(refreshToken)) {
+    public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshToken data) {
+        if (!tokenService.isRefreshTokenValid(data.refreshToken())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token inválido ou expirado");
         }
 
-        TokenData refreshTokenUserInfo = tokenService.getSubject(refreshToken, "refresh");
-        User user = authenticationService.loadUserByLogin(refreshTokenUserInfo.subject());
+        TokenData userInfo = tokenService.getSubject(data.refreshToken(), "refresh");
+        User user = authenticationService.getUserById(userInfo.id());
 
         String newAccessToken = tokenService.generateAccessToken(user);
         String newRefreshToken = tokenService.generateRefreshToken(user);
@@ -145,9 +150,9 @@ public class AuthenticationController {
     }
 
     // Recuperação de senha 1° - Envio do e-mail de recuperação
-    @PostMapping("/rescue")
     @ResponseBody
-    public ResponseEntity<?> rescueUser(@RequestBody @Valid RescueLogin data) throws MessagingException, IOException{
+    @PostMapping("/rescue")
+    public ResponseEntity<?> rescueUser(@RequestBody @Valid RescueLogin data) {
         // Verifica se existe algum usuário com esse login(email)
         User user = authenticationService.getUserByLogin(data.email());
 
@@ -157,36 +162,29 @@ public class AuthenticationController {
 
         String rescueJwtToken = tokenService.generateRescueToken(user);
 
-        // Quem irá receber esse link é o app Flutter
-        String link = "http://localhost:8080/login/rescue/open-app?token=" + rescueJwtToken;
+        String link = baseUrl + "/login/rescue/redirect-app?token=" + rescueJwtToken;
 
         Map<String, Object> variables = Map.of(
                 "rescueUrl", link
         );
 
-        try {
-            emailService.sendRescueEmail(user.getLogin(), "Recuperação de senha", variables);
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "E-mail enviado com sucesso"));
-        } catch (MessagingException | IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "Error during send the e-mail",
-                                 "error", e));
-        }
+        emailService.sendRescueEmail(user.getLogin(), "Recuperação de senha", variables);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Map.of("token", rescueJwtToken, "message", "E-mail enviado com sucesso"));
+
     }
 
-    // Recuperação de senha 2° - validacao do JWT e redirecionamento para o App
-    @GetMapping("/rescue/open-app")
+    // Recuperação de senha 2° - validação do JWT e redirecionamento para o App
+    @GetMapping("/rescue/redirect-app")
     public String redirectForApp(@RequestParam String token, Model model) {
         TokenData userInfo;
 
         try {
             userInfo = tokenService.getSubject(token, "rescue");
         } catch (JWTVerificationException e) {
-            // TODO fazer o template para caso não for autorizado
             return "rescue-login-unauthorized";
         }
 
-        System.out.println(userInfo);
         User user = authenticationService.getUserById(userInfo.id());
 
         model.addAttribute("rescueUrl", "tasksave://rescue-login?token=" + token);
@@ -194,6 +192,24 @@ public class AuthenticationController {
 
         return "rescue-login-redirect-template";  // nome do template HTML
     }
-    
+
+    // Recuperação de senha 3° - troca da senha do usuário - vai para o APP
+    @PutMapping("/rescue")
+    @Transactional
+    public ResponseEntity<?> updateLogin(@RequestBody @Valid ChangePassword data) {
+        TokenData tokenData;
+        try {
+            tokenData = tokenService.getSubject(data.token(), "rescue");
+        } catch (JWTVerificationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Token is invalid or expired"));
+        }
+
+        User user = authenticationService.getUserById(tokenData.id());
+        authenticationService.changeUserPassword(user, data.newPassword());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 
 }

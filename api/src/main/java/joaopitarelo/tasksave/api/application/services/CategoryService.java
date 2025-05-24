@@ -26,7 +26,7 @@ public class CategoryService {
     }
 
     // GetById
-    public Category getCategoryById(Long idCategory, Long idUser) {
+    public Category getById(Long idCategory, Long idUser) {
         return categoryRepository.findByIdAndUserIdAndAtivoTrue(idCategory, idUser);
     }
 
