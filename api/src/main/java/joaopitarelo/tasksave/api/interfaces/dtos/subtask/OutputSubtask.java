@@ -4,6 +4,7 @@ import joaopitarelo.tasksave.api.domain.enums.Priority;
 import joaopitarelo.tasksave.api.domain.enums.ReminderType;
 import joaopitarelo.tasksave.api.domain.subtask.Subtask;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public record OutputSubtask(
@@ -11,7 +12,7 @@ public record OutputSubtask(
         String title,
         String description,
         Date deadline,
-        Date lastModification,
+        LocalDateTime lastModification,
         Priority priority,
         boolean completed,
         ReminderType reminderType

@@ -1,5 +1,6 @@
 package joaopitarelo.tasksave.api.interfaces.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -116,29 +117,42 @@ public class TaskController {
             UriComponentsBuilder uriBuilder,
             @AuthenticationPrincipal User user
     ) {
-        try {
-            Attachment attachment = attachmentService.saveAttachment(user.getId(), taskId, file);
-
-            var uri = uriBuilder.path("/task/attachment/download/{id}").buildAndExpand(attachment.getId()).toUri();
-
-            return ResponseEntity.created(uri).body(new OutputAttachment(attachment));
-        } catch (IOException exc) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar o arquivo: " + exc.getMessage());
-        }
-    }
-
-    // Download de anexo -------------------------------
-    @GetMapping("/attachment/{attachmentId}")
-    public ResponseEntity<Resource> downloadAttachment(
-        @PathVariable Long attachmentId,
-        @AuthenticationPrincipal User user
-    ) {
         Attachment attachment;
 
         try {
-            attachment = attachmentService.getById(attachmentId);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            attachment = attachmentService.saveAttachment(user.getId(), taskId, file);
+        } catch (IOException exc) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("erro","during saving archive " + exc.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "task not found"));
+        }
+
+        var uri = uriBuilder.path("/task/attachment/download/{id}").buildAndExpand(attachment.getId()).toUri();
+
+        return ResponseEntity.created(uri)
+                .body(Map.of("attachment", new OutputAttachment(attachment)));
+    }
+
+    // Download de anexo -------------------------------
+    @GetMapping("{taskId}/attachment/{attachmentId}")
+    public ResponseEntity<?> downloadAttachment(
+        @PathVariable Long attachmentId,
+        @PathVariable Long taskId,
+        @AuthenticationPrincipal User user
+    ) {
+        Task task = taskService.getTaskById(taskId, user.getId());
+        if (task == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "task not found"));
+        }
+
+        Attachment attachment = attachmentService.getById(attachmentId, task.getId());
+        if (attachment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "attachment not found"));
         }
 
         // Montando o caminho para buscar o arquivo
@@ -163,14 +177,20 @@ public class TaskController {
     }
 
     // Delete de anexo ---------------------------------
-    @DeleteMapping("/attachment/{attachmentId}")
-    public ResponseEntity<?> deleteAttachment(@PathVariable Long attachmentId) {
-        Attachment attachment;
+    @DeleteMapping("{taskId}/attachment/{attachmentId}")
+    public ResponseEntity<?> deleteAttachment(
+            @PathVariable Long attachmentId,
+            @PathVariable Long taskId,
+            @AuthenticationPrincipal User user) {
 
-        try {
-            attachment = attachmentService.getById(attachmentId);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        Task task = taskService.getTaskById(taskId, user.getId());
+        if (task == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "task not found"));
+        }
+
+        Attachment attachment = attachmentService.getById(attachmentId, task.getId());
+        if (attachment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "attachment not found"));
         }
 
         // Montando o caminho para buscar o arquivo
@@ -197,8 +217,15 @@ public class TaskController {
     // Delete -------------------------------------
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public ResponseEntity<String> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+       Task task = taskService.getTaskById(id, user.getId());
+
+       if (task == null) {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+       }
+
+       taskService.deleteTask(task);
+
         return ResponseEntity.noContent().build();
     }
 }

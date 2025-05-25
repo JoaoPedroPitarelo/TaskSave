@@ -71,7 +71,7 @@ public class CategoryController {
         Category category = categoryService.getById(categoryId, user.getId());
 
         if (category == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "category not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         categoryService.updateCategory(category, modifiedCategory);
         return ResponseEntity.ok(Map.of("category", new OutputCategory(category)));
@@ -84,7 +84,7 @@ public class CategoryController {
         Category category = categoryService.getById(categoryId, user.getId());
 
         if (category == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "category not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         categoryService.deleteCategory(categoryId, user.getId());

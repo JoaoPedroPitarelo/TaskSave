@@ -11,15 +11,13 @@ import java.util.Date;
 
 public record CreateSubTask (
         @Valid
+        @NotNull
         Long parentTaskId,
         @NotBlank
         String title,
         String description,
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         Date deadline,
-        @NotNull
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        Date lastModification,
         @NotNull
         Priority priority,
         ReminderType reminderType

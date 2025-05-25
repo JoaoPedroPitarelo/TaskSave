@@ -8,6 +8,7 @@ import joaopitarelo.tasksave.api.interfaces.dtos.subtask.CreateSubTask;
 import joaopitarelo.tasksave.api.domain.task.Task;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity(name = "Subtask")
@@ -30,7 +31,7 @@ public class Subtask {
     private Date deadline;
 
     @Column(nullable = false)
-    private Date lastModification;
+    private LocalDateTime lastModification;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -56,7 +57,6 @@ public class Subtask {
         this.title = subTask.title();
         this.description = subTask.description();
         this.deadline = subTask.deadline();
-        this.lastModification = subTask.lastModification();
         this.priority = subTask.priority();
         this.completed = false;
         this.reminderType = task.getReminderType();

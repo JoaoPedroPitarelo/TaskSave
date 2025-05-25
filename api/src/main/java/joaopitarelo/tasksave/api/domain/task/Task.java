@@ -11,6 +11,7 @@ import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.interfaces.dtos.task.CreateTask;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class Task {
     private Date deadline;
 
     @Column(nullable = false)
-    private Date lastModification;
+    private LocalDateTime lastModification;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "priority")
@@ -69,7 +70,6 @@ public class Task {
         this.title = task.title();
         this.description = task.description();
         this.deadline = task.deadline();
-        this.lastModification = task.lastModification();
         this.priority = task.priority();
         this.category = category;
         this.reminderType = task.reminderType();

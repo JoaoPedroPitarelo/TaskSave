@@ -16,7 +16,6 @@ import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketException;
 import java.util.Map;
 
 @Service

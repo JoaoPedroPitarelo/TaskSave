@@ -19,7 +19,7 @@ public record OutputAttachment(
             attachment.getFilePath(),
             attachment.getFileName(),
             attachment.getFileType(),
-            "/task/attachment/" + attachment.getId(),
+            "/task/" + attachment.getTask().getId() + "/attachment/" + attachment.getId(),
             attachment.getUploadedAt(),
             attachment.isAtivo()
         );

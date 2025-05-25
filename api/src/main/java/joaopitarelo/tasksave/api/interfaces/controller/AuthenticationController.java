@@ -1,12 +1,10 @@
 package joaopitarelo.tasksave.api.interfaces.controller;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -21,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 import joaopitarelo.tasksave.api.application.services.AuthenticationService;
 import joaopitarelo.tasksave.api.application.services.EmailService;
@@ -97,16 +94,14 @@ public class AuthenticationController {
         User user = authenticationService.getUserById(id);
 
         if (user == null) {
-            // TODO criar template de link de verificação inválido
-            return "";
+            return "failed-verification-email-template";
         }
 
         String userEmail = user.getLogin();
         String userEmailHash = HashUtil.generateHash(userEmail);
 
         if (!userEmailHash.equals(emailHash)) {
-            // TODO criar template de link de verificação inválido
-            return "";
+            return "failed-verification-email-template";
         }
 
         authenticationService.setUserVerified(user);
@@ -137,7 +132,7 @@ public class AuthenticationController {
     @ResponseBody
     public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshToken data) {
         if (!tokenService.isRefreshTokenValid(data.refreshToken())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token inválido ou expirado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message","invalid or expired refresh token"));
         }
 
         TokenData userInfo = tokenService.getSubject(data.refreshToken(), "refresh");
@@ -157,7 +152,7 @@ public class AuthenticationController {
         User user = authenticationService.getUserByLogin(data.email());
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "user not found"));
         }
 
         String rescueJwtToken = tokenService.generateRescueToken(user);

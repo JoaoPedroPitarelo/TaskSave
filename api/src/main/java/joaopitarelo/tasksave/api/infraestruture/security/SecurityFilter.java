@@ -8,10 +8,10 @@ import joaopitarelo.tasksave.api.application.services.AuthenticationService;
 import joaopitarelo.tasksave.api.application.services.TokenService;
 import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.interfaces.dtos.user.TokenData;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -34,32 +34,37 @@ public class SecurityFilter extends OncePerRequestFilter { // "paraCadaRequisiç
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    @NotNull  HttpServletResponse response,
+                                    @NotNull  FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getRequestURI();
 
-        String requestPath = request.getRequestURI();
-
-        // Separando o filtro pois o refreshToken não pode cair no mesmo filtro das outras requisições que irão usar o accessToken
-        if (requestPath.startsWith("/login")) {
+        // Libera tudo caso a rota comece com "/login"
+        if (path.startsWith("/login")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String tokenJWT = getTokenFromRequest(request);
-
-        if (tokenJWT != null) {
-            TokenData userInformation = tokenService.getSubject(tokenJWT, "access");
-
-            System.out.println(userInformation);
-            User user = authenticationService.getUserById(userInformation.id());
-
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Caso não seja alguma rota que comece com "/login" e não seja informado o token
+        String token = getTokenFromRequest(request);
+        if (token == null) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
-        // Chamando os próximos filtros, caso o filtro passado tenha sido validado
+        try {
+            TokenData data = tokenService.getSubject(token, "access");
+            User user = authenticationService.getUserById(data.id());
+            var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        // Caso dê tudo certo passa para os filtros restantes
         filterChain.doFilter(request, response);
     }
+
 
     private String getTokenFromRequest(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");

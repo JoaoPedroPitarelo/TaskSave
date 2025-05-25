@@ -10,6 +10,7 @@ import joaopitarelo.tasksave.api.infraestruture.persistence.CategoryJpaRepositor
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,8 +28,11 @@ public class TaskService {
 
     // Create
     public void createTask(Task task, User user) {
+        LocalDateTime lastModification = LocalDateTime.now();
+
         task.setCompleted(false);
         task.setUser(user);
+        task.setLastModification(lastModification);
         taskRepository.save(task);
     }
 
@@ -39,10 +43,12 @@ public class TaskService {
 
     // Métodu para atualizar a task vinda do APP como UpdateTask DTO
     public void updateTask(Task task, @Valid UpdateTask modifiedTask, Category category) {
+        LocalDateTime lastModification = LocalDateTime.now();
+
         task.setTitle(modifiedTask.title() != null ? modifiedTask.title() : task.getTitle());
         task.setDescription(modifiedTask.description() != null ? modifiedTask.description() : task.getDescription());
         task.setDeadline(modifiedTask.deadline() != null ? modifiedTask.deadline() : task.getDeadline());
-        task.setLastModification(modifiedTask.lastModification());
+        task.setLastModification(lastModification);
         task.setCategory(category != null ? category : task.getCategory());
         task.setPriority(modifiedTask.priority() != null ? modifiedTask.priority() : task.getPriority());
         task.setReminderType(modifiedTask.reminderType() != null ? modifiedTask.reminderType() : task.getReminderType());
@@ -51,12 +57,8 @@ public class TaskService {
     }
 
     // Delete
-    public void deleteTask(Long id) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task não encontrada"));
-
+    public void deleteTask(Task task) {
         task.setCompleted(true);
-
         taskRepository.save(task);
     }
 }

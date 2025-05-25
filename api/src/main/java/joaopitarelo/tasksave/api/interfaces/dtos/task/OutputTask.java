@@ -8,6 +8,7 @@ import joaopitarelo.tasksave.api.domain.enums.ReminderType;
 import joaopitarelo.tasksave.api.interfaces.dtos.subtask.OutputSubtask;
 import joaopitarelo.tasksave.api.domain.task.Task;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public record OutputTask(
         String title,
         String description,
         Date deadline,
-        Date lastModification,
+        LocalDateTime lastModification,
         OutputCategory category,
         Priority priority,
         boolean completed,

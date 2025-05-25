@@ -19,17 +19,18 @@
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/domain/user/User.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/domain/user/UserRepository.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/exceptions/ApiExceptionHandler.java
+/home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/exceptions/SendingEmailException.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/persistence/AttachmentJpaRepository.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/persistence/CategoryJpaRepository.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/persistence/SubTaskJpaRepository.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/persistence/TaskJpaRepository.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/persistence/UserJpaRepository.java
+/home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/security/CustomAccessDeniedHandler.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/security/HashUtil.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/security/SecurityConfig.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/infraestruture/security/SecurityFilter.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/controller/AuthenticationController.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/controller/CategoryController.java
-/home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/controller/HelloWorldController.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/controller/SubTaskController.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/controller/TaskController.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/attachment/OutputAttachment.java
@@ -47,5 +48,6 @@
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/DoLogin.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/OutputToken.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/OutputUser.java
+/home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/RefreshToken.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/RescueLogin.java
 /home/pitarelo/dev/repositories/TaskSave/api/src/main/java/joaopitarelo/tasksave/api/interfaces/dtos/user/TokenData.java

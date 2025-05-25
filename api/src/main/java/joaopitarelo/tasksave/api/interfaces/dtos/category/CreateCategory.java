@@ -3,7 +3,7 @@ package joaopitarelo.tasksave.api.interfaces.dtos.category;
 import jakarta.validation.constraints.NotBlank;
 
 public record CreateCategory(
-        @NotBlank // Não pode ser um String em branco " "
+        @NotBlank
         String description,
 
         @NotBlank
