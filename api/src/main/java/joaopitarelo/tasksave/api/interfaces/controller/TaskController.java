@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import joaopitarelo.tasksave.api.application.services.AttachmentService;
 import joaopitarelo.tasksave.api.application.services.CategoryService;
 import joaopitarelo.tasksave.api.application.services.TaskService;
+import joaopitarelo.tasksave.api.application.services.PDFService;
 import joaopitarelo.tasksave.api.domain.attachment.Attachment;
 import joaopitarelo.tasksave.api.domain.category.Category;
 import joaopitarelo.tasksave.api.domain.task.Task;
@@ -45,7 +46,8 @@ public class TaskController {
     private CategoryService categoryService;
     @Autowired
     private AttachmentService attachmentService;
-
+    @Autowired
+    private PDFService pdfService;
 
     // GetAll ------------------------------------
     @GetMapping
@@ -107,6 +109,21 @@ public class TaskController {
         }
 
         return ResponseEntity.ok(Map.of("task", new OutputTask(task)));
+    }
+
+    // Delete -------------------------------------
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<String> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        Task task = taskService.getTaskById(id, user.getId());
+
+        if (task == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        taskService.deleteTask(task);
+
+        return ResponseEntity.noContent().build();
     }
 
     // Upload de anexos -------------------------------
@@ -214,18 +231,25 @@ public class TaskController {
        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // Delete -------------------------------------
-    @DeleteMapping("/{id}")
-    @Transactional
-    public ResponseEntity<String> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
-       Task task = taskService.getTaskById(id, user.getId());
+    @GetMapping("/export/pdf")
+    public ResponseEntity<?> exportToPdf(@AuthenticationPrincipal User user) {
+        String login = user.getLogin();
 
-       if (task == null) {
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-       }
+        List<Task> tasks = taskService.getTasks(user.getId());
 
-       taskService.deleteTask(task);
+        byte[] pdf;
 
-        return ResponseEntity.noContent().build();
+        try {
+            pdf = pdfService.generatePDF(user.getLogin(), tasks);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("erro", "generating tasks to PDF " + e.getMessage()));
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=tasks.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
+
 }
