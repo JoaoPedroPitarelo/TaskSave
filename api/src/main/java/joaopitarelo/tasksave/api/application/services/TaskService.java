@@ -26,6 +26,10 @@ public class TaskService {
         return taskRepository.findByCompletedFalseAndUserId(userId);
     }
 
+    public List<Task> getTaskByCategory(Long useId, Long categoryId) {
+        return taskRepository.findByCompletedFalseAndUserIdAndCategoryId(useId, categoryId);
+    }
+
     // Create
     public void createTask(Task task, User user) {
         LocalDateTime lastModification = LocalDateTime.now();

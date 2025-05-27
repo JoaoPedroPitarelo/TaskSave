@@ -2,6 +2,7 @@ package joaopitarelo.tasksave.api.application.services;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.openhtmltopdf.svgsupport.BatikSVGDrawer;
+import joaopitarelo.tasksave.api.domain.category.Category;
 import joaopitarelo.tasksave.api.domain.subtask.Subtask;
 import joaopitarelo.tasksave.api.domain.task.Task;
 import joaopitarelo.tasksave.api.infraestruture.exceptions.GenerationPdfException;
@@ -21,11 +22,12 @@ public class PDFService {
     @Autowired
     private TemplateEngine templateEngine;
 
-    public byte[] generatePDF(String userLogin, List<Task> tasks) {
+    public byte[] generatePDF(String userLogin, Category category, List<Task> tasks) {
         try {
             // Carregando as variáveis para serem usadas no HTML
             Context context = new Context();
             context.setVariable("tasks", tasks.stream().map(OutputTask::new));
+            context.setVariable("category", category);
             context.setVariable("userLogin", userLogin);
 
             // Processando o html e inserindo as variáveis (tasks)

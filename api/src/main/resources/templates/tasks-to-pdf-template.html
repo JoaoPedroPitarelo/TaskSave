@@ -78,6 +78,9 @@
         </defs>
     </svg>
     <h1> Lista de Tarefas</h1>
+    <div th:if="${category} != null">
+        <h2  th:style="'color:' + ${category.getColor}"  th:text="${category.getDescription}"></h2>
+    </div>
 </div>
 
 <p>Usuário: <strong th:text="${userLogin}"></strong></p>
@@ -92,24 +95,20 @@
     </tr>
     </thead>
     <tbody>
+        <th:block th:each="task : ${tasks}">
+            <tr>
+                <td th:text="${task.title}"></td>
+                <td th:text="${task.description}"></td>
+                <td th:text="${task.priority.name() == 'LOW' ? 'Baixa' : (task.priority.name() == 'MEDIUM' ? 'Média' : (task.priority.name() == 'HIGH' ? 'Alta' : 'Neutra'))}"></td>
+                <td th:text="${task.category.description}"></td>
+            </tr>
 
-
-    <th:block th:each="task : ${tasks}">
-        <tr>
-            <td th:text="${task.title}"></td>
-            <td th:text="${task.description}"></td>
-            <td th:text="${task.priority.name() == 'LOW' ? 'Baixa' : (task.priority.name() == 'MEDIUM' ? 'Média' : (task.priority.name() == 'HIGH' ? 'Alta' : 'Neutra'))}"></td>
-            <td th:text="${task.category.description}"></td>
-        </tr>
-
-        <tr th:if="${#lists.size(task.subtasks) > 0}" th:each="subtask : ${task.subtasks}">
-            <td colspan="4" style="padding-left: 20px; background-color: #f9f9f9;">
-                - <span th:text="${subtask.title}"></span>
-            </td>
-        </tr>
-    </th:block>
-
-
+            <tr th:if="${#lists.size(task.subtasks) > 0}" th:each="subtask : ${task.subtasks}">
+                <td colspan="4" style="padding-left: 20px; background-color: #DDDDDD;">
+                    <span th:text="${subtask.title}"></span>
+                </td>
+            </tr>
+        </th:block>
     </tbody>
 </table>
 

@@ -232,15 +232,27 @@ public class TaskController {
     }
 
     @GetMapping("/export/pdf")
-    public ResponseEntity<?> exportToPdf(@AuthenticationPrincipal User user) {
-        String login = user.getLogin();
+    public ResponseEntity<?> exportToPdf(
+            @RequestParam(required = false) Long idCategory,
+            @AuthenticationPrincipal User user) {
+        List<Task> tasks;
+        Category category = null;
+        if (idCategory != null) {
+            category = categoryService.getById(idCategory, user.getId());
 
-        List<Task> tasks = taskService.getTasks(user.getId());
+            if (category == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "category not found"));
+            }
+            tasks = taskService.getTaskByCategory(user.getId(), idCategory);
+        } else {
+            tasks = taskService.getTasks(user.getId());
+        }
 
         byte[] pdf;
 
         try {
-            pdf = pdfService.generatePDF(user.getLogin(), tasks);
+            pdf = pdfService.generatePDF(user.getLogin(), category, tasks);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("erro", "generating tasks to PDF " + e.getMessage()));
