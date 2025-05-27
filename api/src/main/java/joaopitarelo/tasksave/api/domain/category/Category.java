@@ -32,6 +32,9 @@ public class Category {
     @Column(name = "ativo", nullable = false)
     private boolean ativo;
 
+    @Column(name = "is_default", nullable = false)
+    private boolean isDefault = false;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -45,4 +48,5 @@ public class Category {
         this.description = category.description();
         this.color = category.color();
     }
+
 }

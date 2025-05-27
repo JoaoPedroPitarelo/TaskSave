@@ -72,10 +72,13 @@ public class TaskController {
     public ResponseEntity<?> create(@RequestBody @Valid CreateTask newTask,
                                     UriComponentsBuilder uriBuilder,
                                     @AuthenticationPrincipal User user) {
-        Category category = categoryService.getById(newTask.categoryId(), user.getId());
+        Category category = categoryService.getDefaultCategory(user.getId());
+        if (newTask.categoryId() != null) {
+            category = categoryService.getById(newTask.categoryId(), user.getId());
 
-        if (category == null)  {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "category not found"));
+            if (category == null)  {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "category not found"));
+            }
         }
 
         Task task = new Task(newTask, category);

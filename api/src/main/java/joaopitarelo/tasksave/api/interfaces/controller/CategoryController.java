@@ -73,6 +73,12 @@ public class CategoryController {
         if (category == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
+        if (category.isDefault()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "default category updating is not allowed"));
+        }
+
         categoryService.updateCategory(category, modifiedCategory);
         return ResponseEntity.ok(Map.of("category", new OutputCategory(category)));
     }
@@ -85,6 +91,11 @@ public class CategoryController {
 
         if (category == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        if (category.isDefault()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("message", "default category deletion is not allowed"));
         }
 
         categoryService.deleteCategory(categoryId, user.getId());

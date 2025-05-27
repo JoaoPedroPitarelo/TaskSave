@@ -1,5 +1,6 @@
 package joaopitarelo.tasksave.api.application.services;
 
+import joaopitarelo.tasksave.api.domain.category.Category;
 import joaopitarelo.tasksave.api.domain.user.User;
 import joaopitarelo.tasksave.api.infraestruture.persistence.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,15 @@ public class AuthenticationService implements UserDetailsService { // interface 
     private UserJpaRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CategoryService categoryService; // para criação da categoria default
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login);
 
         if (user == null) {
-            throw new UsernameNotFoundException("Usuário não encontrado");
+            throw new UsernameNotFoundException("user not found");
         }
 
         return user;
@@ -46,6 +49,15 @@ public class AuthenticationService implements UserDetailsService { // interface 
         user.setUserVerified(false);
 
         userRepository.save(user);
+
+        // Criação da categoria padrão
+        Category category = new Category();
+        category.setUser(user);
+        category.setDescription("Default");
+        category.setDefault(true);
+        category.setColor("#B0BEC5");
+
+        categoryService.createCategory(category);
 
         createUserFolder(user.getId());
     }

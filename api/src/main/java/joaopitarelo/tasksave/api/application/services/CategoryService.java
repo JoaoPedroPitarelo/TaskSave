@@ -55,4 +55,8 @@ public class CategoryService {
         });
         category.setAtivo(false);
     }
+
+    public Category getDefaultCategory(Long userId) {
+        return categoryRepository.findByUserIdAndIsDefaultTrue(userId);
+    }
 }
