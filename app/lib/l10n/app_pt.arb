@@ -27,8 +27,6 @@
     "createNow": "Crie agora!",
     "register": "Cadastro",
     "registerButton": "Cadastrar-se",
-    "userNotfound": "E-mail ou senha incorretos!",
-    "invalidEmail": "E-mail inválido",
     "emailIsObrigatoryValue": "Email é um campo obrigatório",
     "passwordIsObrigatoryValue": "Senha é um campo obrigatório",
     "minimumLengthPassword": "Mínimo de 8 caracteres",
@@ -40,5 +38,11 @@
     "unknownError": "Erro desconhecido :(",
     "userNotVerified": "Usuário não verificado! Por favor veja sua caixa de e-mail",
     "good": "Boa!",
-    "confirmEmail": "Agora confirme seu E-mail!"
+    "confirmEmail": "Agora confirme seu E-mail!",
+
+    "invalidCredentials": "E-mail ou senha incorretos!",
+    "invalidEmail": "E-mail inválido",
+    "connectionServerError": "Erro de conexão com o servidor",
+    "generalServerError": "Erro interno do servidor",
+    "generalUnexpectedError": "Erro inesperado"
 }
