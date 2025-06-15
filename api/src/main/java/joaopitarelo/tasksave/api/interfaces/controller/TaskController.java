@@ -49,14 +49,12 @@ public class TaskController {
     @Autowired
     private PDFService pdfService;
 
-    // GetAll ------------------------------------
     @GetMapping
     public ResponseEntity<Map<String, List<OutputTask>>> getAll(@AuthenticationPrincipal User user) {
         Map<String, List<OutputTask>> listTasks = Map.of("tasks", taskService.getTasks(user.getId()).stream().map(OutputTask::new).toList());
         return ResponseEntity.ok(listTasks);
     }
 
-    // GetById -------------------------------------
     @GetMapping("/{taskId}")
     public ResponseEntity<?> getById(@PathVariable Long taskId, @AuthenticationPrincipal User user) {
         Task task = taskService.getTaskById(taskId, user.getId());
@@ -66,7 +64,6 @@ public class TaskController {
         return ResponseEntity.ok(Map.of("task", new OutputTask(task)));
     }
 
-    // Create ------------------------------------
     @PostMapping("/create")
     @Transactional
     public ResponseEntity<?> create(@RequestBody @Valid CreateTask newTask,
@@ -89,7 +86,6 @@ public class TaskController {
         return ResponseEntity.created(uri).body(Map.of("task", new OutputTask(task)));
     }
 
-    // Update ----------------------------------------
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<?> update(@RequestBody @Valid UpdateTask modifiedTask,
@@ -114,7 +110,6 @@ public class TaskController {
         return ResponseEntity.ok(Map.of("task", new OutputTask(task)));
     }
 
-    // Delete -------------------------------------
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<String> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
@@ -129,7 +124,6 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    // Upload de anexos -------------------------------
     @PostMapping("/attachment/upload") // subir o arquivo
     public ResponseEntity<?> uploadAttachment(
             @RequestParam("file") MultipartFile file,
@@ -158,7 +152,6 @@ public class TaskController {
                 .body(Map.of("attachment", new OutputAttachment(attachment)));
     }
 
-    // Download de anexo -------------------------------
     @GetMapping("{taskId}/attachment/{attachmentId}")
     public ResponseEntity<?> downloadAttachment(
         @PathVariable Long attachmentId,
@@ -196,7 +189,6 @@ public class TaskController {
         }
     }
 
-    // Delete de anexo ---------------------------------
     @DeleteMapping("{taskId}/attachment/{attachmentId}")
     public ResponseEntity<?> deleteAttachment(
             @PathVariable Long attachmentId,

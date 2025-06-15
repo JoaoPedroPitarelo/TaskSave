@@ -49,22 +49,22 @@ public class AuthenticationController {
     @ResponseBody
     @Transactional
     @PostMapping("/create")
-    public ResponseEntity<?> createLogin(@RequestBody @Valid CreateLogin newUser,
+    public ResponseEntity<?> createLogin(@RequestBody @Valid RegisterRequest registerRequest,
                                          UriComponentsBuilder uriBuilder) throws NoSuchAlgorithmException {
 
-        if (authenticationService.loadUserByLogin(newUser.login()) != null) {
+        if (authenticationService.loadUserByLogin(registerRequest.login()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Map.of("message","This e-mail has been used for another account"));
         }
 
-        User user = new User(newUser);
-        authenticationService.createUser(user);
+        User user = new User(registerRequest);
+        authenticationService.saveUser(user);
 
         String hashEmail = HashUtil.generateHash(user.getLogin());
         String verificationLink = baseUrl + "/login/verifyEmail/" + user.getId() + "/" + hashEmail;
 
         Map<String, Object> variables = Map.of("verificationUrl", verificationLink);
-        emailService.sendVerificationEmail(newUser.login(), "E-mail verification", variables);
+        emailService.sendVerificationEmail(registerRequest.login(), "E-mail verification", variables);
 
         var uri = uriBuilder.path("/login/{id}").buildAndExpand(user.getId()).toUri();
 
@@ -75,8 +75,8 @@ public class AuthenticationController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<?> getById(@PathVariable Long id) throws NoSuchAlgorithmException {
-        User user = authenticationService.getUserById(id);
+    public ResponseEntity<?> getUserById(@PathVariable Long id) throws NoSuchAlgorithmException {
+        User user = authenticationService.loadUserById(id);
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -91,7 +91,7 @@ public class AuthenticationController {
 
     @GetMapping("/verifyEmail/{id}/{emailHash}")
     public String verifyEmail(@PathVariable Long id, @PathVariable String emailHash) throws NoSuchAlgorithmException {
-        User user = authenticationService.getUserById(id);
+        User user = authenticationService.loadUserById(id);
 
         if (user == null) {
             return "failed-verification-email-template";
@@ -111,11 +111,11 @@ public class AuthenticationController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<?> doLogin(@RequestBody @Valid DoLogin data) {
-        var authenticationToken = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+    public ResponseEntity<?> doLogin(@RequestBody @Valid LoginRequest loginRequest) {
+        var authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.login(), loginRequest.password());
         var authentication = manager.authenticate(authenticationToken);
 
-        User user = authenticationService.loadUserByLogin(data.login());
+        User user = authenticationService.loadUserByLogin(loginRequest.login());
 
         if (!user.isUserVerified()) {
             return ResponseEntity.status(HttpStatus.PRECONDITION_REQUIRED)
@@ -136,7 +136,7 @@ public class AuthenticationController {
         }
 
         TokenData userInfo = tokenService.getSubject(data.refreshToken(), "refresh");
-        User user = authenticationService.getUserById(userInfo.id());
+        User user = authenticationService.loadUserById(userInfo.id());
 
         String newAccessToken = tokenService.generateAccessToken(user);
         String newRefreshToken = tokenService.generateRefreshToken(user);
@@ -180,7 +180,7 @@ public class AuthenticationController {
             return "rescue-login-unauthorized";
         }
 
-        User user = authenticationService.getUserById(userInfo.id());
+        User user = authenticationService.loadUserById(userInfo.id());
 
         model.addAttribute("rescueUrl", "tasksave://rescue-login?token=" + token);
         model.addAttribute("emailUser", user.getLogin());
@@ -200,7 +200,7 @@ public class AuthenticationController {
                     .body(Map.of("message", "Token is invalid or expired"));
         }
 
-        User user = authenticationService.getUserById(tokenData.id());
+        User user = authenticationService.loadUserById(tokenData.id());
         authenticationService.changeUserPassword(user, data.newPassword());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

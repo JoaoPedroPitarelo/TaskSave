@@ -40,11 +40,11 @@ public class AuthenticationService implements UserDetailsService { // interface 
         return userRepository.findByLogin(login);
     }
 
-    public User getUserById(Long id) {
+    public User loadUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    public void createUser(User user) {
+    public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUserVerified(false);
 
@@ -88,6 +88,7 @@ public class AuthenticationService implements UserDetailsService { // interface 
         }
     }
 
+    // TODO O QUE É ISSO? DOIS MÉTODOS IGUAIS???
     public User getUserByLogin(String email) {
         return userRepository.findByLogin(email) != null ? userRepository.findByLogin(email) : null;
     }

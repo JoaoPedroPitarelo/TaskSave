@@ -18,8 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component // Carrega como um componente "genêrico"
-public class SecurityFilter extends OncePerRequestFilter { // "paraCadaRequisiçãoFiltro"
+@Component
+public class SecurityFilter extends OncePerRequestFilter {
 
     @Autowired
     private TokenService tokenService;
@@ -53,7 +53,7 @@ public class SecurityFilter extends OncePerRequestFilter { // "paraCadaRequisiç
 
         try {
             TokenData data = tokenService.getSubject(token, "access");
-            User user = authenticationService.getUserById(data.id());
+            User user = authenticationService.loadUserById(data.id());
             var auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
         } catch (Exception e) {

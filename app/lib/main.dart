@@ -1,4 +1,5 @@
-import 'package:app/core/themes/app_theme_data.dart';
+import 'package:app/core/themes/dark/app_theme_data_dark.dart';
+import 'package:app/core/themes/light/app_theme_data_light.dart';
 import 'package:app/presentation/views/theme_provider.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/core/routes/app_routes.dart';
@@ -47,8 +48,8 @@ class MyApp extends StatelessWidget {
             return Consumer<ThemeProvider>(
               builder: (context, themeProvider, child) {
                 return MaterialApp(
-                  theme: AppThemeData.lightTheme,
-                  darkTheme: AppThemeData.darkTheme,
+                  theme: AppThemeDataLight.lightTheme,
+                  darkTheme: AppThemeDataDark.darkTheme,
                   themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
                   debugShowCheckedModeBanner: false,
                   showSemanticsDebugger: false,

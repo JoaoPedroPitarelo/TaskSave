@@ -33,7 +33,7 @@ class TokenServiceTest {
         User user = new User();
         user.setLogin("fulano.silva@email.com");
         user.setPassword("MyPassword123%");
-        authenticationService.createUser(user);
+        authenticationService.saveUser(user);
 
         // Testando a geração de TokensJWT
         String token = tokenService.generateAccessToken(user);
@@ -47,7 +47,7 @@ class TokenServiceTest {
         User user = new User();
         user.setLogin("fulano.silva@email.com");
         user.setPassword("MyPassowrd123%");
-        authenticationService.createUser(user);
+        authenticationService.saveUser(user);
 
         // Gerando o tokenJWT
         String token = tokenService.generateAccessToken(user);

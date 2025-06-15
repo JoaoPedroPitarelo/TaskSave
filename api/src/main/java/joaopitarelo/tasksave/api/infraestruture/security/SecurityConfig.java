@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired // Injetando o nosso filtro de autenticação
+    @Autowired
     private SecurityFilter securityFilter;
 
     @Autowired
@@ -30,7 +30,7 @@ public class SecurityConfig {
     // Como nossa api é do tipo stateless, e ira usar tokens, não há a necessidade de continuarmos utilizando
     // essa camada de segurança que vem por padrão, pois os tokens já nos protegem desse tipo de ataque
 
-    @Bean // Expõe o retorno desse métode para o Spring, podendo ser utilizado em outras camadas
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
        http
            .csrf(AbstractHttpConfigurer::disable) // Desabilitando a proteção contra ataques csrf (statefull)
@@ -39,15 +39,15 @@ public class SecurityConfig {
                    authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
            .authorizeHttpRequests(req -> {
                req.requestMatchers("/login").permitAll();
-               req.requestMatchers("/login/*").permitAll(); // liberando todas as requisições para /login
+               req.requestMatchers("/login/*").permitAll();
                req.requestMatchers("/login/create").permitAll();
                req.requestMatchers("/login/verifyEmail/**").permitAll();
                req.requestMatchers("/login/refresh").permitAll();
                req.requestMatchers("/login/rescue").permitAll();
                req.requestMatchers("/login/rescue/redirect-app").permitAll();
-               req.anyRequest().authenticated(); // todas as outra precisam estar autenticadas
+               req.anyRequest().authenticated();
            })
-           .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class); // use securityFilter antes de ...
+           .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -57,10 +57,8 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    // Dizendo ao Spring que estamos usando o BCrypt como algoritmos de criptografia de senhas
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

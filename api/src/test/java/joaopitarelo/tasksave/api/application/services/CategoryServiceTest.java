@@ -62,7 +62,7 @@ class CategoryServiceTest {
         User user = new User();
         user.setLogin("fulano.silva@email.com");
         user.setPassword("MyPassword123%");
-        authenticationService.createUser(user);
+        authenticationService.saveUser(user);
         return user;
     }
 

@@ -33,14 +33,14 @@ class AuthenticationServiceTestIT { // Testando
 
     @Test
     @DisplayName("Salva um usuário no banco de dados e verifica se realmente foi inserido, verifica se a senha foi criptografada")
-    void createUser_ShouldSaveUserInDatabase() {
+    void saveUser_ShouldSaveUserInDatabase() {
         // Criando novo usuário
         User user = new User();
         user.setLogin("fulano.silva@email.com");
         user.setPassword("MyPassword123%");
 
         // Chamando o méotodo de criação
-        authenticationService.createUser(user);
+        authenticationService.saveUser(user);
 
         // Buscando o usuário salvo no banco
         var savedUser = userJpaRepository.findByLogin("fulano.silva@email.com");

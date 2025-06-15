@@ -15,6 +15,7 @@ import java.util.List;
 // seja para entidades, seja para saída
 @Service
 public class CategoryService {
+
     @Autowired
     private CategoryJpaRepository categoryRepository;
     @Autowired

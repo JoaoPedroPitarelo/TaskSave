@@ -19,13 +19,13 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    @Value("${api.security.token.accessSecret}") // carrega do application.properties
+    @Value("${api.security.token.accessSecret}")
     private String accessSecret;
 
-    @Value("${api.security.token.refreshSecret}") // carrega do application.properties
+    @Value("${api.security.token.refreshSecret}")
     private String refreshSecret;
 
-    @Value("${api.security.token.rescueSecret}") // carrega do application.properties
+    @Value("${api.security.token.rescueSecret}")
     private String rescueSecret;
 
 
@@ -74,6 +74,21 @@ public class TokenService {
         }
     }
 
+    public String generateRescueToken(User user) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(rescueSecret);
+
+            return JWT.create()
+                    .withIssuer("TASKSAVE API")
+                    .withClaim("id", user.getId())
+                    .withClaim("tokenType", "rescue")
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 15)) // 15 min
+                    .sign(algorithm);
+        } catch (JWTCreationException exception){
+            throw new RuntimeException("Error to generate JWT accessToken", exception);
+        }
+    }
+
     private Algorithm getAlgorithm(String tokenType) {
 
         switch (tokenType) {
@@ -95,30 +110,14 @@ public class TokenService {
         try {
             JWTVerifier verifier = JWT.require(getAlgorithm(type)).withIssuer("TASKSAVE API").build();
 
-                // JWT decodificado
-                decodedJWT = verifier.verify(tokenJWT);
+            decodedJWT = verifier.verify(tokenJWT);
 
-                Long id = decodedJWT.getClaim("id").asLong();
-                String subject = decodedJWT.getSubject();
+            Long id = decodedJWT.getClaim("id").asLong();
+            String subject = decodedJWT.getSubject();
 
-                return new TokenData(id, subject);
+            return new TokenData(id, subject);
         } catch (JWTVerificationException exception){
             throw new JWTVerificationException("JWT token is invalid or are experienced");
-        }
-    }
-
-    public String generateRescueToken(User user) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(rescueSecret);
-
-            return JWT.create()
-                    .withIssuer("TASKSAVE API")
-                    .withClaim("id", user.getId())
-                    .withClaim("tokenType", "rescue")
-                    .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 15)) // 15 min
-                    .sign(algorithm);
-        } catch (JWTCreationException exception){
-            throw new RuntimeException("Error to generate JWT accessToken", exception);
         }
     }
 }
