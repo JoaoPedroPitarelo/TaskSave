@@ -28,6 +28,13 @@ class DuplicatedEmailFailure extends Failure {
   List<Object?> get props => [];
 }
 
+class InvalidOrExpiredTokenFailure extends Failure {
+  const InvalidOrExpiredTokenFailure();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class PasswordsAreNotSameFailure extends Failure {
   const PasswordsAreNotSameFailure();
 

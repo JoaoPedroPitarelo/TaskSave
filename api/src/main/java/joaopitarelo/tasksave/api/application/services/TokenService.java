@@ -36,6 +36,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("TASKSAVE API")
                     .withClaim("id", user.getId())
+                    .withClaim("sub", user.getLogin())
                     .withClaim("tokenType", "access")
                     .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 30)) // 30 minutos
                     .sign(algorithm);
@@ -51,6 +52,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("TASKSAVE API")
                     .withClaim("id", user.getId())
+                    .withClaim("sub", user.getLogin())
                     .withClaim("tokenType", "refresh")
                     .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 10)) // 10 dias de duração
                     .sign(algorithm);

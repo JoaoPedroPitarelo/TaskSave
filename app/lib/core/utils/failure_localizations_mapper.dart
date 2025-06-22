@@ -13,11 +13,13 @@ String mapFailureToLocalizationMessage(BuildContext context, Failure failure) {
   // Aqui quando colocamos um InvalidCredentialsFailure() => o Dart já verifica se (failure) é desse tipo
   // e logo após destrói esse objeto para não ocupar memória.
   return switch (failure) {
-    InvalidCredentialsFailure() => l10n.invalidCredentials,
-    UserNotVerifiedFailure()    => l10n.userNotVerified,
-    NoConnectionFailure()       => l10n.connectionServerError,
-    ServerFailure()             => l10n. generalServerError,
-    UnexpectedFailure()         => l10n.generalUnexpectedError,
-    _                           => l10n.generalUnexpectedError,
+    DuplicatedEmailFailure()     => l10n.duplicatedUser,
+    InvalidCredentialsFailure()  => l10n.invalidCredentials,
+    UserNotVerifiedFailure()     => l10n.userNotVerified,
+    NoConnectionFailure()        => l10n.connectionServerError,
+    ServerFailure()              => l10n.generalServerError,
+    PasswordsAreNotSameFailure() => l10n.passwordAreNotTheSame,
+    UnexpectedFailure()          => l10n.generalUnexpectedError,
+    _                            => l10n.generalUnexpectedError,
   };
 }

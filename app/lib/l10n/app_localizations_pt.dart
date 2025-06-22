@@ -114,9 +114,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get duplicatedUser => 'Já existe um usuário com esse e-mail!';
 
   @override
-  String get passwordAreNotTheSame => 'As senha não são iguais!';
-
-  @override
   String get unknownError => 'Erro desconhecido :(';
 
   @override
@@ -127,7 +124,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get good => 'Boa!';
 
   @override
+  String get loginSuccess => 'Login realizado com sucesso!';
+
+  @override
   String get confirmEmail => 'Agora confirme seu E-mail!';
+
+  @override
+  String get passwordAreNotTheSame => 'As senha não são iguais!';
 
   @override
   String get invalidCredentials => 'E-mail ou senha incorretos!';

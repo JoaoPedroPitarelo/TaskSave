@@ -125,7 +125,7 @@ public class AuthenticationController {
         String accessToken = tokenService.generateAccessToken((User) authentication.getPrincipal());
         String refreshToken = tokenService.generateRefreshToken((User) authentication.getPrincipal());
 
-        return ResponseEntity.ok(new OutputToken(accessToken, refreshToken));
+        return ResponseEntity.ok(new OutputLogin(user.getId(), accessToken, refreshToken));
     }
 
     @PostMapping("/refresh")
@@ -141,7 +141,7 @@ public class AuthenticationController {
         String newAccessToken = tokenService.generateAccessToken(user);
         String newRefreshToken = tokenService.generateRefreshToken(user);
 
-        return ResponseEntity.ok(new OutputToken(newAccessToken, newRefreshToken));
+        return ResponseEntity.ok(new OutputLogin(user.getId(), newAccessToken, newRefreshToken));
     }
 
     // Recuperação de senha 1° - Envio do e-mail de recuperação

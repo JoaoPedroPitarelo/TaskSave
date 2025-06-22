@@ -62,7 +62,7 @@ import 'app_localizations_pt.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -85,11 +85,11 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('pt')];
@@ -298,12 +298,6 @@ abstract class AppLocalizations {
   /// **'Já existe um usuário com esse e-mail!'**
   String get duplicatedUser;
 
-  /// No description provided for @passwordAreNotTheSame.
-  ///
-  /// In pt, this message translates to:
-  /// **'As senha não são iguais!'**
-  String get passwordAreNotTheSame;
-
   /// No description provided for @unknownError.
   ///
   /// In pt, this message translates to:
@@ -322,11 +316,23 @@ abstract class AppLocalizations {
   /// **'Boa!'**
   String get good;
 
+  /// No description provided for @loginSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Login realizado com sucesso!'**
+  String get loginSuccess;
+
   /// No description provided for @confirmEmail.
   ///
   /// In pt, this message translates to:
   /// **'Agora confirme seu E-mail!'**
   String get confirmEmail;
+
+  /// No description provided for @passwordAreNotTheSame.
+  ///
+  /// In pt, this message translates to:
+  /// **'As senha não são iguais!'**
+  String get passwordAreNotTheSame;
 
   /// No description provided for @invalidCredentials.
   ///
@@ -384,9 +390,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

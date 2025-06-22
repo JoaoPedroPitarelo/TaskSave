@@ -1,0 +1,7 @@
+joaopitarelo\tasksave\api\application\services\CategoryServiceTest.class
+joaopitarelo\tasksave\api\application\services\TokenServiceTest.class
+joaopitarelo\tasksave\api\application\services\AuthenticationServiceTestIT.class
+joaopitarelo\tasksave\api\domain\user\UserRepositoryTest.class
+joaopitarelo\tasksave\api\application\services\EmailServiceTest.class
+joaopitarelo\tasksave\api\ApiApplicationTests.class
+joaopitarelo\tasksave\api\infraestruture\security\HashUtilTest.class

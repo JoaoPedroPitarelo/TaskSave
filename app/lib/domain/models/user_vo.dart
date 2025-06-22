@@ -1,6 +1,6 @@
 class UserVo {
-  final String id;
-  final String login;
+  final String? id;
+  final String? login;
 
   const UserVo({
     required this.id,
