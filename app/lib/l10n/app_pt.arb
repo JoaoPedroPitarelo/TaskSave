@@ -20,7 +20,7 @@
     "enterEmail": "E-mail",
     "enterEmailExample": "fulano@email.com",
     "enterPassword": "Senha:",
-    "confirmPassoword": "Confirmar senha",
+    "confirmPassoword": "Confirmar senha: ",
     "forgetPassword": "Esqueceu sua senha?",
     "login": "Entrar",
     "dontHaveAccount": "Ainda não tem uma conta? ",
@@ -36,6 +36,7 @@
     "duplicatedUser": "Já existe um usuário com esse e-mail!",
     "unknownError": "Erro desconhecido :(",
     "userNotVerified": "Usuário não verificado! Por favor veja sua caixa de e-mail",
+    "invalidToken": "Token expirado ou inválido, tente novamente...",
     "good": "Boa!",
     "loginSuccess": "Login realizado com sucesso!",
 
@@ -45,5 +46,13 @@
     "invalidEmail": "E-mail inválido",
     "connectionServerError": "Erro de conexão com o servidor",
     "generalServerError": "Erro interno do servidor",
-    "generalUnexpectedError": "Erro inesperado"
+    "generalUnexpectedError": "Erro inesperado",
+    "passwordRescue": "Recuperação de senha",
+    "sendRescueEmail": "Enviar e-mail",
+    "userNotFound": "Usuário não encontrado",
+    "passwordEmailSent": "Um e-mail com o link de recuperação foi enviado para o seu e-mail",
+    "passwordReseted": "Senha reseta com sucesso!",
+    "newPassword": "Nova senha: ",
+    "resetPassword": "Atualizar senha",
+    "confirm": "Confirmar"
 }

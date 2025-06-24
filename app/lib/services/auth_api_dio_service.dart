@@ -29,6 +29,10 @@ class AuthApiDioService {
         return Left(InvalidCredentialsFailure());
       }
 
+      if (e.response?.statusCode == 428) {
+        return Left(UserNotVerifiedFailure());
+      }
+
       return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
     } catch (e) {
       return Left(UnexpectedFailure());
@@ -67,11 +71,6 @@ class AuthApiDioService {
       final request = await _dio.post(
         '/login/refresh',
         data: {'refreshToken': refreshToken},
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        )
       );
 
       if (request.statusCode == 200) {
@@ -88,9 +87,66 @@ class AuthApiDioService {
         return Left(InvalidOrExpiredTokenFailure());
       }
 
-      return Left(ServerFailure());
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
     } catch (e) {
      return Left(UnexpectedFailure());
+    }
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>> passwordRescueRequest(String email) async {
+    try {
+      final response = await _dio.post(
+        '/login/rescue',
+        data: {'email': email}
+      );
+
+      if (response.statusCode == 200) {
+        return right(response.data);
+      }
+
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: response.statusCode ?? 500));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        return Left(NoConnectionFailure());
+      }
+
+      if (e.response?.statusCode == 404) {
+        return Left(UserNotFoundFailure());
+      }
+
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
+    } catch (e) {
+      return Left(UnexpectedFailure());
+    }
+  }
+
+  Future<Either<Failure, Null>> passwordChangeRequest(String rescueToken, String newPassword) async {
+    try {
+      final response = await _dio.put(
+        '/login/rescue',
+        data: {
+          'token': rescueToken,
+          'newPassword': newPassword
+        }
+      );
+
+      if (response.statusCode == 204) {
+        return right(null);
+      }
+    
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: response.statusCode ?? 500));
+    } on DioException catch (e){
+      if (e.type == DioExceptionType.connectionTimeout) {
+        return Left(NoConnectionFailure());
+      }
+
+      if (e.response?.statusCode == 401) {
+        return Left(InvalidOrExpiredTokenFailure());
+      }
+
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
+    } catch (e) {
+      return Left(UnexpectedFailure());
     }
   }
 }

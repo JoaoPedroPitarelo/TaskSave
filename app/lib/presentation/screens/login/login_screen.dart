@@ -1,9 +1,10 @@
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/core/utils/failure_localizations_mapper.dart';
+import 'package:app/presentation/screens/password_rescue/password_rescue_screen.dart';
+import 'package:app/presentation/screens/password_rescue/password_rescue_viewmodel.dart';
 import 'package:app/presentation/screens/register/register_screen.dart';
 import 'package:app/presentation/screens/register/register_viewmodel.dart';
 import 'package:app/services/auth_api_dio_service.dart';
-import 'package:app/services/auth_service.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,25 +20,26 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formkey = GlobalKey<FormState>();
-  final _loginController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscureText = true;
 
   @override
   void dispose() {
     _passwordController.dispose();
-    _loginController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
   Future<void> _handleLogin(BuildContext context) async {
-    if (!_formkey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
     final loginViewModel = context.read<LoginViewModel>();
-    await loginViewModel.doLogin(_loginController.text, _passwordController.text);
+    await loginViewModel.doLogin(_emailController.text, _passwordController.text);
+    final theme = Theme.of(context);
 
     if (loginViewModel.errorMessage != null) {
       ScaffoldMessenger.of(context).clearSnackBars();
@@ -45,14 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
        SnackBar(
           content: Text(
             loginViewModel.errorMessage!.toString(),
+            style: theme.textTheme.labelSmall,
           ),
-         action: SnackBarAction(
-             label: "OK",
-             onPressed: () {
-               ScaffoldMessenger.of(context).clearSnackBars();
-             },
-            textColor: Colors.white,
-         ),
          backgroundColor: Colors.red,
          width: MediaQuery.of(context).size.width * 0.95,
        ),
@@ -70,9 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
       SnackBar(
           content: Text(
             AppLocalizations.of(context)!.loginSuccess,
-            style: TextStyle(
-              color: Colors.white
-            ),
+            style: theme.textTheme.labelSmall,
           ),
         backgroundColor: Colors.green,
       ),
@@ -121,14 +115,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                     Form(
-                      key: _formkey,
+                      key: _formKey,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
                         child: Column(
                           spacing: 16,
                           children: [
                             TextFormField(
-                              controller: _loginController,
+                              controller: _emailController,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.email_outlined),
                                 fillColor: const Color.fromARGB(31, 187, 187, 187),
@@ -174,17 +168,26 @@ class _LoginScreenState extends State<LoginScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    // TODO Fazer tela de redefinição de senha
-                                    print("redefenir senha...");
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => ChangeNotifierProvider(
+                                        create: (ctx) => PasswordRescueViewmodel(
+                                          (failure) => mapFailureToLocalizationMessage(ctx, failure),
+                                          Provider.of<AuthApiDioService>(context, listen: false)
+                                        ),
+                                        child: PasswordRescueScreen()
+                                        )
+                                      )
+                                    );
                                   },
+                                  autofocus: false,
                                   child: Text(
-                                    AppLocalizations.of(context)!.forgetPassword,
-                                    textAlign: TextAlign.end,
-                                    style: GoogleFonts.roboto(decoration: TextDecoration.underline),
+                                      AppLocalizations.of(context)!.forgetPassword,
+                                      textAlign: TextAlign.end,
+                                      style: theme.textTheme.displaySmall
                                   ),
-                                ),
+                                )
                               ],
                             )
                           ],
@@ -195,10 +198,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: loginViewModel.isLoading ? null : () => _handleLogin(context),
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)
+                          borderRadius: BorderRadius.circular(15),
                         ),
                         minimumSize: Size(350, 50),
-                        backgroundColor: Color.fromARGB(255, 61, 64, 254)
+                        backgroundColor: Color.fromARGB(255, 12, 43, 170),
                       ),
                       child: loginViewModel.isLoading
                         ?  CircularProgressIndicator()
@@ -224,13 +227,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChangeNotifierProvider(
-                                      create: (ctx) => RegisterViewModel(
-                                          (failure) => mapFailureToLocalizationMessage(ctx, failure),
-                                          Provider.of<AuthApiDioService>(ctx, listen: false)
-                                      ),
-                                      child: RegisterScreen()
-                                    ))
-                                  );
+                                    create: (ctx) => RegisterViewModel(
+                                      (failure) => mapFailureToLocalizationMessage(ctx, failure),
+                                      Provider.of<AuthApiDioService>(ctx, listen: false)
+                                    ),
+                                    child: RegisterScreen()
+                                    )
+                                  )
+                                );
                                 },
                                 child: Text(
                                   AppLocalizations.of(context)!.createNow,
@@ -250,3 +254,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+

@@ -12,8 +12,8 @@ class AppTextStyles {
     fontSize: 25,
   );
 
-  static final TextStyle displaySmall = GoogleFonts.roboto(
-    fontSize: 15
+  static final TextStyle displaySmall = GoogleFonts.schibstedGrotesk(
+    fontSize: 13
   );
 
   // For tasks
@@ -21,7 +21,8 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     fontSize: 22,
   );
-  static final TextStyle labelSmall = GoogleFonts.schibstedGrotesk(
+  static final TextStyle labelSmall = GoogleFonts.roboto(
     fontSize: 14,
+    fontWeight: FontWeight.bold,
   );
 }

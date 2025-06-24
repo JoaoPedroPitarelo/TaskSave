@@ -1,8 +1,5 @@
 import 'package:app/core/typedefs/typedefs.dart';
-import 'package:app/domain/models/user_vo.dart';
 import 'package:app/services/auth_api_dio_service.dart';
-import 'package:app/services/auth_service.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -14,12 +11,17 @@ class RegisterViewModel extends ChangeNotifier {
 
   bool _loading = false;
   Object? _errorMessage;
-  bool userCreated = false;
+  bool _isUserCreated = false;
 
-  Object? get error => _errorMessage;
+  Object? get errorMessage => _errorMessage;
   bool get isLoading => _loading;
+  bool get isUserCreated => _isUserCreated;
 
-  Future<void> createLogin(String login, String password, String confirmedPassword) async {
+  set isUserCreated(bool isUserCreated) {
+    _isUserCreated = isUserCreated;
+  }
+
+  Future<void> createLogin(String login, String password) async {
     _loading = true;
     _errorMessage = null;
     notifyListeners();
@@ -29,9 +31,10 @@ class RegisterViewModel extends ChangeNotifier {
     result.fold(
       (failure) {
         _errorMessage = _failureMessageMapper(failure);
+        _isUserCreated = false;
       },
       (userInfo) {
-        userCreated = true;
+        _isUserCreated = true;
       }
     );
 
@@ -39,7 +42,7 @@ class RegisterViewModel extends ChangeNotifier {
     notifyListeners();    
   }
 
-  void clearError() {
+  void clearErrorMessage() {
     _errorMessage = null;
     notifyListeners();
   }

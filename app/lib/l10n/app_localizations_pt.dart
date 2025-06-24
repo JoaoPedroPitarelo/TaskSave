@@ -72,7 +72,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get enterPassword => 'Senha:';
 
   @override
-  String get confirmPassoword => 'Confirmar senha';
+  String get confirmPassoword => 'Confirmar senha: ';
 
   @override
   String get forgetPassword => 'Esqueceu sua senha?';
@@ -121,6 +121,9 @@ class AppLocalizationsPt extends AppLocalizations {
       'Usuário não verificado! Por favor veja sua caixa de e-mail';
 
   @override
+  String get invalidToken => 'Token expirado ou inválido, tente novamente...';
+
+  @override
   String get good => 'Boa!';
 
   @override
@@ -146,4 +149,29 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get generalUnexpectedError => 'Erro inesperado';
+
+  @override
+  String get passwordRescue => 'Recuperação de senha';
+
+  @override
+  String get sendRescueEmail => 'Enviar e-mail';
+
+  @override
+  String get userNotFound => 'Usuário não encontrado';
+
+  @override
+  String get passwordEmailSent =>
+      'Um e-mail com o link de recuperação foi enviado para o seu e-mail';
+
+  @override
+  String get passwordReseted => 'Senha reseta com sucesso!';
+
+  @override
+  String get newPassword => 'Nova senha: ';
+
+  @override
+  String get resetPassword => 'Atualizar senha';
+
+  @override
+  String get confirm => 'Confirmar';
 }

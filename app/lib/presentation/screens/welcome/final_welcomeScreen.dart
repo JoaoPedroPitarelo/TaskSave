@@ -39,7 +39,7 @@ class FinalWelcomeScreen extends StatelessWidget {
             priority: PriorityEnum.low,
             category: CategoryVo(id: 0, description: "None", color: "None", activate: true),
             completed: false,
-            onDismissedCallback:  () => Navigator.of(context).push(
+            onDismissedCallback: () => Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                builder: (context) => ChangeNotifierProvider(
                    create: (ctx) => LoginViewModel(

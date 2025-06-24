@@ -10,6 +10,11 @@ class AuthInterceptor extends Interceptor {
   final AuthProvider _authProvider;
   final AuthApiDioService _authApiDioService;
   final Dio _dio;
+  static const List<String> authEndpointsToExclude = [
+    '/login',
+    '/login/create',
+    'login/rescue'
+  ];
 
   bool _isRefreshing = false;
   late Completer<Response<dynamic>> _refreshTokenCompleterStack;
@@ -34,7 +39,17 @@ class AuthInterceptor extends Interceptor {
       return super.onError(err, handler);
     }
 
-    
+    final requestPath = err.requestOptions.path;
+
+    final bool isAuthEndPoint = authEndpointsToExclude.any(
+      (endpoint) => requestPath.contains(endpoint)
+    );
+
+    if (isAuthEndPoint) {
+      print('AuthInterceptor: 401 em endpoint de autenticação (${requestPath}). Não tentando refresh, passando erro adiante.');
+      return handler.next(err);
+    }
+
     if (_isRefreshing) {
       print('AuthInterceptor: Já em processo de refresh. Enfileirando requisição.');
       try {
@@ -45,7 +60,6 @@ class AuthInterceptor extends Interceptor {
       }
     }
 
-  
     await _handleTokenRefresh(err, handler);
   }
 
@@ -113,6 +127,7 @@ class AuthInterceptor extends Interceptor {
     await _authService.clearAuthData();
     _authProvider.logout();
     _refreshTokenCompleterStack.completeError(err); 
-    handler.next(err); 
+    handler.next(err);
+    _isRefreshing = false;
   }
 }

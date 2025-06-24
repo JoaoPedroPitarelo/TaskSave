@@ -23,6 +23,8 @@ dependencies:
   mockito: ^5.4.5
   audioplayers: ^6.4.0
   email_validator: ^3.0.0
+  shared_preferences: ^2.5.3
+  app_links: ^6.4.0
   dartz: ^0.10.1
   equatable: ^2.0.7
   flutter_localizations:

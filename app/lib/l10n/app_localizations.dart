@@ -217,7 +217,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmPassoword.
   ///
   /// In pt, this message translates to:
-  /// **'Confirmar senha'**
+  /// **'Confirmar senha: '**
   String get confirmPassoword;
 
   /// No description provided for @forgetPassword.
@@ -310,6 +310,12 @@ abstract class AppLocalizations {
   /// **'Usuário não verificado! Por favor veja sua caixa de e-mail'**
   String get userNotVerified;
 
+  /// No description provided for @invalidToken.
+  ///
+  /// In pt, this message translates to:
+  /// **'Token expirado ou inválido, tente novamente...'**
+  String get invalidToken;
+
   /// No description provided for @good.
   ///
   /// In pt, this message translates to:
@@ -363,6 +369,54 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Erro inesperado'**
   String get generalUnexpectedError;
+
+  /// No description provided for @passwordRescue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Recuperação de senha'**
+  String get passwordRescue;
+
+  /// No description provided for @sendRescueEmail.
+  ///
+  /// In pt, this message translates to:
+  /// **'Enviar e-mail'**
+  String get sendRescueEmail;
+
+  /// No description provided for @userNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário não encontrado'**
+  String get userNotFound;
+
+  /// No description provided for @passwordEmailSent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Um e-mail com o link de recuperação foi enviado para o seu e-mail'**
+  String get passwordEmailSent;
+
+  /// No description provided for @passwordReseted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Senha reseta com sucesso!'**
+  String get passwordReseted;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nova senha: '**
+  String get newPassword;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atualizar senha'**
+  String get resetPassword;
+
+  /// No description provided for @confirm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Confirmar'**
+  String get confirm;
 }
 
 class _AppLocalizationsDelegate

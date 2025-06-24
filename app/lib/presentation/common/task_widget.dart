@@ -1,5 +1,4 @@
 import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/core/themes/dark/app_colors_dark.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/models/task_vo.dart';
@@ -19,7 +18,8 @@ class TaskWidget extends StatefulWidget {
 
   // Construtor comum ou padrão
   TaskWidget(
-      {super.key,
+    {
+      super.key,
       required this.id,
       required this.title,
       required this.description,
@@ -27,7 +27,9 @@ class TaskWidget extends StatefulWidget {
       required this.priority,
       required this.category,
       required this.completed,
-      this.onDismissedCallback});
+      this.onDismissedCallback
+    }
+  );
 
   TaskWidget.fromTaskVo(TaskVo task, {super.key, this.onDismissedCallback})
       : id = task.id,
@@ -124,7 +126,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: appColors.taskCardColor, // ------------------------
+                        color: appColors.taskCardColor,
                         borderRadius:
                             BorderRadius.only(topRight: Radius.circular(20)),
                       ),
@@ -139,9 +141,9 @@ class _TaskWidgetState extends State<TaskWidget> {
                               width: 140,
                               height: 24,
                               decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  color: appColors.taskCardColor
+                                borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                                color: appColors.taskFooterColor
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 6.0, right: 6.0),
@@ -149,7 +151,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
                                     Icon(Icons.date_range, size: 18),
-                                    Text(DateFormat('dd/MM/yyyy').format(widget.deadline), style: theme.textTheme.labelSmall),
+                                    Text(DateFormat('dd/MM/yyyy').format(widget.deadline), style: theme.textTheme.displaySmall),
                                     Icon(Icons.alarm, size: 18),
                                   ],
                                 ),
@@ -166,11 +168,18 @@ class _TaskWidgetState extends State<TaskWidget> {
                         borderRadius: BorderRadius.only(
                           bottomRight: Radius.circular(20),
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 0.1,
+                            offset: Offset(0.1, 0)
+                          )
+                        ]
                       ),
                       padding: EdgeInsets.all(9),
                       child: Text(
                         widget.description,
-                        style: theme.textTheme.labelSmall,
+                        style: theme.textTheme.displaySmall,
                         textAlign: TextAlign.start,
                       ),
                     ),
