@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 // Dizendo ao Spring para sobreescrever a configuração do Bando de dados. Caso essa configuração não seja feita o Spring irá
 // usar um bd in memory
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("test") // Dizendo ao Spring para utilizar o profile application-test.properties para essa classe de teste
 class UserRepositoryTest {
 
     @Test
