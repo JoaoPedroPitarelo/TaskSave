@@ -1,15 +1,8 @@
 import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/core/utils/failure_localizations_mapper.dart';
-import 'package:app/presentation/providers/auth_provider.dart';
-import 'package:app/presentation/screens/login/login_screen.dart';
-import 'package:app/presentation/screens/login/login_viewmodel.dart';
+
 import 'package:app/presentation/screens/welcome/final_welcomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
-
-import '../../../services/auth_api_dio_service.dart';
-import '../../../services/auth_service.dart';
 
 // TODO Quando a norificação estiver pronta, colocar neste Widget um exemplo de notificação do android
 

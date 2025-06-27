@@ -1,4 +1,4 @@
-import 'package:app/presentation/screens/home_screen.dart';
+import 'package:app/presentation/screens/home/home_screen.dart';
 import 'package:app/presentation/screens/welcome/welcome_screen1.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

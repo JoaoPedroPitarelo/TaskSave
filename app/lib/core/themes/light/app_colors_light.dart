@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppColorsLight {
   static final String taskSaveLogo = "assets/images/tasksave_logo_dark.png";
 
-  static final Color scaffoldPrimaryColor = Color.fromARGB(255, 61, 64, 254);
+  static final Color scaffoldPrimaryColor = Color.fromARGB(255, 12, 43, 170);
   static final Color scaffoldBackgroundColor = Color.fromARGB(
       255, 255, 255, 255);
 

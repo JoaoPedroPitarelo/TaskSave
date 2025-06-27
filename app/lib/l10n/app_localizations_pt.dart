@@ -174,4 +174,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get confirm => 'Confirmar';
+
+  @override
+  String get searchForTasks => 'Pesquise por tarefas';
+
+  @override
+  String get settings => 'Configurações';
+
+  @override
+  String get taskToday => 'Hoje';
+
+  @override
+  String get taskWeek => 'Próxima semana';
+
+  @override
+  String get taskMonth => 'Mês que vem';
+
+  @override
+  String get taskLate => 'Atrasadas';
+
+  @override
+  String get taskCategory => 'Categorias';
 }

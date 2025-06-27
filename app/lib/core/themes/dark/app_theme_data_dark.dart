@@ -13,6 +13,7 @@ class AppThemeDataDark {
         displayLarge: AppTextStyles.displayLarge,
         displayMedium: AppTextStyles.displayMedium,
         displaySmall: AppTextStyles.displaySmall,
+        bodyMedium: AppTextStyles.bodyMedium,
         // For tasks
         labelMedium: AppTextStyles.labelMedium,
         labelSmall: AppTextStyles.labelSmall,

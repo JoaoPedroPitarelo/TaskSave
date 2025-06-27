@@ -417,6 +417,48 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Confirmar'**
   String get confirm;
+
+  /// No description provided for @searchForTasks.
+  ///
+  /// In pt, this message translates to:
+  /// **'Pesquise por tarefas'**
+  String get searchForTasks;
+
+  /// No description provided for @settings.
+  ///
+  /// In pt, this message translates to:
+  /// **'Configurações'**
+  String get settings;
+
+  /// No description provided for @taskToday.
+  ///
+  /// In pt, this message translates to:
+  /// **'Hoje'**
+  String get taskToday;
+
+  /// No description provided for @taskWeek.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próxima semana'**
+  String get taskWeek;
+
+  /// No description provided for @taskMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês que vem'**
+  String get taskMonth;
+
+  /// No description provided for @taskLate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Atrasadas'**
+  String get taskLate;
+
+  /// No description provided for @taskCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categorias'**
+  String get taskCategory;
 }
 
 class _AppLocalizationsDelegate

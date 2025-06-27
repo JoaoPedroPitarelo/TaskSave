@@ -1,4 +1,3 @@
-import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/core/themes/dark/app_theme_data_dark.dart';
 import 'package:app/core/themes/light/app_theme_data_light.dart';
 import 'package:app/core/utils/auth_interceptor.dart';
@@ -149,6 +148,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final preferencesProvider = context.watch<AppPreferencesProvider>();
+
+    preferencesProvider.toggleTheme(true);
 
     return MaterialApp(
       navigatorKey: navigatorKey,

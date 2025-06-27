@@ -54,5 +54,12 @@
     "passwordReseted": "Senha reseta com sucesso!",
     "newPassword": "Nova senha: ",
     "resetPassword": "Atualizar senha",
-    "confirm": "Confirmar"
+    "confirm": "Confirmar",
+    "searchForTasks": "Pesquise por tarefas",
+    "settings": "Configurações",
+    "taskToday": "Hoje",
+    "taskWeek": "Próxima semana",
+    "taskMonth": "Mês que vem",
+    "taskLate": "Atrasadas",
+    "taskCategory": "Categorias"
 }
