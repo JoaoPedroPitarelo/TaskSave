@@ -1,12 +1,10 @@
 
 class CategoryVo {
-  // Atributos
   final int id;
   final String description;
   final String color;
   final bool activate;
   
-  // Construtor
   const CategoryVo({
     required this.id, 
     required this.description, 

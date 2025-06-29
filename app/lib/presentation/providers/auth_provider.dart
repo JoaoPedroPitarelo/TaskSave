@@ -1,5 +1,5 @@
 import 'package:app/domain/models/user_vo.dart';
-import 'package:app/services/auth_service.dart';
+import 'package:app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {

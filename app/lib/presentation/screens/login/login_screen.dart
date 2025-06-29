@@ -4,7 +4,7 @@ import 'package:app/presentation/screens/password_rescue/password_rescue_screen.
 import 'package:app/presentation/screens/password_rescue/password_rescue_viewmodel.dart';
 import 'package:app/presentation/screens/register/register_screen.dart';
 import 'package:app/presentation/screens/register/register_viewmodel.dart';
-import 'package:app/services/auth_api_dio_service.dart';
+import 'package:app/repositories/auth_repository.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -174,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       builder: (context) => ChangeNotifierProvider(
                                         create: (ctx) => PasswordRescueViewmodel(
                                           (failure) => mapFailureToLocalizationMessage(ctx, failure),
-                                          Provider.of<AuthApiDioService>(context, listen: false)
+                                          Provider.of<AuthRepository>(context, listen: false)
                                         ),
                                         child: PasswordRescueScreen()
                                         )
@@ -229,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChangeNotifierProvider(
                                     create: (ctx) => RegisterViewModel(
                                       (failure) => mapFailureToLocalizationMessage(ctx, failure),
-                                      Provider.of<AuthApiDioService>(ctx, listen: false)
+                                      Provider.of<AuthRepository>(ctx, listen: false)
                                     ),
                                     child: RegisterScreen()
                                     )

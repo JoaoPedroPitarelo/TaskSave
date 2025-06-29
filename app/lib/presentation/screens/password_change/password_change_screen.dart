@@ -4,9 +4,9 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/providers/auth_provider.dart';
 import 'package:app/presentation/screens/login/login_screen.dart';
 import 'package:app/presentation/screens/login/login_viewmodel.dart';
-import 'package:app/presentation/screens/password_reset/password_reset_viewmodel.dart';
-import 'package:app/services/auth_api_dio_service.dart';
-import 'package:app/services/auth_service.dart';
+import 'package:app/presentation/screens/password_change/password_change_viewmodel.dart';
+import 'package:app/repositories/auth_repository.dart';
+import 'package:app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +62,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             builder: (context) => ChangeNotifierProvider(
               create: (ctx) => LoginViewModel(
                 Provider.of<AuthService>(ctx, listen: false),
-                Provider.of<AuthApiDioService>(ctx, listen: false),
+                Provider.of<AuthRepository>(ctx, listen: false),
                 Provider.of<AuthProvider>(ctx, listen: false),
                   (failure) => mapFailureToLocalizationMessage(ctx, failure)
               ),

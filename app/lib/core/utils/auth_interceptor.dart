@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:app/services/auth_api_dio_service.dart';
+import 'package:app/repositories/auth_repository.dart';
 import 'package:dio/dio.dart';
-import 'package:app/services/auth_service.dart';
+import 'package:app/services/auth/auth_service.dart';
 import 'package:app/presentation/providers/auth_provider.dart';
 
 class AuthInterceptor extends Interceptor {
   final AuthService _authService;
   final AuthProvider _authProvider;
-  final AuthApiDioService _authApiDioService;
+  final AuthRepository _authApiDioService;
   final Dio _dio;
   static const List<String> authEndpointsToExclude = [
     '/login',
@@ -33,37 +33,46 @@ class AuthInterceptor extends Interceptor {
     super.onRequest(options, handler);
   }
 
- @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode != 401) {
-      return super.onError(err, handler);
-    }
-
-    final requestPath = err.requestOptions.path;
-
-    final bool isAuthEndPoint = authEndpointsToExclude.any(
-      (endpoint) => requestPath.contains(endpoint)
+  bool _isAuthEndpoint(String path) {
+    return authEndpointsToExclude.any(
+      (endpoint) => path.contains(endpoint)
     );
-
-    if (isAuthEndPoint) {
-      print('AuthInterceptor: 401 em endpoint de autenticação (${requestPath}). Não tentando refresh, passando erro adiante.');
-      return handler.next(err);
-    }
-
-    if (_isRefreshing) {
-      print('AuthInterceptor: Já em processo de refresh. Enfileirando requisição.');
-      try {
-        final newResponse = await _refreshTokenCompleterStack.future;
-        return handler.resolve(newResponse);
-      } catch (e) {
-        return handler.next(err);
-      }
-    }
-
-    await _handleTokenRefresh(err, handler);
   }
 
- 
+ @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+   final isAuthEndPoint = _isAuthEndpoint(err.requestOptions.path);
+
+    if (err.type == DioExceptionType.connectionTimeout) {
+      if (isAuthEndPoint) {
+        return super.onError(err, handler);
+      }
+
+      return _forceLogout(err, handler);
+    }
+
+    if (err.response?.statusCode == 401) {
+      if (isAuthEndPoint) {
+        print('AuthInterceptor: 401 em endpoint de autenticação (${err.requestOptions.path}). Não tentando refresh, passando erro adiante.');
+        return handler.next(err);
+      }
+
+      if (_isRefreshing) {
+        print('AuthInterceptor: Já em processo de refresh. Enfileirando requisição.');
+        try {
+          final newResponse = await _refreshTokenCompleterStack.future;
+          return handler.resolve(newResponse);
+        } catch (e) {
+          return handler.next(err);
+        }
+      }
+
+      await _handleTokenRefresh(err, handler);
+    }
+
+    return super.onError(err, handler);
+  }
+
   Future<void> _handleTokenRefresh(DioException err, ErrorInterceptorHandler handler) async {
     _isRefreshing = true;
     _refreshTokenCompleterStack = Completer<Response<dynamic>>();

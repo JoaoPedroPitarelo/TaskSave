@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:app/domain/models/user_vo.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-
 class AuthService {
   final _secureStorage = FlutterSecureStorage();
   static const String _tokenKey = "accessToken";

@@ -1,11 +1,11 @@
-import 'package:app/services/auth_api_dio_service.dart';
+import 'package:app/repositories/auth_repository.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:app/core/typedefs/typedefs.dart';
 
 class PasswordRescueViewmodel extends ChangeNotifier {
   final FailureMessageMapper _failureMessageMapper;
-  final AuthApiDioService _authApiDioService;
+  final AuthRepository _authRepository;
 
   bool _loading = false;
   bool isSuccessPasswordRescue = false;
@@ -16,7 +16,7 @@ class PasswordRescueViewmodel extends ChangeNotifier {
 
   PasswordRescueViewmodel(
     this._failureMessageMapper,
-    this._authApiDioService
+    this._authRepository
   );
 
   Future<void> doPasswordRescue(String email) async {
@@ -24,7 +24,7 @@ class PasswordRescueViewmodel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final resultRequest = await _authApiDioService.passwordRescueRequest(email);
+    final resultRequest = await _authRepository.passwordRescueRequest(email);
 
     resultRequest.fold(
       (failure) {

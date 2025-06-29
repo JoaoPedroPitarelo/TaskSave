@@ -61,5 +61,6 @@
     "taskWeek": "Próxima semana",
     "taskMonth": "Mês que vem",
     "taskLate": "Atrasadas",
-    "taskCategory": "Categorias"
+    "taskCategory": "Categorias",
+    "categoryNotFound": "Categoria não encontrada"
 }

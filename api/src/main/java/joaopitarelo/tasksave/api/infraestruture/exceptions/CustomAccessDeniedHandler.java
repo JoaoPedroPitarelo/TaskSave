@@ -1,4 +1,4 @@
-package joaopitarelo.tasksave.api.infraestruture.security;
+package joaopitarelo.tasksave.api.infraestruture.exceptions;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

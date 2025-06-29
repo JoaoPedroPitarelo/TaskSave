@@ -459,6 +459,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Categorias'**
   String get taskCategory;
+
+  /// No description provided for @categoryNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria não encontrada'**
+  String get categoryNotFound;
 }
 
 class _AppLocalizationsDelegate

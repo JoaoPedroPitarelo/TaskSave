@@ -195,4 +195,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get taskCategory => 'Categorias';
+
+  @override
+  String get categoryNotFound => 'Categoria não encontrada';
 }

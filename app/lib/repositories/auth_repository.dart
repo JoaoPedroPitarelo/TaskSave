@@ -3,13 +3,12 @@ import 'package:app/domain/exceptions/auth_failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
-class AuthApiDioService {
+class AuthRepository {
   final Dio _dio;
 
-  AuthApiDioService(this._dio);
+  AuthRepository(this._dio);
 
-  Future<Either<Failure, Map<String, dynamic>>> loginRequest(
-      String email, String password) async {
+  Future<Either<Failure, Map<String, dynamic>>> loginRequest(String email, String password) async {
     try {
       final response = await _dio.post(
         '/login',
@@ -35,12 +34,12 @@ class AuthApiDioService {
 
       return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
     } catch (e) {
+
       return Left(UnexpectedFailure());
     }
   }
 
-  Future<Either<Failure, Map<String, dynamic>>> registerRequest(
-      String email, String password) async {
+  Future<Either<Failure, Map<String, dynamic>>> registerRequest(String email, String password) async {
     try {
       final response = await _dio.post(
           '/login/create',

@@ -1,14 +1,14 @@
 import 'package:app/core/typedefs/typedefs.dart';
 import 'package:app/domain/models/user_vo.dart';
 import 'package:app/presentation/providers/auth_provider.dart';
-import 'package:app/services/auth_service.dart';
+import 'package:app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
-import '../../../services/auth_api_dio_service.dart';
+import 'package:app/repositories/auth_repository.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService;
-  final AuthApiDioService _authApiDioService;
+  final AuthRepository _authRepository;
   final AuthProvider _authProvider;
   final FailureMessageMapper _failureMessageMapper;
 
@@ -20,7 +20,7 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel(
     this._authService,
-    this._authApiDioService,
+    this._authRepository,
     this._authProvider,
     this._failureMessageMapper
   );
@@ -30,7 +30,7 @@ class LoginViewModel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final result = await _authApiDioService.loginRequest(email, password);
+    final result = await _authRepository.loginRequest(email, password);
 
     result.fold(
       (failure) {

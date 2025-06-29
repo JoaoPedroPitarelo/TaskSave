@@ -1,3 +1,4 @@
+import 'package:app/domain/exceptions/category_failures.dart';
 import 'package:flutter/material.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/domain/exceptions/auth_failures.dart';
@@ -13,6 +14,8 @@ String mapFailureToLocalizationMessage(BuildContext context, Failure failure) {
   // Aqui quando colocamos um InvalidCredentialsFailure() => o Dart já verifica se (failure) é desse tipo
   // e logo após destrói esse objeto para não ocupar memória.
   return switch (failure) {
+    CategoryNotFoundException()    => l10n.categoryNotFound,
+
     DuplicatedEmailFailure()       => l10n.duplicatedUser,
     InvalidCredentialsFailure()    => l10n.invalidCredentials,
     InvalidOrExpiredTokenFailure() => l10n.invalidToken,

@@ -1,13 +1,13 @@
 import 'package:app/core/typedefs/typedefs.dart';
-import 'package:app/services/auth_api_dio_service.dart';
+import 'package:app/repositories/auth_repository.dart';
 import 'package:flutter/material.dart';
 
 class PasswordResetViewmodel extends ChangeNotifier {
-  final AuthApiDioService _authApiDioService;
+  final AuthRepository _authRepository;
   final FailureMessageMapper _failureMessageMapper;
 
   PasswordResetViewmodel(
-    this._authApiDioService,
+    this._authRepository,
     this._failureMessageMapper,
   );
 
@@ -23,7 +23,7 @@ class PasswordResetViewmodel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final result = await _authApiDioService.passwordChangeRequest(rescueToken, newPassword);
+    final result = await _authRepository.passwordChangeRequest(rescueToken, newPassword);
   
     result.fold(
       (failure) {

@@ -1,13 +1,14 @@
 package joaopitarelo.tasksave.api.interfaces.dtos.category;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record CreateCategory(
         @NotBlank
         String description,
 
         @NotBlank
-        // @Pattern(regexp = "^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$\n") // TODO refazer isso aqui
+        @Pattern(regexp = "^#?[0-9A-Fa-f]{6}$", message = "Cor deve estar no formato hexadecimal, ex: #AABBCC")
         String color
 )
 { }

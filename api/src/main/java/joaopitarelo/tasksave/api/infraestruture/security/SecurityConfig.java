@@ -1,5 +1,6 @@
 package joaopitarelo.tasksave.api.infraestruture.security;
 
+import joaopitarelo.tasksave.api.infraestruture.exceptions.CustomAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

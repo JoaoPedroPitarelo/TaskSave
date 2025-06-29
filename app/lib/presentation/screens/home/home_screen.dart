@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
             preferredSize: const Size.fromHeight(170),
             child: AppBar(
               backgroundColor: const Color.fromARGB(255, 12, 43, 170),
-              elevation: 0.2,
+              elevation: 5,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(
                   bottom: Radius.circular(25),
@@ -34,9 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 50,
-                        ),
+                        SizedBox(height: 50),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -59,27 +57,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                     controller: controller,
                                     padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
                                     onTap: () {},
-                                    // TODO implementar mecanismo de pesquisa
                                     onChanged: (_) {
-                                      controller.openView();
+                                      // TODO implementar mecanismo de pesquisa
                                     },
                                     leading: const Icon(Icons.search),
                                     hintText: AppLocalizations.of(context)!
                                         .searchForTasks,
                                   );
                               },
-                                suggestionsBuilder: (BuildContext context, SearchController controller) {
-                                  return List<ListTile>.generate(5, (int index) {
-                                    final String item = index.toString();
-                                    return ListTile(
-                                      title: Text('Suggestion $index'),
-                                      onTap: () {
-                                        setState(() {
-                                          controller.closeView(item);
-                                        }
-                                      );
-                                    },
-                                  );
+                              suggestionsBuilder: (BuildContext context, SearchController controller) {
+                                return List<ListTile>.generate(5, (int index) {
+                                  final String item = index.toString();
+                                  return ListTile(
+                                    title: Text('Suggestion $index'),
+                                    onTap: () {
+                                      setState(() {
+                                        controller.closeView(item);
+                                      }
+                                    );
+                                  },
+                                );
                                 }
                               );
                             }

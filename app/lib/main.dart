@@ -6,12 +6,12 @@ import 'package:app/core/utils/failure_localizations_mapper.dart';
 import 'package:app/presentation/providers/auth_provider.dart';
 import 'package:app/presentation/providers/app_preferences_provider.dart';
 import 'package:app/presentation/providers/password_rescue_provider.dart';
-import 'package:app/presentation/screens/password_reset/password_reset_screen.dart';
-import 'package:app/presentation/screens/password_reset/password_reset_viewmodel.dart';
+import 'package:app/presentation/screens/password_change/password_change_screen.dart';
+import 'package:app/presentation/screens/password_change/password_change_viewmodel.dart';
 import 'package:app/presentation/screens/wrapper.dart';
 
-import 'package:app/services/auth_api_dio_service.dart';
-import 'package:app/services/auth_service.dart';
+import 'package:app/repositories/auth_repository.dart';
+import 'package:app/services/auth/auth_service.dart';
 
 import 'package:app/l10n/app_localizations.dart';
 
@@ -26,6 +26,7 @@ Future<void> main() async {
 
   final authService = AuthService();
   await authService.init();
+  await authService.clearAuthData();
 
   runApp(MultiProvider(
     providers: [
@@ -43,8 +44,8 @@ Future<void> main() async {
           }
       ),
       Provider<Dio>(create: (context) => Dio()),
-      Provider<AuthApiDioService>(
-        create: (context) => AuthApiDioService(
+      Provider<AuthRepository>(
+        create: (context) => AuthRepository(
           Provider.of<Dio>(context, listen: false),
         ),
       ),
@@ -90,7 +91,7 @@ class _MyAppState extends State<MyApp> {
      WidgetsBinding.instance.addPostFrameCallback((_) {
       final dio = Provider.of<Dio>(context, listen: false);
       final authService = Provider.of<AuthService>(context, listen: false);
-      final authApiDioService = Provider.of<AuthApiDioService>(context, listen: false);
+      final authApiDioService = Provider.of<AuthRepository>(context, listen: false);
 
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final passwordRescueProvider = Provider.of<PasswordRescueProvider>(context, listen: false);
@@ -121,7 +122,7 @@ class _MyAppState extends State<MyApp> {
         navigatorKey.currentState!.push(MaterialPageRoute(
             builder: (context) => ChangeNotifierProvider(
               create: (ctx) => PasswordResetViewmodel(
-                Provider.of<AuthApiDioService>(ctx, listen: false),
+                Provider.of<AuthRepository>(ctx, listen: false),
                 (failure) => mapFailureToLocalizationMessage(ctx, failure)
               ),
               child: PasswordResetScreen(

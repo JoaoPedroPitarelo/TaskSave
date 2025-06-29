@@ -21,7 +21,6 @@ public class TaskService {
     @Autowired
     private CategoryJpaRepository categoryRepository;
 
-    // GetAll
     public List<Task> getTasks(Long userId) {
         return taskRepository.findByCompletedFalseAndUserId(userId);
     }
@@ -30,7 +29,6 @@ public class TaskService {
         return taskRepository.findByCompletedFalseAndUserIdAndCategoryId(useId, categoryId);
     }
 
-    // Create
     public void createTask(Task task, User user) {
         LocalDateTime lastModification = LocalDateTime.now();
 
@@ -40,12 +38,10 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    // GetById
     public Task getTaskById(Long idTask, Long userId) {
         return taskRepository.findByIdAndUserIdAndCompletedFalse(idTask, userId);
     }
 
-    // Métodu para atualizar a task vinda do APP como UpdateTask DTO
     public void updateTask(Task task, @Valid UpdateTask modifiedTask, Category category) {
         LocalDateTime lastModification = LocalDateTime.now();
 
