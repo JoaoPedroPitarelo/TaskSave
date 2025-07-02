@@ -1,7 +1,21 @@
+import "dart:async";
 import "package:app/core/themes/app_global_colors.dart";
+import "package:app/core/utils/failure_localizations_mapper.dart";
+import "package:app/domain/events/categoryEvents.dart";
+import "package:app/domain/models/category_vo.dart";
 import "package:app/l10n/app_localizations.dart";
+import "package:app/presentation/screens/categoryForm/category_form_screen.dart";
+import "package:app/presentation/screens/categoryForm/category_form_viewmodel.dart";
+import "package:app/presentation/screens/home/home_viewmodel.dart";
+import "package:app/presentation/screens/home/widgets/category_item.dart";
+import "package:app/repositories/category_repository.dart";
+import "package:app/services/events/category_event_service.dart";
+import "package:dio/dio.dart";
 import "package:flutter/material.dart";
-
+import "package:google_fonts/google_fonts.dart";
+import "package:provider/provider.dart";
+import 'package:app/presentation/screens/home/widgets/build_drawer_item.dart';
+import 'package:app/presentation/common/hex_to_color.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,21 +25,110 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  
+  StreamSubscription? _deletionSubscription;
+  final _categoryEventservice = CategoryEventservice();
+
+  void loadCategories() async {
+    await context.read<HomeViewmodel>().getCategories();
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadCategories();
+
+      _deletionSubscription = _categoryEventservice.onCategoryChanged.listen( (event) {
+        if (event is CategoryDeletionEvent) {
+          _showUndoSnackbar(event.category, event.originalIndex);
+        }
+
+        if (event is CategoriesChangedEvent) {
+          loadCategories();
+
+          if (event.isCreating) {
+            _showSuccessSnackbar(AppLocalizations.of(context)!.categoryCreated);
+            return;
+          }
+
+          if (!event.isCreating) {
+            _showSuccessSnackbar(AppLocalizations.of(context)!.categoryModified);
+          }
+        }
+
+      });
+    });
+  }
+
+  void _showUndoSnackbar(CategoryVo category, int originalIndex) {
+    final homeViewmodel = context.read<HomeViewmodel>();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "${AppLocalizations.of(context)!.category} ${category.description} ${AppLocalizations.of(context)!.deleted}",
+          style: const TextStyle(color: Colors.white),
+        ),
+        elevation: 2,
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: AppLocalizations.of(context)!.undo,
+          textColor: Colors.white,
+          onPressed: () {
+            homeViewmodel.undoDeletionCategory(category, originalIndex);
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+        showCloseIcon: false,
+      ),
+    ).closed.then((reason) {
+      if (reason != SnackBarClosedReason.action) {
+        homeViewmodel.confirmDeletionCategory(category, originalIndex);
+      }
+    });
+  }
+
+  void _showSuccessSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white),
+        ),
+        elevation: 2,
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 4),
+        showCloseIcon: false,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _deletionSubscription?.cancel();
+  }
+
   @override
   Widget build(BuildContext context) {
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
+
+    final homeViewmodel = context.watch<HomeViewmodel>();
 
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(170),
             child: AppBar(
               backgroundColor: const Color.fromARGB(255, 12, 43, 170),
-              elevation: 5,
+              elevation: 12,
+              shadowColor: Colors.black,
+              iconTheme: IconThemeData(color: Colors.white, size: 30),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(25),
+                  bottom: Radius.circular(20),
                 )
               ),
               flexibleSpace: SafeArea(
@@ -35,11 +138,37 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(height: 50),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Entrada")
-                          ],
+                        Padding(
+                          padding: EdgeInsets.only(left: 24),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              if (homeViewmodel.selectedCategory != null)
+                               Padding(
+                                 padding: const EdgeInsets.only(bottom: 10),
+                                 child: Row(
+                                   spacing: 10,
+                                   children: [
+                                     Icon(
+                                       Icons.dashboard_customize_outlined,
+                                       color: hexToColor(homeViewmodel.selectedCategory!.color),
+                                       size: 30,
+                                     ),
+                                     Text(
+                                       homeViewmodel.selectedCategory!.description,
+                                       style: GoogleFonts.schibstedGrotesk(
+                                         fontWeight: FontWeight.normal,
+                                         fontSize: 22,
+                                         color: Colors.white
+                                       )
+                                     ),
+                                   ],
+                                 ),
+                               )
+                              else
+                                SizedBox(height: 28)
+                            ],
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -52,6 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       maxWidth: MediaQuery.of(context).size.width * 0.9,
                                       minHeight: MediaQuery.of(context).size.height * 0.061
                                     ),
+                                    textStyle: WidgetStatePropertyAll(TextStyle(color: Colors.white)),
                                     backgroundColor: WidgetStatePropertyAll(Colors.black38),
                                     elevation: WidgetStatePropertyAll(2.0),
                                     controller: controller,
@@ -60,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     onChanged: (_) {
                                       // TODO implementar mecanismo de pesquisa
                                     },
-                                    leading: const Icon(Icons.search),
+                                    leading: const Icon(Icons.search, color: Colors.white,),
                                     hintText: AppLocalizations.of(context)!
                                         .searchForTasks,
                                   );
@@ -94,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children:  [
-      
+
           ],
         )
       ),
@@ -118,6 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Divider(
                       thickness: 1.2,
                       endIndent: 0.5,
+                      color: Colors.white,
                     ),
                   ),
                 ]
@@ -126,28 +257,40 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: ListView(
                   children: [
-                    _buildDrawerItem(
+                    buildDrawerItem(
+                      context: context,
+                      icon: Icons.all_inbox,
+                      text: AppLocalizations.of(context)!.allTasks,
+                      count: 0,
+                      onTap: () {
+                        // TODO implementar o método que irá limpar todos os filtros
+                        Navigator.pop(context);
+
+                      },
+                    ),
+                    SizedBox(height: 5),
+                    buildDrawerItem(
                       context: context,
                       icon: Icons.calendar_today,
                       text: AppLocalizations.of(context)!.taskToday,
-                      count: 4,
+                      count: 0,
                       onTap: () {
                         // TODO implementar o método que irá filtrar as tarefas por dia
-                        Navigator.pop(context); 
+                        Navigator.pop(context);
                         // Ação para "Hoje"
                       },
                     ),
-                    _buildDrawerItem(
+                    buildDrawerItem(
                       context: context,
                       icon: Icons.calendar_month,
                       text: AppLocalizations.of(context)!.taskWeek,
-                      count: 4,
+                      count: 0,
                       onTap: () {
                         // TODO implementar o método que irá filtrar as tarefas por semana
                         Navigator.pop(context);
                       },
                     ),
-                    _buildDrawerItem(
+                    buildDrawerItem(
                       context: context,
                       icon: Icons.calendar_view_month,
                       text: AppLocalizations.of(context)!.taskMonth,
@@ -157,11 +300,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.pop(context);
                       },
                     ),
-                    _buildDrawerItem(
+                    buildDrawerItem(
                       context: context,
                       icon: Icons.error_outline,
                       text: AppLocalizations.of(context)!.taskLate,
-                      count: 3,
+                      count: 0,
                       onTap: () {
                         // TODO implementar o método que irá filtrar as tarefas atrasadas
                         Navigator.pop(context);
@@ -171,37 +314,56 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Divider(
                       thickness: 1.2,
                       endIndent: 0.5,
+                      color: Colors.white,
                       ),
                     ),
                     // Categorias
                     TextButton(
-                onPressed: () {
-                  // TODO fazer a tela de configurações e adicionar a navegação aqui
-                },
-                child: Padding(
-                padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.category_outlined, color: Colors.white, size: 28),
-                    SizedBox(width: 10),
-                    Expanded(
+                      onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => (ChangeNotifierProvider(
+                              create: (ctx) => CategoryFormViewmodel(
+                                (failure) => mapFailureToLocalizationMessage(ctx, failure),
+                                CategoryRepository(Provider.of<Dio>(context, listen: false))
+                            ),
+                            child: CategoryFormScreen(),
+                            ))
+                          )
+                        );
+                      },
+                      child: Padding(
+                      padding: const EdgeInsets.only(left: 5.0, bottom: 20.0),
                       child: Row(
                         children: [
-                          Text(
-                            AppLocalizations.of(context)!.taskCategory,
-                            style: theme.textTheme.bodyMedium
+                          Icon(
+                            Icons.dashboard_customize_outlined,
+                            color: Colors.white,
+                            size: 28,
                           ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.taskCategory,
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 11),
+                            child: Icon(Icons.add, color: Colors.greenAccent, size: 28),
+                          )
                         ],
                       ),
+                     )
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Icon(Icons.add_outlined, color: Colors.white, size: 24),
-                    )
-                  ],
-                ),
-              )
-              )
+                    for (CategoryVo category in homeViewmodel.categories)
+                      CategoryItem(category: category, onTap: () {
+                        homeViewmodel.selectCategory(category);
+                        Navigator.of(context).pop();
+                      })
                   ],
                 )
               ),
@@ -214,10 +376,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     Icon(Icons.settings_sharp, color: Colors.white, size: 28),
-                    SizedBox(width: 10),
+                    SizedBox(width: 12),
                     Text(
                       AppLocalizations.of(context)!.settings,
-                      style: theme.textTheme.bodyMedium
+                      style: theme.textTheme.bodySmall
                     ),
                   ],
                 ),
@@ -233,55 +395,11 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         elevation: 3,
         child: Icon(
-          Icons.add_outlined, 
-          size: 30, 
+          Icons.add_outlined,
+          size: 30,
           color: Colors.white,
         ),
       ),
     );
   }
-
-  // Função auxiliar para construir os itens do Drawer
-  Widget _buildDrawerItem({
-    required BuildContext context,
-    required IconData icon,
-    required String text,
-    int? count,
-    bool showPlusIcon = false,
-    required VoidCallback onTap,
-  }) {
-    final theme = Theme.of(context);
-    
-    return ListTile(
-      leading: Icon(icon, color: Colors.white, size: 28),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            text,
-            style: theme.textTheme.bodyMedium,
-          ),
-          if (count != null) ...[
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                count.toString(),
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
-          ],
-          if (showPlusIcon) ...[
-            const Spacer(),
-            const Icon(Icons.add, color: Colors.white, size: 24),
-          ],
-        ],
-      ),
-      onTap: onTap,
-    );
-  }  
 }

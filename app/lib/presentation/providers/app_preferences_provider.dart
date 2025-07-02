@@ -36,7 +36,7 @@ class AppPreferencesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleTheme(bool isDark) async {
+  Future<void> toggleTheme({required bool isDark}) async {
     if (_isDarkMode == isDark) {
       return;
     }

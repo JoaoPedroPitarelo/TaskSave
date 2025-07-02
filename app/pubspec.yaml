@@ -27,6 +27,7 @@ dependencies:
   app_links: ^6.4.0
   dartz: ^0.10.1
   equatable: ^2.0.7
+  flutter_colorpicker: ^1.1.0
   flutter_localizations:
     sdk: flutter
 

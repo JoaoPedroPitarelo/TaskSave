@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app/repositories/auth_repository.dart';
 
-class LoginViewModel extends ChangeNotifier {
+class LoginViewmodel extends ChangeNotifier {
   final AuthService _authService;
   final AuthRepository _authRepository;
   final AuthProvider _authProvider;
@@ -18,7 +18,7 @@ class LoginViewModel extends ChangeNotifier {
   Object? get errorMessage => _errorMessage;
   bool get isLoading => _loading;
 
-  LoginViewModel(
+  LoginViewmodel(
     this._authService,
     this._authRepository,
     this._authProvider,
@@ -54,8 +54,6 @@ class LoginViewModel extends ChangeNotifier {
         print('LoginViewModel DEBUG: notifyListeners() do ViewModel disparado. Fim da operação.');
       }
     );
-
-
   }
 
   void clearError() {

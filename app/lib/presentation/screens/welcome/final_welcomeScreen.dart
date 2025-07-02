@@ -37,12 +37,12 @@ class FinalWelcomeScreen extends StatelessWidget {
             description: AppLocalizations.of(context)!.descriptionTask,
             deadline: DateTime.now(),
             priority: PriorityEnum.low,
-            category: CategoryVo(id: 0, description: "None", color: "None", activate: true),
+            category: CategoryVo(id: 0, description: "None", isDefault: false, color: "None", activate: true),
             completed: false,
             onDismissedCallback: () => Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                builder: (context) => ChangeNotifierProvider(
-                   create: (ctx) => LoginViewModel(
+                   create: (ctx) => LoginViewmodel(
                        Provider.of<AuthService>(ctx, listen: false),
                        Provider.of<AuthRepository>(ctx, listen: false),
                        Provider.of<AuthProvider>(ctx, listen: false),

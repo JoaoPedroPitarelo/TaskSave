@@ -194,8 +194,61 @@ class AppLocalizationsPt extends AppLocalizations {
   String get taskLate => 'Atrasadas';
 
   @override
-  String get taskCategory => 'Categorias';
+  String get taskCategory => 'Adicionar categoria';
 
   @override
   String get categoryNotFound => 'Categoria não encontrada';
+
+  @override
+  String get allTasks => 'Todas';
+
+  @override
+  String get wantToDelete => 'Deseja excluir?';
+
+  @override
+  String get warningDeleteCategory =>
+      'Ao deletar uma categoria todas as suas tarefas relacionadas também serão excluídas.';
+
+  @override
+  String get yes => 'Sim';
+
+  @override
+  String get no => 'Não';
+
+  @override
+  String get delete => 'Excluir';
+
+  @override
+  String get edit => 'Editar';
+
+  @override
+  String get category => 'Categoria';
+
+  @override
+  String get deleted => 'excluída';
+
+  @override
+  String get undo => 'Desfazer';
+
+  @override
+  String get descriptionCategory => 'Descrição';
+
+  @override
+  String get descriptionCategoryPlaceholder => 'Trabalho ou faculdade...';
+
+  @override
+  String get color => 'Cor :';
+
+  @override
+  String get descriptionCategoryIsObrigatory =>
+      'Descrição é um campo obrigatório!';
+
+  @override
+  String get categoryCreated => 'Categoria criada com sucesso!';
+
+  @override
+  String get modifyCategory => 'Modificar categoria';
+
+  @override
+  String get categoryModified => 'Categoria modificada com sucesso!';
 }

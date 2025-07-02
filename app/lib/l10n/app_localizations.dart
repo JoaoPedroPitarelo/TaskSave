@@ -457,7 +457,7 @@ abstract class AppLocalizations {
   /// No description provided for @taskCategory.
   ///
   /// In pt, this message translates to:
-  /// **'Categorias'**
+  /// **'Adicionar categoria'**
   String get taskCategory;
 
   /// No description provided for @categoryNotFound.
@@ -465,6 +465,108 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Categoria não encontrada'**
   String get categoryNotFound;
+
+  /// No description provided for @allTasks.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas'**
+  String get allTasks;
+
+  /// No description provided for @wantToDelete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deseja excluir?'**
+  String get wantToDelete;
+
+  /// No description provided for @warningDeleteCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ao deletar uma categoria todas as suas tarefas relacionadas também serão excluídas.'**
+  String get warningDeleteCategory;
+
+  /// No description provided for @yes.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sim'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não'**
+  String get no;
+
+  /// No description provided for @delete.
+  ///
+  /// In pt, this message translates to:
+  /// **'Excluir'**
+  String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In pt, this message translates to:
+  /// **'Editar'**
+  String get edit;
+
+  /// No description provided for @category.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria'**
+  String get category;
+
+  /// No description provided for @deleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'excluída'**
+  String get deleted;
+
+  /// No description provided for @undo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Desfazer'**
+  String get undo;
+
+  /// No description provided for @descriptionCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição'**
+  String get descriptionCategory;
+
+  /// No description provided for @descriptionCategoryPlaceholder.
+  ///
+  /// In pt, this message translates to:
+  /// **'Trabalho ou faculdade...'**
+  String get descriptionCategoryPlaceholder;
+
+  /// No description provided for @color.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cor :'**
+  String get color;
+
+  /// No description provided for @descriptionCategoryIsObrigatory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição é um campo obrigatório!'**
+  String get descriptionCategoryIsObrigatory;
+
+  /// No description provided for @categoryCreated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria criada com sucesso!'**
+  String get categoryCreated;
+
+  /// No description provided for @modifyCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modificar categoria'**
+  String get modifyCategory;
+
+  /// No description provided for @categoryModified.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria modificada com sucesso!'**
+  String get categoryModified;
 }
 
 class _AppLocalizationsDelegate

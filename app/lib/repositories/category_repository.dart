@@ -8,13 +8,13 @@ class CategoryRepository {
 
   CategoryRepository(this._dio);
 
-  Future<Either<Failure, Map<String, dynamic>>> create(Map<String, dynamic> category) async {
+  Future<Either<Failure, Map<String, dynamic>>> create(String description, String hexColor) async {
     try {
       final response = await _dio.post(
-        '/category',
+        '/category/create',
         data: {
-          'description': category["description"],
-          'color': category["color"],
+          'description': description,
+          'color': hexColor,
         },
       );
 
@@ -46,13 +46,11 @@ class CategoryRepository {
 
       return Right(response.data);
     } on DioException catch (e) {
-
       return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
     } catch (e) {
       return Left(UnexpectedFailure());
     }
   }
-
 
   Future<Either<Failure, Map<String, dynamic>>> getAll() async {
     try {
@@ -104,4 +102,20 @@ class CategoryRepository {
     }
   }
 
+  Future<Either<Failure, String>> delete(String id) async {
+    try {
+      final response = await _dio.delete(
+        '/category/$id',
+      );
+
+      return Right(response.data);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(CategoryNotFoundException());
+      }
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
+    } catch (e) {
+      return Left(UnexpectedFailure());
+    }
+  }
 }

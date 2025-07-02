@@ -6,11 +6,16 @@ import 'package:app/core/utils/failure_localizations_mapper.dart';
 import 'package:app/presentation/providers/auth_provider.dart';
 import 'package:app/presentation/providers/app_preferences_provider.dart';
 import 'package:app/presentation/providers/password_rescue_provider.dart';
+import 'package:app/presentation/screens/categoryForm/category_form_screen.dart';
+import 'package:app/presentation/screens/categoryForm/category_form_viewmodel.dart';
+import 'package:app/presentation/screens/home/home_screen.dart';
+import 'package:app/presentation/screens/home/home_viewmodel.dart';
 import 'package:app/presentation/screens/password_change/password_change_screen.dart';
 import 'package:app/presentation/screens/password_change/password_change_viewmodel.dart';
 import 'package:app/presentation/screens/wrapper.dart';
 
 import 'package:app/repositories/auth_repository.dart';
+import 'package:app/repositories/category_repository.dart';
 import 'package:app/services/auth/auth_service.dart';
 
 import 'package:app/l10n/app_localizations.dart';
@@ -26,7 +31,6 @@ Future<void> main() async {
 
   final authService = AuthService();
   await authService.init();
-  await authService.clearAuthData();
 
   runApp(MultiProvider(
     providers: [
@@ -38,10 +42,10 @@ Future<void> main() async {
           lazy: false
       ),
       ChangeNotifierProvider(
-          create: (context) {
-            final authService = context.read<AuthService>();
-            return AuthProvider(authService);
-          }
+        create: (context) {
+          final authService = context.read<AuthService>();
+          return AuthProvider(authService);
+        }
       ),
       Provider<Dio>(create: (context) => Dio()),
       Provider<AuthRepository>(
@@ -51,6 +55,13 @@ Future<void> main() async {
       ),
       ChangeNotifierProvider(
         create: (context) => PasswordRescueProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => HomeViewmodel(
+          CategoryRepository(Provider.of<Dio>(ctx, listen: false)),
+          (failure) => mapFailureToLocalizationMessage(ctx, failure)
+        ),
+        child: HomeScreen(),
       ),
     ],
       child: const MyApp(),
@@ -96,7 +107,7 @@ class _MyAppState extends State<MyApp> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final passwordRescueProvider = Provider.of<PasswordRescueProvider>(context, listen: false);
 
-      dio.options.baseUrl = 'http://10.0.0.9:8080';
+      dio.options.baseUrl = 'http://10.0.0.4:8080';
       dio.options.connectTimeout = const Duration(seconds: 20);
       dio.options.receiveTimeout = const Duration(seconds: 10);
 
@@ -150,7 +161,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final preferencesProvider = context.watch<AppPreferencesProvider>();
 
-    preferencesProvider.toggleTheme(true);
+    preferencesProvider.toggleTheme(isDark: false);
 
     return MaterialApp(
       navigatorKey: navigatorKey,

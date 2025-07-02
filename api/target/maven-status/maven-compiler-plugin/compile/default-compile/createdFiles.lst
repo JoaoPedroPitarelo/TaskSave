@@ -7,6 +7,7 @@ joaopitarelo\tasksave\api\domain\task\TaskRepository.class
 joaopitarelo\tasksave\api\application\services\AttachmentService.class
 joaopitarelo\tasksave\api\interfaces\dtos\category\OutputCategory.class
 joaopitarelo\tasksave\api\interfaces\dtos\attachment\OutputAttachment.class
+joaopitarelo\tasksave\api\infraestruture\security\validation\OptionalNotBlank.class
 joaopitarelo\tasksave\api\interfaces\controller\TaskController.class
 joaopitarelo\tasksave\api\interfaces\controller\CategoryController.class
 joaopitarelo\tasksave\api\infraestruture\security\SecurityConfig.class
@@ -21,7 +22,6 @@ joaopitarelo\tasksave\api\application\services\TokenService.class
 joaopitarelo\tasksave\api\infraestruture\persistence\TaskJpaRepository.class
 joaopitarelo\tasksave\api\application\services\AuthenticationService.class
 joaopitarelo\tasksave\api\domain\subtask\Subtask.class
-joaopitarelo\tasksave\api\infraestruture\security\CustomAccessDeniedHandler.class
 joaopitarelo\tasksave\api\interfaces\dtos\task\OutputTask.class
 joaopitarelo\tasksave\api\application\services\TaskService.class
 joaopitarelo\tasksave\api\domain\category\CategoryRepository.class
@@ -34,8 +34,10 @@ joaopitarelo\tasksave\api\domain\subtask\SubtaskRepository.class
 joaopitarelo\tasksave\api\infraestruture\persistence\CategoryJpaRepository.class
 joaopitarelo\tasksave\api\domain\enums\Priority.class
 joaopitarelo\tasksave\api\interfaces\dtos\user\RegisterRequest.class
+joaopitarelo\tasksave\api\infraestruture\security\validation\OptionalNotBlankValidator.class
 joaopitarelo\tasksave\api\interfaces\dtos\category\UpdateCategory.class
 joaopitarelo\tasksave\api\application\services\EmailService.class
+joaopitarelo\tasksave\api\infraestruture\exceptions\CustomAccessDeniedHandler.class
 joaopitarelo\tasksave\api\interfaces\dtos\user\OutputUser.class
 joaopitarelo\tasksave\api\interfaces\dtos\category\CreateCategory.class
 joaopitarelo\tasksave\api\domain\category\Category.class

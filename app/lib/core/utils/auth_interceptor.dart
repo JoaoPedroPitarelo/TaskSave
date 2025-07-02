@@ -43,7 +43,7 @@ class AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
    final isAuthEndPoint = _isAuthEndpoint(err.requestOptions.path);
 
-    if (err.type == DioExceptionType.connectionTimeout) {
+    if (err.type == DioExceptionType.connectionTimeout || err.type == DioExceptionType.connectionError) {
       if (isAuthEndPoint) {
         return super.onError(err, handler);
       }

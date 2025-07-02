@@ -20,6 +20,7 @@ C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\user\User.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\user\UserRepository.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\exceptions\ApiExceptionHandler.java
+C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\exceptions\CustomAccessDeniedHandler.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\exceptions\GenerationPdfException.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\exceptions\SendingEmailException.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\persistence\AttachmentJpaRepository.java
@@ -27,10 +28,11 @@ C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\persistence\SubTaskJpaRepository.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\persistence\TaskJpaRepository.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\persistence\UserJpaRepository.java
-C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\security\CustomAccessDeniedHandler.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\security\HashUtil.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\security\SecurityConfig.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\security\SecurityFilter.java
+C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\security\validation\OptionalNotBlank.java
+C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\infraestruture\security\validation\OptionalNotBlankValidator.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\interfaces\controller\AuthenticationController.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\interfaces\controller\CategoryController.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\interfaces\controller\SubTaskController.java

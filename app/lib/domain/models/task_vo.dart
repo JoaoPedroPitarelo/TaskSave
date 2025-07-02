@@ -40,6 +40,7 @@ class TaskVo {
         id: json['category']['id'], 
         description: json['category']['description'], 
         color: json['category']['color'],
+        isDefault: json['category']['isDefault'],
         activate: json['category']['ativo']), 
       subtaskList: json['subtasks'],
       reminderType: json['reminderType'],

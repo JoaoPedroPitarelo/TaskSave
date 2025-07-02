@@ -60,7 +60,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ChangeNotifierProvider(
-              create: (ctx) => LoginViewModel(
+              create: (ctx) => LoginViewmodel(
                 Provider.of<AuthService>(ctx, listen: false),
                 Provider.of<AuthRepository>(ctx, listen: false),
                 Provider.of<AuthProvider>(ctx, listen: false),

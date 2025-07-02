@@ -17,6 +17,12 @@ class AppTextStyles {
     fontSize: 16
   );
 
+  static final TextStyle bodySmall = GoogleFonts.roboto(
+    fontWeight: FontWeight.normal,
+    fontSize: 16,
+    color: Colors.white
+  );
+
   static final TextStyle displaySmall = GoogleFonts.schibstedGrotesk(
     fontSize: 13
   );

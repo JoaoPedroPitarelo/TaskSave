@@ -54,7 +54,7 @@ class WelcomeScreen2 extends StatelessWidget {
                       description: AppLocalizations.of(context)!.makeCakeDescription,
                       deadline: DateTime(2025, 10, 10),
                       priority: PriorityEnum.neutral,
-                      category: CategoryVo(id: 0, description: '', color: '', activate: true),
+                      category: CategoryVo(id: 0, description: '', color: '', isDefault: false, activate: true),
                       completed: false
                     ),
                     TaskWidget(
@@ -63,7 +63,7 @@ class WelcomeScreen2 extends StatelessWidget {
                       description: AppLocalizations.of(context)!.walkWithMyDogDescription,
                       deadline: DateTime(2025, 10, 06),
                       priority: PriorityEnum.low,
-                      category: CategoryVo(id: 0, description: '', color: '', activate: true),
+                      category: CategoryVo(id: 0, description: '', color: '', isDefault: false, activate: true),
                       completed: false
                     ),
                     TaskWidget(
@@ -72,7 +72,7 @@ class WelcomeScreen2 extends StatelessWidget {
                       description: AppLocalizations.of(context)!.finishMathWorkDescription,
                       deadline: DateTime(2025, 05, 02),
                       priority: PriorityEnum.high,
-                      category: CategoryVo(id: 0, description: '', color: '', activate: true),
+                      category: CategoryVo(id: 0, description: '', color: '', isDefault: false, activate: true),
                       completed: false
                     ),
                   ],

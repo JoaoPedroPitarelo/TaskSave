@@ -79,6 +79,7 @@ class _TaskWidgetState extends State<TaskWidget> {
           widget.onDismissedCallback!();
         }
       },
+
       background: Container(
         alignment: Alignment.center,
         padding: EdgeInsets.all(20),

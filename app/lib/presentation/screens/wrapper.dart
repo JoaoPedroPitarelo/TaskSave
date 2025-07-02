@@ -19,7 +19,7 @@ class Wrapper extends StatelessWidget {
         ),
       );
     } else if (authProvider.isAuthenticated) {
-      return const HomeScreen();
+      return HomeScreen();
     } else {
       return const WelcomeScreen1();
     }

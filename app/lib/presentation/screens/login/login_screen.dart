@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    final loginViewModel = context.read<LoginViewModel>();
+    final loginViewModel = context.read<LoginViewmodel>();
     await loginViewModel.doLogin(_emailController.text, _passwordController.text);
     final theme = Theme.of(context);
 
@@ -56,26 +56,32 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    showSnackBarOnSuccessLogin(context);
+    _showSnackBarOnSuccessLogin(context);
     Navigator.of(context).popUntil((screen) => screen.isFirst);
   }
 
-  void showSnackBarOnSuccessLogin(BuildContext context) {
+  void _showSnackBarOnSuccessLogin(BuildContext context) {
     final theme = Theme.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
           content: Text(
             AppLocalizations.of(context)!.loginSuccess,
-            style: theme.textTheme.labelSmall,
+            style: GoogleFonts.roboto(
+              color: Colors.white,
+              fontSize: 14
+            ),
           ),
         backgroundColor: Colors.green,
+        showCloseIcon: false,
+        duration: Duration(seconds: 4),
+        elevation: 1,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final loginViewModel = context.watch<LoginViewModel>();
+    final loginViewModel = context.watch<LoginViewmodel>();
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
 
