@@ -26,22 +26,14 @@ class CategoryRepository {
     }
   }
 
-  Map<String, dynamic> _makePayloadForUpdate({String? description, String? color}) {
-    final payload = <String, dynamic>{};
-    if (description != null) {
-      payload['description'] = description;
-    }
-    if (color != null) {
-      payload['color'] = color;
-    }
-    return payload;
-  }
-
-  Future<Either<Failure, Map<String, dynamic>>> update({required String id, String? description, String? color}) async {
+  Future<Either<Failure, Map<String, dynamic>>> update(String id, String? description, String? color) async {
     try {
       final response = await _dio.put(
         '/category/$id',
-        data: _makePayloadForUpdate(description: description, color: color),
+        data: {
+          description: description,
+          color: color
+        }
       );
 
       return Right(response.data);

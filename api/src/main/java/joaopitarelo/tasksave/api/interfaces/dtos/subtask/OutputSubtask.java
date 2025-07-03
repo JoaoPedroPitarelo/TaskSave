@@ -15,17 +15,19 @@ public record OutputSubtask(
         LocalDateTime lastModification,
         Priority priority,
         boolean completed,
-        ReminderType reminderType
+        ReminderType reminderType,
+        Long position
 ) {
     public OutputSubtask(Subtask subtask) {
         this(subtask.getId(),
-                subtask.getTitle(),
-                subtask.getDescription(),
-                subtask.getDeadline(),
-                subtask.getLastModification(),
-                subtask.getPriority(),
-                subtask.isCompleted(),
-                subtask.getReminderType()
+            subtask.getTitle(),
+            subtask.getDescription(),
+            subtask.getDeadline(),
+            subtask.getLastModification(),
+            subtask.getPriority(),
+            subtask.isCompleted(),
+            subtask.getReminderType(),
+            subtask.getPosition()
         );
     }
 }

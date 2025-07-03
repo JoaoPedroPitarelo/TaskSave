@@ -15,7 +15,7 @@ public record CreateTask(
         String description,
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         Date deadline,
-        @Valid // Mostra ao Validation que dentro desse meu Record que ele esta validando existe outro Record que ele precisa validar também. Como se fosse um "valide isso"
+        @Valid
         Long categoryId,
         @NotNull
         Priority priority,

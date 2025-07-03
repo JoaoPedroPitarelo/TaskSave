@@ -53,11 +53,7 @@ class CategoryFormViewmodel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final result = await _categoryRepository.update(
-      id: categoryId,
-      description: description,
-      color: hexColor
-    );
+    final result = await _categoryRepository.update(categoryId, description, hexColor);
 
     result.fold(
       (failure) {

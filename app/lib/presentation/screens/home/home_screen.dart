@@ -359,11 +359,30 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                      )
                     ),
-                    for (CategoryVo category in homeViewmodel.categories)
-                      CategoryItem(category: category, onTap: () {
-                        homeViewmodel.selectCategory(category);
-                        Navigator.of(context).pop();
-                      })
+                    ReorderableListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: homeViewmodel.categories.length,
+                      itemBuilder: (context, index) {
+                        final category = homeViewmodel.categories[index];
+                        return CategoryItem(
+                          key: ValueKey(category.id),
+                          category: category,
+                          onTap: () {
+                            homeViewmodel.selectCategory(category);
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                      onReorder: (int oldIndex, int newIndex) {
+                        homeViewmodel.reorderCategories(oldIndex, newIndex);
+                      },
+                    ),
+                    // for (CategoryVo category in homeViewmodel.categories)
+                    //   CategoryItem(category: category, onTap: () {
+                    //     homeViewmodel.selectCategory(category);
+                    //     Navigator.of(context).pop();
+                    //   })
                   ],
                 )
               ),

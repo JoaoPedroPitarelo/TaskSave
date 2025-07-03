@@ -57,7 +57,7 @@ public class AuthenticationService implements UserDetailsService { // interface 
         category.setDefault(true);
         category.setColor("#B0BEC5");
 
-        categoryService.createCategory(category);
+        categoryService.create(category);
 
         createUserFolder(user.getId());
     }

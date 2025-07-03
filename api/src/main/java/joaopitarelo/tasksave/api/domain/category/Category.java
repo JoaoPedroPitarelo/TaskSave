@@ -1,6 +1,5 @@
 package joaopitarelo.tasksave.api.domain.category;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import joaopitarelo.tasksave.api.domain.user.User;
@@ -16,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id") // Faz o equals e o hashcode em cima do id e não de todos os atributos
+@EqualsAndHashCode(of = "id")
 public class Category {
 
     @Id
@@ -34,6 +33,9 @@ public class Category {
 
     @Column(name = "is_default", nullable = false)
     private boolean isDefault = false;
+
+    @Column(name = "position", nullable = false)
+    private Long position;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

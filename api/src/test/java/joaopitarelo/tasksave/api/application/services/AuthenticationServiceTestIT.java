@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest // Carrega o contexto da aplicação para testes reais
-@ActiveProfiles("test") // Usa as configurações de properties-test.properties
+@ActiveProfiles("test") // Usa as configurações de properties-application-test.properties
 @Transactional // Garante que os dados inseridos no bd serão apagados após os testes
 /*
 * Classe de teste responsável por testar a integração com o banco de dados.

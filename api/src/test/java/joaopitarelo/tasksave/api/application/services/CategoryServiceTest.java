@@ -38,7 +38,7 @@ class CategoryServiceTest {
         Category category = createCategory(user);
 
         // Chamando os métudo que queremos testar
-        categoryService.createCategory(category);
+        categoryService.create(category);
 
         // Buscando o categoria salvo no balco
         var savedCategory = categoryService.getById(category.getId(), user.getId());

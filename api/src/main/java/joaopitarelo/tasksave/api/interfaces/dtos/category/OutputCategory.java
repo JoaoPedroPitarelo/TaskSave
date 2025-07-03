@@ -7,15 +7,16 @@ public record OutputCategory(
         String description,
         String color,
         boolean isDefault,
-        boolean ativo
+        boolean ativo,
+        Long position
 ) {
-    // Criando um construtor personalizado para esse record
     public OutputCategory(Category category) {
         this(category.getId(),
              category.getDescription(),
              category.getColor(),
              category.isDefault(),
-             category.isAtivo()
+             category.isAtivo(),
+             category.getPosition()
         );
     }
 }

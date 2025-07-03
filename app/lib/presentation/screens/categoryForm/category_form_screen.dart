@@ -126,6 +126,8 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final categoryFormViewmodel = context.watch<CategoryFormViewmodel>();
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(135),
@@ -254,15 +256,19 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
         onPressed: () async {
           await _submitForm(context);
         },
-        label: Text(
-          widget.category != null
-              ? AppLocalizations.of(context)!.modifyCategory
-              : AppLocalizations.of(context)!.taskCategory,
-          style: GoogleFonts.roboto(
+        label: categoryFormViewmodel.isLoading
+          ? CircularProgressIndicator(
               color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.w400
-          ),
+            )
+          : Text(
+            widget.category != null
+                ? AppLocalizations.of(context)!.modifyCategory
+                : AppLocalizations.of(context)!.taskCategory,
+            style: GoogleFonts.roboto(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.w400
+            ),
         ),
         icon: Icon(
             Icons.add,

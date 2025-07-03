@@ -1,6 +1,7 @@
 package joaopitarelo.tasksave.api.interfaces.dtos.task;
 
 import joaopitarelo.tasksave.api.domain.attachment.Attachment;
+import joaopitarelo.tasksave.api.domain.subtask.Subtask;
 import joaopitarelo.tasksave.api.interfaces.dtos.attachment.OutputAttachment;
 import joaopitarelo.tasksave.api.interfaces.dtos.category.OutputCategory;
 import joaopitarelo.tasksave.api.domain.enums.Priority;
@@ -9,6 +10,7 @@ import joaopitarelo.tasksave.api.interfaces.dtos.subtask.OutputSubtask;
 import joaopitarelo.tasksave.api.domain.task.Task;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +25,8 @@ public record OutputTask(
         boolean completed,
         ReminderType reminderType,
         List<OutputAttachment> attachments,
-        List<OutputSubtask> subtasks
+        List<OutputSubtask> subtasks,
+        Long position
 ) {
     public OutputTask(Task task) {
         this(task.getId(),
@@ -44,9 +47,11 @@ public record OutputTask(
                 task.getSubtasks() != null
                         ? task.getSubtasks().stream()
                             .filter(subtask -> !subtask.isCompleted())
+                            .sorted(Comparator.comparing(Subtask::getPosition))
                             .map(OutputSubtask::new)
                             .toList()
-                        : List.of() // senão retornar uma lista vazia
+                        : List.of(),
+                task.getPosition()
         );
     }
 }

@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 
 import joaopitarelo.tasksave.api.application.services.SubtaskService;
 import joaopitarelo.tasksave.api.application.services.TaskService;
+import joaopitarelo.tasksave.api.domain.exceptions.InvalidPositionException;
 import joaopitarelo.tasksave.api.domain.subtask.Subtask;
 import joaopitarelo.tasksave.api.domain.task.Task;
 import joaopitarelo.tasksave.api.domain.user.User;
@@ -30,7 +31,6 @@ public class SubTaskController {
     private TaskService taskService;
 
 
-    // GetById --------------------------------------
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id, @AuthenticationPrincipal User user) {
         Subtask subtask = subtaskService.getById(id, user.getId());
@@ -43,16 +43,14 @@ public class SubTaskController {
     }
 
 
-    // Create ----------------------------------------
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody @Valid CreateSubTask newSubtask,
                                     UriComponentsBuilder uriBuilder,
                                     @AuthenticationPrincipal User user) {
+        Task task = taskService.getById(newSubtask.parentTaskId(), user.getId());
 
-        Task task = taskService.getTaskById(newSubtask.parentTaskId(), user.getId());
         if (task == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "parente task not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "parent task not found"));
         }
 
         Subtask subtask = new Subtask(newSubtask, task);
@@ -63,7 +61,6 @@ public class SubTaskController {
         return ResponseEntity.created(uri).body(Map.of("subtask", new OutputSubtask(subtask)));
     }
 
-    // Update ----------------------------------------
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<?> update(@RequestBody @Valid UpdateSubtask modifiedSubtask,
@@ -75,11 +72,14 @@ public class SubTaskController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message","subtask not found"));
         }
 
-        subtaskService.update(modifiedSubtask, subtask);
+        try {
+            subtaskService.update(modifiedSubtask, subtask);
+        } catch (InvalidPositionException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        }
         return ResponseEntity.ok(Map.of("subtask", new OutputSubtask(subtask)));
     }
 
-    // Delete ---------------------------------------
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<String> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {

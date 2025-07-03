@@ -12,6 +12,8 @@ import joaopitarelo.tasksave.api.domain.attachment.Attachment;
 import joaopitarelo.tasksave.api.domain.category.Category;
 import joaopitarelo.tasksave.api.domain.task.Task;
 import joaopitarelo.tasksave.api.domain.user.User;
+import joaopitarelo.tasksave.api.domain.exceptions.CategoryNotFoundException;
+import joaopitarelo.tasksave.api.domain.exceptions.InvalidPositionException;
 import joaopitarelo.tasksave.api.interfaces.dtos.attachment.OutputAttachment;
 import joaopitarelo.tasksave.api.interfaces.dtos.task.*;
 
@@ -51,13 +53,13 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<Map<String, List<OutputTask>>> getAll(@AuthenticationPrincipal User user) {
-        Map<String, List<OutputTask>> listTasks = Map.of("tasks", taskService.getTasks(user.getId()).stream().map(OutputTask::new).toList());
+        Map<String, List<OutputTask>> listTasks = Map.of("tasks", taskService.getAll(user.getId()).stream().map(OutputTask::new).toList());
         return ResponseEntity.ok(listTasks);
     }
 
     @GetMapping("/{taskId}")
     public ResponseEntity<?> getById(@PathVariable Long taskId, @AuthenticationPrincipal User user) {
-        Task task = taskService.getTaskById(taskId, user.getId());
+        Task task = taskService.getById(taskId, user.getId());
 
         if (task == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
@@ -70,6 +72,7 @@ public class TaskController {
                                     UriComponentsBuilder uriBuilder,
                                     @AuthenticationPrincipal User user) {
         Category category = categoryService.getDefaultCategory(user.getId());
+
         if (newTask.categoryId() != null) {
             category = categoryService.getById(newTask.categoryId(), user.getId());
 
@@ -79,7 +82,7 @@ public class TaskController {
         }
 
         Task task = new Task(newTask, category);
-        taskService.createTask(task, user);
+        taskService.create(task, user);
 
         var uri = uriBuilder.path("/task/{id}").buildAndExpand(task.getId()).toUri();
 
@@ -88,23 +91,19 @@ public class TaskController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> update(@RequestBody @Valid UpdateTask modifiedTask,
-                                    @PathVariable Long id,
-                                    @AuthenticationPrincipal User user) {
-        Task task = taskService.getTaskById(id, user.getId());
+    public ResponseEntity<?> update(@RequestBody @Valid UpdateTask modifiedTask, @PathVariable Long id, @AuthenticationPrincipal User user) {
+        Task task = taskService.getById(id, user.getId());
 
         if (task == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
 
-        if (modifiedTask.categoryId() != null) {
-            Category category = categoryService.getById(modifiedTask.categoryId(), user.getId());
-            if (category == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
-            }
-            taskService.updateTask(task, modifiedTask, category);
-        } else {
-            taskService.updateTask(task, modifiedTask, null);
+        try {
+            taskService.update(task, modifiedTask, modifiedTask.categoryId());
+        } catch (InvalidPositionException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        } catch (CategoryNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found");
         }
 
         return ResponseEntity.ok(Map.of("task", new OutputTask(task)));
@@ -113,13 +112,13 @@ public class TaskController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<String> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        Task task = taskService.getTaskById(id, user.getId());
+        Task task = taskService.getById(id, user.getId());
 
         if (task == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        taskService.deleteTask(task);
+        taskService.delete(task);
 
         return ResponseEntity.noContent().build();
     }
@@ -158,7 +157,7 @@ public class TaskController {
         @PathVariable Long taskId,
         @AuthenticationPrincipal User user
     ) {
-        Task task = taskService.getTaskById(taskId, user.getId());
+        Task task = taskService.getById(taskId, user.getId());
         if (task == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "task not found"));
         }
@@ -195,7 +194,7 @@ public class TaskController {
             @PathVariable Long taskId,
             @AuthenticationPrincipal User user) {
 
-        Task task = taskService.getTaskById(taskId, user.getId());
+        Task task = taskService.getById(taskId, user.getId());
         if (task == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "task not found"));
         }
@@ -239,9 +238,9 @@ public class TaskController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(Map.of("message", "category not found"));
             }
-            tasks = taskService.getTaskByCategory(user.getId(), idCategory);
+            tasks = taskService.getByCategory(user.getId(), idCategory);
         } else {
-            tasks = taskService.getTasks(user.getId());
+            tasks = taskService.getAll(user.getId());
         }
 
         byte[] pdf;

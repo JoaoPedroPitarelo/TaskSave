@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest // Carrega o contexto da nossa aplicação, meio que configurando o ambiente de testes
-@ActiveProfiles("test") // Usa as configurações escritas em properties-test.properties
+@ActiveProfiles("test") // Usa as configurações escritas em properties-application-test.properties
 @Transactional // Faz com que todos os dados inseridos no banco de dados sejam apagados após os testes, deixando os testes mais limpos
 class TokenServiceTest {
 

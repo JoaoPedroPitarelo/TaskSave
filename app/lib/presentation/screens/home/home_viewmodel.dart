@@ -111,6 +111,24 @@ class HomeViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void reorderCategories(int oldIndex, int newIndex) {
+    if (oldIndex < 0 || oldIndex >= _categories.length) return;
+    if (newIndex < 0 || newIndex > _categories.length) return;
+
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final CategoryVo item = _categories.removeAt(oldIndex);
+    _categories.insert(newIndex, item);
+
+    notifyListeners();
+
+    // TODO: Adicione aqui a lógica para persistir a nova ordem das categorias
+    // no seu backend ou armazenamento local, se necessário.
+    // Ex: _categoryRepository.updateCategoryOrder(_categories);
+  }
+
   void clearSelectedCategory() {
     _selectedCategory = null;
     notifyListeners();

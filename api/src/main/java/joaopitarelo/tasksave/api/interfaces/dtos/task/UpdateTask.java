@@ -14,5 +14,6 @@ public record UpdateTask(
         Date deadline,
         Long categoryId,
         Priority priority,
-        ReminderType reminderType
+        ReminderType reminderType,
+        Long position
 ) { }

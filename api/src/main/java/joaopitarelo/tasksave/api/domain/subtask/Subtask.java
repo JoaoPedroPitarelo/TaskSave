@@ -44,12 +44,15 @@ public class Subtask {
     private ReminderType reminderType;
 
     @ManyToOne
-    @JoinColumn(name = "parent_task_id", nullable = false) // nome da coluna que irá armazenar a referencia da task
+    @JoinColumn(name = "parent_task_id", nullable = false)
     private Task parentTask;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "position", nullable = false)
+    private Long position;
 
     // Construtor do DTO
     public Subtask(CreateSubTask subTask, Task task) {

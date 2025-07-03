@@ -13,5 +13,6 @@ public record UpdateSubtask(
         String description,
         Date deadline,
         Priority priority,
-        ReminderType reminderType
+        ReminderType reminderType,
+        Long position
 ) { }

@@ -57,9 +57,11 @@ public class Task {
     private User user;
 
     @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true)
-    // mappedBy = nome do atributo que fará essa relação ou seja no caso de Subtasks quem fará isso será o atributo task
     @JsonIgnore
     private List<Subtask> subtasks;
+
+    @Column(name = "position", nullable = false)
+    private Long position;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

@@ -13,6 +13,8 @@ C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\category\CategoryRepository.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\enums\Priority.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\enums\ReminderType.java
+C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\exceptions\CategoryNotFoundException.java
+C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\exceptions\InvalidPositionException.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\subtask\Subtask.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\subtask\SubtaskRepository.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\domain\task\Task.java
