@@ -1,37 +1,47 @@
-import 'package:app/core/typedefs/typedefs.dart';
+import 'package:app/core/errors/failure.dart';
+import 'package:app/core/errors/failure_keys.dart';
+import 'package:app/domain/events/auth_events.dart';
 import 'package:app/repositories/auth_repository.dart';
+import 'package:app/services/events/auth_event_service.dart';
 import 'package:flutter/material.dart';
 
 class PasswordResetViewmodel extends ChangeNotifier {
   final AuthRepository _authRepository;
-  final FailureMessageMapper _failureMessageMapper;
+  final FailureKey Function(Failure) _mapFailureKey;
+
+  final AuthEventService _authEventService = AuthEventService();
 
   PasswordResetViewmodel(
     this._authRepository,
-    this._failureMessageMapper,
+    this._mapFailureKey,
   );
 
   bool _loading = false;
-  Object? _errorMessage;
-  bool isPasswordReseted = false;
+  FailureKey? _errorKey;
 
   bool get isLoading => _loading;
-  Object? get errorMessage => _errorMessage;
+  FailureKey? get errorKey => _errorKey;
+
+  @override
+  void dispose() {
+    _authEventService.dispose();
+    super.dispose();
+  }
 
   Future<void> resetPassword(String rescueToken, String newPassword) async {
     _loading = true;
-    _errorMessage = null;
+    _errorKey = null;
     notifyListeners();
 
     final result = await _authRepository.passwordChangeRequest(rescueToken, newPassword);
   
     result.fold(
       (failure) {
-        _errorMessage = _failureMessageMapper(failure);
-        isPasswordReseted = false;
+        _errorKey = _mapFailureKey(failure);
+        _authEventService.add(PasswordResetedEvent(success: false, failureKey: errorKey));
       }, 
       (success) {
-        isPasswordReseted = true;
+        _authEventService.add(PasswordResetedEvent(success: true));
       }
     );
 
@@ -40,7 +50,7 @@ class PasswordResetViewmodel extends ChangeNotifier {
   }
 
   void clearErrorMessage() {
-    _errorMessage = null;
+    _errorKey = null;
     notifyListeners();
   }
 }

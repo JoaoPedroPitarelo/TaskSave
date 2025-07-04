@@ -251,4 +251,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get categoryModified => 'Categoria modificada com sucesso!';
+
+  @override
+  String get registerSuccess => 'Cadatro realizado com sucesso!';
+
+  @override
+  String get passwordRescueSuccess => 'E-mail enviado com sucesso!';
 }

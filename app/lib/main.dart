@@ -1,17 +1,19 @@
 import 'package:app/core/themes/dark/app_theme_data_dark.dart';
 import 'package:app/core/themes/light/app_theme_data_light.dart';
 import 'package:app/core/utils/auth_interceptor.dart';
-import 'package:app/core/utils/failure_localizations_mapper.dart';
+import 'package:app/core/utils/map_failure_to_failure_key.dart';
+import 'package:app/core/utils/translateFailureKey.dart';
 
 import 'package:app/presentation/providers/auth_provider.dart';
 import 'package:app/presentation/providers/app_preferences_provider.dart';
 import 'package:app/presentation/providers/password_rescue_provider.dart';
-import 'package:app/presentation/screens/categoryForm/category_form_screen.dart';
 import 'package:app/presentation/screens/categoryForm/category_form_viewmodel.dart';
-import 'package:app/presentation/screens/home/home_screen.dart';
 import 'package:app/presentation/screens/home/home_viewmodel.dart';
+import 'package:app/presentation/screens/login/login_viewmodel.dart';
 import 'package:app/presentation/screens/password_change/password_change_screen.dart';
 import 'package:app/presentation/screens/password_change/password_change_viewmodel.dart';
+import 'package:app/presentation/screens/password_rescue/password_rescue_viewmodel.dart';
+import 'package:app/presentation/screens/register/register_viewmodel.dart';
 import 'package:app/presentation/screens/wrapper.dart';
 
 import 'package:app/repositories/auth_repository.dart';
@@ -59,10 +61,41 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: (ctx) => HomeViewmodel(
           CategoryRepository(Provider.of<Dio>(ctx, listen: false)),
-          (failure) => mapFailureToLocalizationMessage(ctx, failure)
+          mapFailureToKey
         ),
-        child: HomeScreen(),
       ),
+      ChangeNotifierProvider(
+        create: (ctx) => CategoryFormViewmodel(
+          mapFailureToKey,
+          CategoryRepository(Provider.of<Dio>(ctx, listen: false))
+        )
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => PasswordRescueViewmodel(
+          mapFailureToKey,
+          Provider.of<AuthRepository>(ctx, listen: false)
+        ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => RegisterViewModel(
+          mapFailureToKey,
+          Provider.of<AuthRepository>(ctx, listen: false)
+        ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => LoginViewmodel(
+          Provider.of<AuthService>(ctx, listen: false),
+          Provider.of<AuthRepository>(ctx, listen: false),
+          Provider.of<AuthProvider>(ctx, listen: false),
+          mapFailureToKey
+        ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => PasswordResetViewmodel(
+          Provider.of<AuthRepository>(ctx, listen: false),
+          mapFailureToKey
+        ),
+      )
     ],
       child: const MyApp(),
     )
@@ -107,7 +140,7 @@ class _MyAppState extends State<MyApp> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final passwordRescueProvider = Provider.of<PasswordRescueProvider>(context, listen: false);
 
-      dio.options.baseUrl = 'http://10.0.0.4:8080';
+      dio.options.baseUrl = 'http://10.0.0.9:8080';
       dio.options.connectTimeout = const Duration(seconds: 20);
       dio.options.receiveTimeout = const Duration(seconds: 10);
 
@@ -130,20 +163,8 @@ class _MyAppState extends State<MyApp> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (token != null) {
-        navigatorKey.currentState!.push(MaterialPageRoute(
-            builder: (context) => ChangeNotifierProvider(
-              create: (ctx) => PasswordResetViewmodel(
-                Provider.of<AuthRepository>(ctx, listen: false),
-                (failure) => mapFailureToLocalizationMessage(ctx, failure)
-              ),
-              child: PasswordResetScreen(
-                rescueToken: token
-              ),
-            )
-        )
-        ).then( (_) {
-          passwordRescueProvider.clearRescueToken();
-        }
+        navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => PasswordResetScreen(rescueToken: token))
+        ).then( (_) {passwordRescueProvider.clearRescueToken();}
         );
       }
     });

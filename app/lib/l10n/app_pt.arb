@@ -79,5 +79,7 @@
     "descriptionCategoryIsObrigatory": "Descrição é um campo obrigatório!",
     "categoryCreated": "Categoria criada com sucesso!",
     "modifyCategory": "Modificar categoria",
-    "categoryModified": "Categoria modificada com sucesso!"
+    "categoryModified": "Categoria modificada com sucesso!",
+    "registerSuccess": "Cadatro realizado com sucesso!",
+    "passwordRescueSuccess": "E-mail enviado com sucesso!"
 }

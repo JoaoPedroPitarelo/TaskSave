@@ -567,6 +567,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Categoria modificada com sucesso!'**
   String get categoryModified;
+
+  /// No description provided for @registerSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cadatro realizado com sucesso!'**
+  String get registerSuccess;
+
+  /// No description provided for @passwordRescueSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail enviado com sucesso!'**
+  String get passwordRescueSuccess;
 }
 
 class _AppLocalizationsDelegate

@@ -1,16 +1,10 @@
 import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/core/utils/failure_localizations_mapper.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/presentation/common/task_widget.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/presentation/providers/auth_provider.dart';
 import 'package:app/presentation/screens/login/login_screen.dart';
-import 'package:app/presentation/screens/login/login_viewmodel.dart';
-import 'package:app/repositories/auth_repository.dart';
-import 'package:app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class FinalWelcomeScreen extends StatelessWidget {
   const FinalWelcomeScreen({super.key});
@@ -37,20 +31,12 @@ class FinalWelcomeScreen extends StatelessWidget {
             description: AppLocalizations.of(context)!.descriptionTask,
             deadline: DateTime.now(),
             priority: PriorityEnum.low,
-            category: CategoryVo(id: 0, description: "None", isDefault: false, color: "None", activate: true),
+            category: CategoryVo(id: 0, description: "None", isDefault: false, color: "None", activate: true, position: -1),
             completed: false,
             onDismissedCallback: () => Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-               builder: (context) => ChangeNotifierProvider(
-                   create: (ctx) => LoginViewmodel(
-                       Provider.of<AuthService>(ctx, listen: false),
-                       Provider.of<AuthRepository>(ctx, listen: false),
-                       Provider.of<AuthProvider>(ctx, listen: false),
-                       (failure) => mapFailureToLocalizationMessage(ctx, failure)
-                  ),
-                 child: const LoginScreen(),
-                )
-               )
+                builder: (context) => LoginScreen()
+              )
             )
           ),
           Expanded(

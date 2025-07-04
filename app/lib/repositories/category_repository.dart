@@ -26,14 +26,21 @@ class CategoryRepository {
     }
   }
 
-  Future<Either<Failure, Map<String, dynamic>>> update(String id, String? description, String? color) async {
+  Map<String, dynamic> makePayloadForUpdate(String? description, String? color, int? position) {
+    final payload = <String, dynamic>{};
+
+    if (description != null) { payload['description'] = description; }
+    if (color != null) { payload['color'] = color; }
+    if (position != null) { payload['position'] = position;}
+
+    return payload;
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>> update({required String id, String? description, String? color, int? position}) async {
     try {
       final response = await _dio.put(
         '/category/$id',
-        data: {
-          description: description,
-          color: color
-        }
+        data: makePayloadForUpdate(description, color, position)
       );
 
       return Right(response.data);
@@ -69,7 +76,7 @@ class CategoryRepository {
       return Right(response.data);
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        return Left(CategoryNotFoundException());
+        return Left(CategoryNotFoundFailure());
       }
       return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
     } catch (e) {
@@ -86,7 +93,7 @@ class CategoryRepository {
       return Right(response.data);
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        return Left(CategoryNotFoundException());
+        return Left(CategoryNotFoundFailure());
       }
       return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
     } catch (e) {
@@ -103,7 +110,7 @@ class CategoryRepository {
       return Right(response.data);
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        return Left(CategoryNotFoundException());
+        return Left(CategoryNotFoundFailure());
       }
       return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
     } catch (e) {

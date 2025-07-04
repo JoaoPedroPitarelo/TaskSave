@@ -1,3 +1,4 @@
+import 'package:app/core/errors/failure_keys.dart';
 import 'package:app/domain/models/category_vo.dart';
 
 abstract class CategoryDataEvent {}
@@ -10,16 +11,16 @@ class CategoriesChangedEvent extends CategoryDataEvent {
 
 class CategoryCreatedEvent extends CategoryDataEvent {
   final bool success;
-  String? failureMessage;
+  FailureKey? failureKey;
 
-  CategoryCreatedEvent({required this.success, failureMessage});
+  CategoryCreatedEvent({required this.success, failureKey});
 }
 
 class CategoryUpdatingEvent extends CategoryDataEvent {
-  final String? failureMessage;
+  final FailureKey? failureKey;
   final bool success;
 
-  CategoryUpdatingEvent({required this.success, this.failureMessage});
+  CategoryUpdatingEvent({required this.success, this.failureKey});
 }
 
 class CategoryDeletionEvent extends CategoryDataEvent {
@@ -27,4 +28,11 @@ class CategoryDeletionEvent extends CategoryDataEvent {
   final int originalIndex;
 
   CategoryDeletionEvent(this.category, this.originalIndex);
+}
+
+class CategoryReorderEvent extends CategoryDataEvent {
+  final bool success;
+  final FailureKey? failureKey;
+
+  CategoryReorderEvent({required this.success, this.failureKey});
 }

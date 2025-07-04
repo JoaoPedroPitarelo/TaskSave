@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:app/domain/events/categoryEvents.dart';
+import 'package:app/domain/events/category_events.dart';
 
-class CategoryEventservice {
-  static final CategoryEventservice _instance = CategoryEventservice._internal();
+class CategoryEventService {
+  static final CategoryEventService _instance = CategoryEventService._internal();
 
-  CategoryEventservice._internal();
+  CategoryEventService._internal();
 
-  factory CategoryEventservice() {
+  factory CategoryEventService() {
     return _instance;
   }
 

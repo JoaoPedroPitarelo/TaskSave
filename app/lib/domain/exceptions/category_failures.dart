@@ -1,7 +1,7 @@
 import 'package:app/core/errors/failure.dart';
 
-class CategoryNotFoundException extends Failure {
-  const CategoryNotFoundException();
+class CategoryNotFoundFailure extends Failure {
+  const CategoryNotFoundFailure();
 
   @override
   List<Object?> get props => [];

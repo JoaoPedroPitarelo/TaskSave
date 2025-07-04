@@ -1,17 +1,20 @@
 import 'dart:async';
-import 'package:app/core/typedefs/typedefs.dart';
+import 'package:app/core/errors/failure.dart';
+import 'package:app/core/errors/failure_keys.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 import 'package:app/repositories/category_repository.dart';
 import 'package:app/services/events/category_event_service.dart';
 import 'package:flutter/material.dart';
-import 'package:app/domain/events/categoryEvents.dart';
+import 'package:app/domain/events/category_events.dart';
 
 class HomeViewmodel extends ChangeNotifier {
   final CategoryRepository categoryRepository;
-  // final TaskRepository taskRepository;
-  final FailureMessageMapper _failureMessageMapper;
-  final CategoryEventservice _categoryEventsService = CategoryEventservice();
+  final CategoryEventService _categoryEventsService = CategoryEventService();
+
+  final FailureKey Function(Failure) _mapFailureToKey;
+  FailureKey? _errorKey;
+  FailureKey? get errorKey => _errorKey;
 
   List<dynamic> _categories = [];
   List<dynamic> get categories => _categories;
@@ -26,25 +29,21 @@ class HomeViewmodel extends ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
 
-  Object? _errorMessage;
-  Object? get errorMessage => _errorMessage;
-
   HomeViewmodel(
     this.categoryRepository,
-    // this.taskRepository,
-    this._failureMessageMapper
+    this._mapFailureToKey,
   );
 
   Future<void> getCategories() async {
     _loading = true;
-    _errorMessage = null;
+    _errorKey = null;
     notifyListeners();
 
     final result = await categoryRepository.getAll();
 
     result.fold(
       (failure) {
-        _errorMessage = _failureMessageMapper(failure);
+        _errorKey = _mapFailureToKey(failure);
         _loading = false;
         notifyListeners();
       },
@@ -77,7 +76,7 @@ class HomeViewmodel extends ChangeNotifier {
 
     result.fold(
       (failure) {
-        _errorMessage = _failureMessageMapper(failure);
+        _errorKey = _mapFailureToKey(failure);
         _loading = false;
         undoDeletionCategory(category, originalIndex);
         notifyListeners();
@@ -111,7 +110,7 @@ class HomeViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void reorderCategories(int oldIndex, int newIndex) {
+  Future<void> reorderCategories(int oldIndex, int newIndex) async {
     if (oldIndex < 0 || oldIndex >= _categories.length) return;
     if (newIndex < 0 || newIndex > _categories.length) return;
 
@@ -124,9 +123,23 @@ class HomeViewmodel extends ChangeNotifier {
 
     notifyListeners();
 
-    // TODO: Adicione aqui a lógica para persistir a nova ordem das categorias
-    // no seu backend ou armazenamento local, se necessário.
-    // Ex: _categoryRepository.updateCategoryOrder(_categories);
+    final result = await categoryRepository.update(
+        id: item.id.toString(),
+        position: newIndex
+    );
+
+    result.fold(
+      (failure) {
+        _loading = false;
+        _errorKey = _mapFailureToKey(failure);
+        _categoryEventsService.add(CategoryReorderEvent(success: false, failureKey: _errorKey));
+        notifyListeners();
+      },
+      (updatedCategory) {
+        _categoryEventsService.add(CategoryReorderEvent(success: true));
+        notifyListeners();
+      }
+    );
   }
 
   void clearSelectedCategory() {
@@ -134,9 +147,8 @@ class HomeViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void clearErrorMessage() {
-    _errorMessage = null;
+    _errorKey = null;
     notifyListeners();
   }
 }

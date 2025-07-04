@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/core/utils/failure_localizations_mapper.dart';
+import 'package:app/core/utils/translateFailureKey.dart';
+import 'package:app/domain/events/auth_events.dart';
 import 'package:app/l10n/app_localizations.dart';
-import 'package:app/presentation/providers/auth_provider.dart';
+import 'package:app/presentation/common/error_snackbar.dart';
+import 'package:app/presentation/common/sucess_snackbar.dart';
 import 'package:app/presentation/screens/login/login_screen.dart';
-import 'package:app/presentation/screens/login/login_viewmodel.dart';
 import 'package:app/presentation/screens/password_change/password_change_viewmodel.dart';
-import 'package:app/repositories/auth_repository.dart';
-import 'package:app/services/auth/auth_service.dart';
+import 'package:app/services/events/auth_event_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +26,9 @@ class PasswordResetScreen extends StatefulWidget {
 }
 
 class _PasswordResetScreenState extends State<PasswordResetScreen> {
+  StreamSubscription? _passwordRescueSubscription;
+  final AuthEventService _authEventService = AuthEventService();
+
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -34,7 +39,29 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   void dispose() {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _passwordRescueSubscription?.cancel();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _passwordRescueSubscription = _authEventService.onAuthChanged.listen( (event) {
+        if (event is PasswordResetedEvent) {
+         if (event.success) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             showSuccessSnackbar(AppLocalizations.of(context)!.passwordReseted)
+           );
+           Navigator.of(context).pop();
+         } else {
+           ScaffoldMessenger.of(context).showSnackBar(
+             showErrorSnackbar(translateFailureKey(context, event.failureKey!))
+           );
+         }
+        }
+      });
+    });
   }
   
   @override
@@ -42,56 +69,6 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
     final passswordRescueViewmodel = context.watch<PasswordResetViewmodel>();
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
-
-    if (passswordRescueViewmodel.isPasswordReseted) {
-      WidgetsBinding.instance.addPostFrameCallback((_) { 
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context)!.passwordReseted,
-              style: theme.textTheme.labelSmall
-            ),
-            duration: Duration(seconds: 4),
-            backgroundColor: Colors.green
-          )
-        );
-      
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ChangeNotifierProvider(
-              create: (ctx) => LoginViewmodel(
-                Provider.of<AuthService>(ctx, listen: false),
-                Provider.of<AuthRepository>(ctx, listen: false),
-                Provider.of<AuthProvider>(ctx, listen: false),
-                  (failure) => mapFailureToLocalizationMessage(ctx, failure)
-              ),
-              child: const LoginScreen(),
-            )
-          )
-        );
-       }
-      );
-      passswordRescueViewmodel.isPasswordReseted = false;
-    }
-
-    if (passswordRescueViewmodel.errorMessage != null) {
-      WidgetsBinding.instance.addPostFrameCallback( (_) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              passswordRescueViewmodel.errorMessage.toString(),
-              style:
-              theme.textTheme.labelSmall
-            ),
-            duration: Duration(seconds: 4),
-            backgroundColor: Colors.red
-          )
-        );
-        passswordRescueViewmodel.clearErrorMessage();
-      });
-    }
 
     return Scaffold(
       body: SafeArea(

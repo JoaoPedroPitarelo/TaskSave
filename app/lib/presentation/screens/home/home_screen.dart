@@ -1,16 +1,15 @@
 import "dart:async";
 import "package:app/core/themes/app_global_colors.dart";
-import "package:app/core/utils/failure_localizations_mapper.dart";
-import "package:app/domain/events/categoryEvents.dart";
+import "package:app/core/utils/translateFailureKey.dart";
+import 'package:app/domain/events/category_events.dart';
 import "package:app/domain/models/category_vo.dart";
 import "package:app/l10n/app_localizations.dart";
+import "package:app/presentation/common/error_snackbar.dart";
+import "package:app/presentation/common/sucess_snackbar.dart";
 import "package:app/presentation/screens/categoryForm/category_form_screen.dart";
-import "package:app/presentation/screens/categoryForm/category_form_viewmodel.dart";
 import "package:app/presentation/screens/home/home_viewmodel.dart";
 import "package:app/presentation/screens/home/widgets/category_item.dart";
-import "package:app/repositories/category_repository.dart";
 import "package:app/services/events/category_event_service.dart";
-import "package:dio/dio.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
@@ -26,7 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription? _deletionSubscription;
-  final _categoryEventservice = CategoryEventservice();
+  final _categoryEventService = CategoryEventService();
 
   void loadCategories() async {
     await context.read<HomeViewmodel>().getCategories();
@@ -39,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadCategories();
 
-      _deletionSubscription = _categoryEventservice.onCategoryChanged.listen( (event) {
+      _deletionSubscription = _categoryEventService.onCategoryChanged.listen( (event) {
         if (event is CategoryDeletionEvent) {
           _showUndoSnackbar(event.category, event.originalIndex);
         }
@@ -54,9 +53,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
           if (!event.isCreating) {
             _showSuccessSnackbar(AppLocalizations.of(context)!.categoryModified);
+            return;
           }
         }
 
+        if (event is CategoryReorderEvent) {
+          loadCategories();
+
+          if (!event.success) {
+            _showErrorSnackbar(translateFailureKey(context, event.failureKey!));
+            return;
+          }
+        }
       });
     });
   }
@@ -92,16 +100,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _showSuccessSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.white),
-        ),
-        elevation: 2,
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 4),
-        showCloseIcon: false,
-      ),
+      showSuccessSnackbar(message)
+    );
+  }
+  
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      showErrorSnackbar(message)
     );
   }
 
@@ -125,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: const Color.fromARGB(255, 12, 43, 170),
               elevation: 12,
               shadowColor: Colors.black,
-              iconTheme: IconThemeData(color: Colors.white, size: 30),
+              iconTheme: const IconThemeData(color: Colors.white, size: 30),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(
                   bottom: Radius.circular(20),
@@ -137,9 +142,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(height: 50),
+                        const SizedBox(height: 50),
                         Padding(
-                          padding: EdgeInsets.only(left: 24),
+                          padding: const EdgeInsets.only(left: 24),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -147,13 +152,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                Padding(
                                  padding: const EdgeInsets.only(bottom: 10),
                                  child: Row(
-                                   spacing: 10,
                                    children: [
                                      Icon(
                                        Icons.dashboard_customize_outlined,
                                        color: hexToColor(homeViewmodel.selectedCategory!.color),
                                        size: 30,
                                      ),
+                                     const SizedBox(width: 10),
                                      Text(
                                        homeViewmodel.selectedCategory!.description,
                                        style: GoogleFonts.schibstedGrotesk(
@@ -166,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                  ),
                                )
                               else
-                                SizedBox(height: 28)
+                                const SizedBox(height: 28)
                             ],
                           ),
                         ),
@@ -181,9 +186,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       maxWidth: MediaQuery.of(context).size.width * 0.9,
                                       minHeight: MediaQuery.of(context).size.height * 0.061
                                     ),
-                                    textStyle: WidgetStatePropertyAll(TextStyle(color: Colors.white)),
-                                    backgroundColor: WidgetStatePropertyAll(Colors.black38),
-                                    elevation: WidgetStatePropertyAll(2.0),
+                                    textStyle: const WidgetStatePropertyAll(TextStyle(color: Colors.white)),
+                                    backgroundColor: const WidgetStatePropertyAll(Colors.black38),
+                                    elevation: const WidgetStatePropertyAll(2.0),
                                     controller: controller,
                                     padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
                                     onTap: () {},
@@ -220,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
       ),
 
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children:  [
@@ -243,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 60,
                     child: Image.asset('assets/images/tasksave_logo_light.png')
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 250,
                     child: Divider(
                       thickness: 1.2,
@@ -268,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       },
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     buildDrawerItem(
                       context: context,
                       icon: Icons.calendar_today,
@@ -310,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.pop(context);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       child: Divider(
                       thickness: 1.2,
                       endIndent: 0.5,
@@ -321,13 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     TextButton(
                       onPressed: () {
                           Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => (ChangeNotifierProvider(
-                              create: (ctx) => CategoryFormViewmodel(
-                                (failure) => mapFailureToLocalizationMessage(ctx, failure),
-                                CategoryRepository(Provider.of<Dio>(context, listen: false))
-                            ),
-                            child: CategoryFormScreen(),
-                            ))
+                            builder: (context) =>  CategoryFormScreen(),
                           )
                         );
                       },
@@ -335,12 +334,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.only(left: 5.0, bottom: 20.0),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.dashboard_customize_outlined,
                             color: Colors.white,
                             size: 28,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Row(
                               children: [
@@ -351,8 +350,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 11),
+                          const Padding(
+                            padding: EdgeInsets.only(right: 11),
                             child: Icon(Icons.add, color: Colors.greenAccent, size: 28),
                           )
                         ],
@@ -361,13 +360,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     ReorderableListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: homeViewmodel.categories.length,
-                      itemBuilder: (context, index) {
-                        final category = homeViewmodel.categories[index];
+                      proxyDecorator: (child, index, animation) {
+                        return Material(
+                          color: Colors.transparent,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 12, 43, 170),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black54,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3)
+                                )
+                              ]
+                            ),
+                            child: child,
+                          ),
+                        );
+                      },
+                      itemBuilder: (context, i) {
+                        CategoryVo category = homeViewmodel.categories[i];
                         return CategoryItem(
                           key: ValueKey(category.id),
                           category: category,
+                          index: i,
                           onTap: () {
                             homeViewmodel.selectCategory(category);
                             Navigator.of(context).pop();
@@ -377,12 +396,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       onReorder: (int oldIndex, int newIndex) {
                         homeViewmodel.reorderCategories(oldIndex, newIndex);
                       },
+
                     ),
-                    // for (CategoryVo category in homeViewmodel.categories)
-                    //   CategoryItem(category: category, onTap: () {
-                    //     homeViewmodel.selectCategory(category);
-                    //     Navigator.of(context).pop();
-                    //   })
                   ],
                 )
               ),
@@ -394,8 +409,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),
                 child: Row(
                   children: [
-                    Icon(Icons.settings_sharp, color: Colors.white, size: 28),
-                    SizedBox(width: 12),
+                    const Icon(Icons.settings_sharp, color: Colors.white, size: 28),
+                    const SizedBox(width: 12),
                     Text(
                       AppLocalizations.of(context)!.settings,
                       style: theme.textTheme.bodySmall
@@ -413,7 +428,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // TODO fazer a tela de formulário para adicionar novas tarefas
         },
         elevation: 3,
-        child: Icon(
+        child: const Icon(
           Icons.add_outlined,
           size: 30,
           color: Colors.white,

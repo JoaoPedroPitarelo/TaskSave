@@ -1,40 +1,39 @@
-import 'package:app/core/typedefs/typedefs.dart';
+import 'package:app/core/errors/failure.dart';
+import 'package:app/core/errors/failure_keys.dart';
+import 'package:app/domain/events/auth_events.dart';
 import 'package:app/repositories/auth_repository.dart';
+import 'package:app/services/events/auth_event_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RegisterViewModel extends ChangeNotifier {
-  final AuthRepository _authRepository;
-  final FailureMessageMapper _failureMessageMapper;
+  final AuthEventService _authEventService = AuthEventService();
 
-  RegisterViewModel(this._failureMessageMapper, this._authRepository, );
+  final AuthRepository _authRepository;
+  final FailureKey Function(Failure) _mapFailureKey;
+
+  RegisterViewModel(this._mapFailureKey, this._authRepository, );
 
   bool _loading = false;
-  Object? _errorMessage;
-  bool _isUserCreated = false;
+  FailureKey? _errorKey;
 
-  Object? get errorMessage => _errorMessage;
+  Object? get errorKey => _errorKey;
   bool get isLoading => _loading;
-  bool get isUserCreated => _isUserCreated;
-
-  set isUserCreated(bool isUserCreated) {
-    _isUserCreated = isUserCreated;
-  }
 
   Future<void> createLogin(String login, String password) async {
     _loading = true;
-    _errorMessage = null;
+    _errorKey = null;
     notifyListeners();
 
     final result = await _authRepository.registerRequest(login, password);
  
     result.fold(
       (failure) {
-        _errorMessage = _failureMessageMapper(failure);
-        _isUserCreated = false;
+        _errorKey = _mapFailureKey(failure);
+        _authEventService.add(RegisterEvent(success: false, failureKey: _errorKey));
       },
       (userInfo) {
-        _isUserCreated = true;
+        _authEventService.add(RegisterEvent(success: true));
       }
     );
 
@@ -43,7 +42,7 @@ class RegisterViewModel extends ChangeNotifier {
   }
 
   void clearErrorMessage() {
-    _errorMessage = null;
+    _errorKey = null;
     notifyListeners();
   }
 }

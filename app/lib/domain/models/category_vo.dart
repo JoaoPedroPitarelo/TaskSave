@@ -5,13 +5,15 @@ class CategoryVo {
   final String color;
   final bool isDefault;
   final bool activate;
-  
+  final int position;
+
   const CategoryVo({
     required this.id, 
     required this.description, 
     required this.color,
     required this.isDefault,
-    required this.activate
+    required this.activate,
+    required this.position
   });
 
   factory CategoryVo.fromJson(Map<String, dynamic> json) { 
@@ -20,7 +22,8 @@ class CategoryVo {
       description: json['description'],
       color: json['color'],
       isDefault: json['isDefault'],
-      activate: json['ativo']
+      activate: json['ativo'],
+      position: json['position']
     );
   }
 } 

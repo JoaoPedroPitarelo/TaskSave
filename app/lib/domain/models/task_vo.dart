@@ -41,7 +41,9 @@ class TaskVo {
         description: json['category']['description'], 
         color: json['category']['color'],
         isDefault: json['category']['isDefault'],
-        activate: json['category']['ativo']), 
+        activate: json['category']['ativo'],
+        position: json['category']['position']
+      ),
       subtaskList: json['subtasks'],
       reminderType: json['reminderType'],
       completed: json['completed'],

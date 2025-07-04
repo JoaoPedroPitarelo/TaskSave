@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:app/domain/events/categoryEvents.dart';
+import 'package:app/core/utils/translateFailureKey.dart';
+import 'package:app/domain/events/category_events.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/common/hex_to_color.dart';
@@ -22,7 +23,7 @@ class CategoryFormScreen extends StatefulWidget {
 
 class _CategoryFormScreenState extends State<CategoryFormScreen> {
   StreamSubscription? _creationSubscription;
-  final CategoryEventservice _categoryEventsService = CategoryEventservice();
+  final CategoryEventService _categoryEventsService = CategoryEventService();
 
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
@@ -80,7 +81,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
           }
 
           if (event is CategoryCreatedEvent && !event.success) {
-            _showSnackbarError(categoryFormViewmodel.errorMessage!.toString());
+            _showSnackbarError(translateFailureKey(context, event.failureKey!));
           }
 
           if (event is CategoryUpdatingEvent && event.success) {
@@ -89,7 +90,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
           }
 
           if (event is CategoryUpdatingEvent && !event.success) {
-            _showSnackbarError(categoryFormViewmodel.errorMessage!.toString());
+            _showSnackbarError(translateFailureKey(context, event.failureKey!));
           }
         });
       }

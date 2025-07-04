@@ -1,38 +1,41 @@
+import 'package:app/core/errors/failure.dart';
+import 'package:app/core/errors/failure_keys.dart';
+import 'package:app/domain/events/auth_events.dart';
 import 'package:app/repositories/auth_repository.dart';
+import 'package:app/services/events/auth_event_service.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:app/core/typedefs/typedefs.dart';
-
 class PasswordRescueViewmodel extends ChangeNotifier {
-  final FailureMessageMapper _failureMessageMapper;
+  final AuthEventService _authEventService = AuthEventService();
+
+  final FailureKey Function(Failure) _mapFailureToKey;
   final AuthRepository _authRepository;
 
   bool _loading = false;
-  bool isSuccessPasswordRescue = false;
-  Object? _errorMessage;
+  FailureKey? _errorKey;
 
   bool get isLoading => _loading;
-  Object? get errorMessage => _errorMessage;
+  FailureKey? get errorKey => _errorKey;
 
   PasswordRescueViewmodel(
-    this._failureMessageMapper,
+    this._mapFailureToKey,
     this._authRepository
   );
 
   Future<void> doPasswordRescue(String email) async {
     _loading = true;
-    _errorMessage = null;
+    _errorKey = null;
     notifyListeners();
 
     final resultRequest = await _authRepository.passwordRescueRequest(email);
 
     resultRequest.fold(
       (failure) {
-        _errorMessage = _failureMessageMapper(failure);
-        isSuccessPasswordRescue = false;
+        _errorKey = _mapFailureToKey(failure);
+        _authEventService.add(PasswordRescueEvent(success: false, failureKey: errorKey));
       },
       (success) {
-        isSuccessPasswordRescue = true;
+        _authEventService.add(PasswordRescueEvent(success: true));
       }
     );
 
@@ -41,7 +44,7 @@ class PasswordRescueViewmodel extends ChangeNotifier {
   }
 
   void clearErrorMessage() {
-    _errorMessage = null;
+    _errorKey = null;
     notifyListeners();
   }
 }

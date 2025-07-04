@@ -1,7 +1,14 @@
+import 'dart:async';
+
 import 'package:app/core/themes/app_global_colors.dart';
+import 'package:app/core/utils/translateFailureKey.dart';
+import 'package:app/domain/events/auth_events.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/presentation/common/error_snackbar.dart';
+import 'package:app/presentation/common/sucess_snackbar.dart';
 import 'package:app/presentation/screens/password_rescue/confirm_password_rescue_email_screen.dart';
 import 'package:app/presentation/screens/password_rescue/password_rescue_viewmodel.dart';
+import 'package:app/services/events/auth_event_service.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,13 +22,42 @@ class PasswordRescueScreen extends StatefulWidget {
 }
 
 class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
+  StreamSubscription? _passwordRescueSubscription;
+  final AuthEventService _authEventService = AuthEventService();
+
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
+    _passwordRescueSubscription?.cancel();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback( (_) {
+      _passwordRescueSubscription = _authEventService.onAuthChanged.listen( (event) {
+        if (event is PasswordRescueEvent) {
+          if (event.success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              showSuccessSnackbar(AppLocalizations.of(context)!.passwordRescueSuccess)
+            );
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ConfirmPasswordRescueEmailScreen()
+              )
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              showErrorSnackbar(translateFailureKey(context, event.failureKey!))
+            );
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -29,34 +65,7 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
     final passwordRescueViewModel = context.watch<PasswordRescueViewmodel>();
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
-    
-    if (passwordRescueViewModel.isSuccessPasswordRescue) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ConfirmPasswordRescueEmailScreen()
-          )
-        );
-      });
-      passwordRescueViewModel.isSuccessPasswordRescue = false;
-    }
 
-    if (passwordRescueViewModel.errorMessage != null) {
-      WidgetsBinding.instance.addPostFrameCallback( (_) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(
-                  passwordRescueViewModel.errorMessage.toString(),
-                  style: theme.textTheme.labelSmall
-                ),
-                duration: Duration(seconds: 4),
-                backgroundColor: Colors.red
-            )
-        );
-        passwordRescueViewModel.clearErrorMessage();
-      });
-    }
-    
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
