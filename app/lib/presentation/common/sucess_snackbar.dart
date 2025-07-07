@@ -13,6 +13,7 @@ SnackBar showSuccessSnackbar(String content) {
     ),
     backgroundColor: Colors.green,
     showCloseIcon: true,
+    closeIconColor: Colors.white,
     duration: Duration(seconds: 5),
     elevation: 2,
   );

@@ -7,6 +7,7 @@ import "package:app/l10n/app_localizations.dart";
 import "package:app/presentation/common/error_snackbar.dart";
 import "package:app/presentation/common/sucess_snackbar.dart";
 import "package:app/presentation/screens/categoryForm/category_form_screen.dart";
+import "package:app/presentation/screens/configuration/configuration_screen.dart";
 import "package:app/presentation/screens/home/home_viewmodel.dart";
 import "package:app/presentation/screens/home/widgets/category_item.dart";
 import "package:app/services/events/category_event_service.dart";
@@ -403,7 +404,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  // TODO fazer a tela de configurações e adicionar a navegação aqui
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ConfigurationScreen())
+                  );
                 },
                 child: Padding(
                 padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),

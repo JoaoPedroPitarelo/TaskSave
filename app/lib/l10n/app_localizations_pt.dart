@@ -257,4 +257,34 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get passwordRescueSuccess => 'E-mail enviado com sucesso!';
+
+  @override
+  String get config => 'Configurações';
+
+  @override
+  String get account => 'Usuário';
+
+  @override
+  String get language => 'Idioma';
+
+  @override
+  String get portuguese => 'Português';
+
+  @override
+  String get english => 'Inglês';
+
+  @override
+  String get espanish => 'Espanhol';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get credits => 'Créditos: ';
+
+  @override
+  String get wantToLogout => 'Deseja sair?';
+
+  @override
+  String get darkMode => 'Modo escuro ';
 }

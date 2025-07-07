@@ -55,6 +55,7 @@ class AppGlobalColors extends ThemeExtension<AppGlobalColors> {
       return this;
     }
     return AppGlobalColors(
+      taskSaveLogo: t < 0.5 ? taskSaveLogo : other.taskSaveLogo,
       welcomeScreenCardColor: Color.lerp(welcomeScreenCardColor, other.welcomeScreenCardColor, t),
       // Task
       taskCardColor: Color.lerp(taskCardColor, other.taskCardColor, t),

@@ -26,23 +26,25 @@ class AuthService {
     );
   }
 
-  Future<void> _saveTokensInSecureStorage(String token, String refreshToken, String userId) async {
+  Future<void> _saveTokensInSecureStorage(String token, String refreshToken, String userId, String userEmail) async {
     await _secureStorage.write(key: _tokenKey, value: token);
     await _secureStorage.write(key: _refreshTokenKey, value: refreshToken);
     await _secureStorage.write(key: _userIdKey, value: userId);
+    await _secureStorage.write(key: _userEmailKey, value: userEmail);
   }
 
   Future<void> _deleteTokensInSecureStorage() async {
     await _secureStorage.delete(key: _tokenKey);
     await _secureStorage.delete(key: _refreshTokenKey);
     await _secureStorage.delete(key: _userIdKey);
+    await _secureStorage.delete(key: _userEmailKey);
   }
 
   Future<void> saveAuthInfo(String token, String refreshToken, UserVo user) async {
     _authToken = token;
     _refreshToken = refreshToken;
     _currentUser = user;
-    await _saveTokensInSecureStorage(_authToken!, _refreshToken!, user.id!);
+    await _saveTokensInSecureStorage(_authToken!, _refreshToken!, user.id!, user.login!);
     print("saveAuthInfo chamado");
   }
 
@@ -59,5 +61,12 @@ class AuthService {
     }
     print("isAuthenticaded chamado");
     return _refreshToken != null;
+  }
+
+  Future<UserVo?> getUser() async {
+    if (_currentUser == null) {
+      await init();
+    }
+    return _currentUser;
   }
 }

@@ -1,4 +1,17 @@
 package joaopitarelo.tasksave.api.interfaces.dtos.user;
 
-public record OutputLogin(Long userId, String accessToken, String refreshToken) {
+import joaopitarelo.tasksave.api.domain.user.User;
+
+public record OutputLogin(
+    UserDto user,
+    String accessToken,
+    String refreshToken
+) {
+    OutputLogin(User user, String accessToken, String refreshToken) {
+        this(
+            new UserDto(user.getId(), user.getLogin()),
+            accessToken,
+            refreshToken
+        );
+    }
 }

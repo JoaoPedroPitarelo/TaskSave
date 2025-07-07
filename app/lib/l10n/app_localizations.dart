@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
 import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
@@ -92,7 +94,11 @@ abstract class AppLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('pt')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('es'),
+    Locale('pt')
+  ];
 
   /// No description provided for @welcomeText.
   ///
@@ -579,6 +585,66 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'E-mail enviado com sucesso!'**
   String get passwordRescueSuccess;
+
+  /// No description provided for @config.
+  ///
+  /// In pt, this message translates to:
+  /// **'Configurações'**
+  String get config;
+
+  /// No description provided for @account.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário'**
+  String get account;
+
+  /// No description provided for @language.
+  ///
+  /// In pt, this message translates to:
+  /// **'Idioma'**
+  String get language;
+
+  /// No description provided for @portuguese.
+  ///
+  /// In pt, this message translates to:
+  /// **'Português'**
+  String get portuguese;
+
+  /// No description provided for @english.
+  ///
+  /// In pt, this message translates to:
+  /// **'Inglês'**
+  String get english;
+
+  /// No description provided for @espanish.
+  ///
+  /// In pt, this message translates to:
+  /// **'Espanhol'**
+  String get espanish;
+
+  /// No description provided for @theme.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tema'**
+  String get theme;
+
+  /// No description provided for @credits.
+  ///
+  /// In pt, this message translates to:
+  /// **'Créditos: '**
+  String get credits;
+
+  /// No description provided for @wantToLogout.
+  ///
+  /// In pt, this message translates to:
+  /// **'Deseja sair?'**
+  String get wantToLogout;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modo escuro '**
+  String get darkMode;
 }
 
 class _AppLocalizationsDelegate
@@ -592,7 +658,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['pt'].contains(locale.languageCode);
+      <String>['en', 'es', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -601,6 +667,10 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
     case 'pt':
       return AppLocalizationsPt();
   }

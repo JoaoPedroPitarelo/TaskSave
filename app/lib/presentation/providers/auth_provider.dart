@@ -10,7 +10,10 @@ class AuthProvider extends ChangeNotifier {
   UserVo? _user;
 
   bool get isAuthenticated => _isAuthenticated;
-  UserVo? get user => _user;
+  UserVo? get user {
+    loadingUser();
+    return _user;
+  }
   bool get isLoading => _isLoading;
 
   AuthProvider(this._authService) {
@@ -39,5 +42,9 @@ class AuthProvider extends ChangeNotifier {
     _isAuthenticated = false;
     _user = null;
     notifyListeners();
+  }
+
+  Future<void> loadingUser() async {
+    _user = await _authService.getUser();
   }
 }

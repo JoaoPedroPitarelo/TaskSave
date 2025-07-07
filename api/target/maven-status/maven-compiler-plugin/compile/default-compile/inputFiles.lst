@@ -57,3 +57,4 @@ C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\interfaces\dtos\user\RegisterRequest.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\interfaces\dtos\user\RescueLogin.java
 C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\interfaces\dtos\user\TokenData.java
+C:\Users\jpspi\dev\repositories\TaskSave\api\src\main\java\joaopitarelo\tasksave\api\interfaces\dtos\user\UserDto.java

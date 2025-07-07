@@ -30,6 +30,7 @@ joaopitarelo\tasksave\api\interfaces\dtos\user\LoginRequest.class
 joaopitarelo\tasksave\api\interfaces\controller\AuthenticationController.class
 joaopitarelo\tasksave\api\interfaces\dtos\task\CreateTask.class
 joaopitarelo\tasksave\api\interfaces\dtos\subtask\OutputSubtask.class
+joaopitarelo\tasksave\api\interfaces\dtos\user\UserDto.class
 joaopitarelo\tasksave\api\domain\subtask\SubtaskRepository.class
 joaopitarelo\tasksave\api\infraestruture\persistence\CategoryJpaRepository.class
 joaopitarelo\tasksave\api\domain\enums\Priority.class

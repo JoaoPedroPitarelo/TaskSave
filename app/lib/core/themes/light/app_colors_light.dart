@@ -7,7 +7,7 @@ class AppColorsLight {
   static final Color scaffoldBackgroundColor = Colors.white;
   static final Color shadowColor = Colors.black;
 
-  static final Color welcomeScreenCardColor = Color.fromARGB(255, 196, 196, 196);
+  static final Color welcomeScreenCardColor = Color.fromARGB(255, 236, 236, 236);
 
   // Task
   static final Color taskCardColor = Color.fromARGB(255, 255, 255, 255);

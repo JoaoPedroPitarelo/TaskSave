@@ -182,8 +182,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final preferencesProvider = context.watch<AppPreferencesProvider>();
 
-    preferencesProvider.toggleTheme(isDark: false);
-
     return MaterialApp(
       navigatorKey: navigatorKey,
       theme: AppThemeDataLight.lightTheme,
@@ -199,8 +197,9 @@ class _MyAppState extends State<MyApp> {
       ],
       supportedLocales: [
         // TODO ao final do projeto adicionar as demais linguagens
-        //Locale('en'),
-        Locale('pt', 'BR')
+        Locale('en', 'US'),
+        Locale('pt', 'BR'),
+        Locale('es')
       ],
       locale: preferencesProvider.appLanguage,
       home: Wrapper(),

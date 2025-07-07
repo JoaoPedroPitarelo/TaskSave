@@ -47,9 +47,10 @@ class LoginViewmodel extends ChangeNotifier {
       (userInfo) async {
         final token = userInfo['accessToken'];
         final refreshToken = userInfo['refreshToken'];
-        final userId = userInfo['userId'].toString();
+        final userId = userInfo['user']["id"].toString();
+        final userEmail = userInfo['user']["email"];
 
-        await _authService.saveAuthInfo(token, refreshToken, UserVo(id: userId, login: email));
+        await _authService.saveAuthInfo(token, refreshToken, UserVo(id: userId, login: userEmail));
 
         _authProvider.setLoggedIn(UserVo(id: userId, login: email));
 

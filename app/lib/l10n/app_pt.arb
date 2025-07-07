@@ -81,5 +81,15 @@
     "modifyCategory": "Modificar categoria",
     "categoryModified": "Categoria modificada com sucesso!",
     "registerSuccess": "Cadatro realizado com sucesso!",
-    "passwordRescueSuccess": "E-mail enviado com sucesso!"
+    "passwordRescueSuccess": "E-mail enviado com sucesso!",
+    "config": "Configurações",
+    "account": "Usuário",
+    "language": "Idioma",
+    "portuguese": "Português",
+    "english": "Inglês",
+    "espanish": "Espanhol",
+    "theme": "Tema",
+    "credits": "Créditos: ",
+    "wantToLogout": "Deseja sair?",
+    "darkMode": "Modo escuro "
 }
