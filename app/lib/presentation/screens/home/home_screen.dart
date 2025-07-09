@@ -2,20 +2,24 @@ import "dart:async";
 import "package:app/core/themes/app_global_colors.dart";
 import "package:app/core/utils/translateFailureKey.dart";
 import 'package:app/domain/events/category_events.dart';
+import "package:app/domain/events/task_events.dart";
 import "package:app/domain/models/category_vo.dart";
+import "package:app/domain/models/task_vo.dart";
 import "package:app/l10n/app_localizations.dart";
 import "package:app/presentation/common/error_snackbar.dart";
 import "package:app/presentation/common/sucess_snackbar.dart";
+import "package:app/presentation/common/task_widget.dart";
 import "package:app/presentation/screens/categoryForm/category_form_screen.dart";
-import "package:app/presentation/screens/configuration/configuration_screen.dart";
+import "package:app/presentation/screens/home/widgets/widget_filter_mode.dart";
+import "package:app/presentation/screens/settings/settings_screen.dart";
 import "package:app/presentation/screens/home/home_viewmodel.dart";
 import "package:app/presentation/screens/home/widgets/category_item.dart";
 import "package:app/services/events/category_event_service.dart";
+import "package:app/services/events/task_event_service.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
 import 'package:app/presentation/screens/home/widgets/build_drawer_item.dart';
-import 'package:app/presentation/common/hex_to_color.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,12 +29,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  StreamSubscription? _deletionSubscription;
+  StreamSubscription? _categorySubscription;
+  StreamSubscription? _taskSubscription;
   final _categoryEventService = CategoryEventService();
-
-  void loadCategories() async {
-    await context.read<HomeViewmodel>().getCategories();
-  }
+  final _taskEventService = TaskEventService();
 
   @override
   initState() {
@@ -38,8 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadCategories();
+      loadTasks();
 
-      _deletionSubscription = _categoryEventService.onCategoryChanged.listen( (event) {
+      _categorySubscription = _categoryEventService.onCategoryChanged.listen( (event) {
         if (event is CategoryDeletionEvent) {
           _showUndoSnackbar(event.category, event.originalIndex);
         }
@@ -67,7 +70,26 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         }
       });
+
+      _taskSubscription = _taskEventService.onTaskChanged.listen( (event) {
+        if (event is GetTasksEvent) {
+
+          if (!event.success) {
+            _showErrorSnackbar(translateFailureKey(context, event.failureKey!));
+            return;
+          }
+        }
+      });
+
     });
+  }
+
+  void loadCategories() async {
+    await context.read<HomeViewmodel>().getCategories();
+  }
+
+  void loadTasks() async {
+    await context.read<HomeViewmodel>().getTasks();
   }
 
   void _showUndoSnackbar(CategoryVo category, int originalIndex) {
@@ -111,10 +133,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+
+
   @override
   void dispose() {
     super.dispose();
-    _deletionSubscription?.cancel();
+    _categorySubscription?.cancel();
+    _taskSubscription?.cancel();
   }
 
   @override
@@ -125,115 +150,190 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeViewmodel = context.watch<HomeViewmodel>();
 
     return Scaffold(
-        appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(170),
-            child: AppBar(
-              backgroundColor: const Color.fromARGB(255, 12, 43, 170),
-              elevation: 12,
-              shadowColor: Colors.black,
-              iconTheme: const IconThemeData(color: Colors.white, size: 30),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(20),
-                )
-              ),
-              flexibleSpace: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 50),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 24),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              if (homeViewmodel.selectedCategory != null)
-                               Padding(
-                                 padding: const EdgeInsets.only(bottom: 10),
-                                 child: Row(
-                                   children: [
-                                     Icon(
-                                       Icons.dashboard_customize_outlined,
-                                       color: hexToColor(homeViewmodel.selectedCategory!.color),
-                                       size: 30,
-                                     ),
-                                     const SizedBox(width: 10),
-                                     Text(
-                                       homeViewmodel.selectedCategory!.description,
-                                       style: GoogleFonts.schibstedGrotesk(
-                                         fontWeight: FontWeight.normal,
-                                         fontSize: 22,
-                                         color: Colors.white
-                                       )
-                                     ),
-                                   ],
-                                 ),
-                               )
-                              else
-                                const SizedBox(height: 28)
-                            ],
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SearchAnchor(
-                              builder: (BuildContext context,
-                                SearchController controller) {
-                                  return SearchBar(
-                                    constraints: BoxConstraints(
-                                      maxWidth: MediaQuery.of(context).size.width * 0.9,
-                                      minHeight: MediaQuery.of(context).size.height * 0.061
-                                    ),
-                                    textStyle: const WidgetStatePropertyAll(TextStyle(color: Colors.white)),
-                                    backgroundColor: const WidgetStatePropertyAll(Colors.black38),
-                                    elevation: const WidgetStatePropertyAll(2.0),
-                                    controller: controller,
-                                    padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
-                                    onTap: () {},
-                                    onChanged: (_) {
-                                      // TODO implementar mecanismo de pesquisa
-                                    },
-                                    leading: const Icon(Icons.search, color: Colors.white,),
-                                    hintText: AppLocalizations.of(context)!
-                                        .searchForTasks,
-                                  );
-                              },
-                              suggestionsBuilder: (BuildContext context, SearchController controller) {
-                                return List<ListTile>.generate(5, (int index) {
-                                  final String item = index.toString();
-                                  return ListTile(
-                                    title: Text('Suggestion $index'),
-                                    onTap: () {
-                                      setState(() {
-                                        controller.closeView(item);
-                                      }
-                                    );
-                                  },
-                                );
-                                }
-                              );
-                            }
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(170),
+        child: AppBar(
+          backgroundColor: const Color.fromARGB(255, 12, 43, 170),
+          elevation: 12,
+          shadowColor: Colors.black,
+          iconTheme: const IconThemeData(color: Colors.white, size: 30),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(20),
+            )
+          ),
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 50),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          WidgetFilterMode(
+                            filterMode: homeViewmodel.filterMode,
+                            selectedCategory: homeViewmodel.selectedCategory
                           )
                         ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SearchAnchor(
+                          builder: (BuildContext context,
+                            SearchController controller) {
+                              return SearchBar(
+                                constraints: BoxConstraints(
+                                  maxWidth: MediaQuery.of(context).size.width * 0.9,
+                                  minHeight: MediaQuery.of(context).size.height * 0.061
+                                ),
+                                textStyle: const WidgetStatePropertyAll(TextStyle(color: Colors.white)),
+                                backgroundColor: const WidgetStatePropertyAll(Colors.black38),
+                                elevation: const WidgetStatePropertyAll(2.0),
+                                controller: controller,
+                                padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
+                                onTap: () {},
+                                onChanged: (_) {
+                                  // TODO implementar mecanismo de pesquisa
+                                },
+                                leading: const Icon(Icons.search, color: Colors.white,),
+                                hintText: AppLocalizations.of(context)!
+                                    .searchForTasks,
+                              );
+                          },
+                          suggestionsBuilder: (BuildContext context, SearchController controller) {
+                            return List<ListTile>.generate(5, (int index) {
+                              final String item = index.toString();
+                              return ListTile(
+                                title: Text('Suggestion $index'),
+                                onTap: () {
+                                  setState(() {
+                                    controller.closeView(item);
+                                  }
+                                );
+                              },
+                            );
+                            }
+                          );
+                        }
                       )
                     ],
+                  )
+                ],
+              ),
+          )
+        ),
+      ),
+    ),
+
+      body: homeViewmodel.tasks.isNotEmpty
+        ? RefreshIndicator(
+        onRefresh: () async => loadTasks(),
+          child: ReorderableListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+            itemCount: homeViewmodel.filteredTasks.length,
+            proxyDecorator: (child, index, animation) {
+              return Material(
+                color: Colors.transparent,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 12, 43, 170),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black54,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3)
+                      )
+                    ]
                   ),
-              )
-            ),
+                  child: child,
+                ),
+              );
+            },
+            itemBuilder: (context, i) {
+              TaskVo task = homeViewmodel.filteredTasks[i];
+              return TaskWidget(
+                key: ValueKey(task.id),
+                id: task.id,
+                title: task.title,
+                description: task.description ?? "",
+                deadline: task.deadline,
+                priority: task.priority,
+                category: task.category,
+                completed: task.completed
+              );
+            },
+            onReorder: (int oldIndex, int newIndex) {
+              // TODO criar método para salvar ordenação das tarefas
+            },
           ),
-      ),
-
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:  [
-
-          ],
         )
-      ),
+        : RefreshIndicator(
+          onRefresh: () async => loadTasks(),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 80.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Image.asset(
+                          "assets/images/no_tasks_stay_safe.png",
+                          width: MediaQuery.of(context).size.width * 0.79,
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: appColors.welcomeScreenCardColor,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black54,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3))
+                            ]),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 5),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Fique em paz...",
+                                  style: GoogleFonts.roboto(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 32,
+                                  ),
+                                ),
+                                Text(
+                                  "Não há nenhuma tarefa",
+                                  style: GoogleFonts.roboto(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 32,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
 
       // Menu lateral
       drawer: Drawer(
@@ -265,54 +365,72 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     buildDrawerItem(
                       context: context,
-                      icon: Icons.all_inbox,
+                      icon: const Icon(
+                        Icons.filter_none_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
                       text: AppLocalizations.of(context)!.allTasks,
-                      count: 0,
+                      count: homeViewmodel.countAllTasks,
                       onTap: () {
-                        // TODO implementar o método que irá limpar todos os filtros
+                        homeViewmodel.clearAllFiltersForTasks();
                         Navigator.pop(context);
-
                       },
                     ),
                     const SizedBox(height: 5),
                     buildDrawerItem(
                       context: context,
-                      icon: Icons.calendar_today,
+                      icon: const Icon(
+                        Icons.today_rounded,
+                        size: 28,
+                        color: Colors.white,
+                      ),
                       text: AppLocalizations.of(context)!.taskToday,
-                      count: 0,
+                      count: homeViewmodel.countTodayTasks,
                       onTap: () {
-                        // TODO implementar o método que irá filtrar as tarefas por dia
+                        homeViewmodel.filterTodayTasks();
                         Navigator.pop(context);
-                        // Ação para "Hoje"
                       },
                     ),
                     buildDrawerItem(
                       context: context,
-                      icon: Icons.calendar_month,
+                      icon: const Icon(
+                        Icons.calendar_today_rounded,
+                        size: 28,
+                        color: Colors.white,
+                      ),
                       text: AppLocalizations.of(context)!.taskWeek,
-                      count: 0,
+                      count: homeViewmodel.countNextWeekTasks,
                       onTap: () {
-                        // TODO implementar o método que irá filtrar as tarefas por semana
+                        homeViewmodel.filterNextWeekTasks();
                         Navigator.pop(context);
                       },
                     ),
                     buildDrawerItem(
                       context: context,
-                      icon: Icons.calendar_view_month,
+                      icon: const Icon(
+                        Icons.calendar_month_rounded,
+                        size: 28,
+                        color: Colors.white,
+                      ),
                       text: AppLocalizations.of(context)!.taskMonth,
-                      count: 0,
+                      count: homeViewmodel.countNextMonthTasks,
                       onTap: () {
-                        // TODO implementar o método que irá filtrar as tarefas por mês
+                        homeViewmodel.filterNextMonthTasks();
                         Navigator.pop(context);
                       },
                     ),
                     buildDrawerItem(
                       context: context,
-                      icon: Icons.error_outline,
+                      icon: const Icon(
+                        Icons.warning_rounded,
+                        size: 28,
+                        color: Colors.white,
+                      ),
                       text: AppLocalizations.of(context)!.taskLate,
-                      count: 0,
+                      count: homeViewmodel.countOverdueTasks,
                       onTap: () {
-                        // TODO implementar o método que irá filtrar as tarefas atrasadas
+                        homeViewmodel.filterOverdueTasks();
                         Navigator.pop(context);
                       },
                     ),
@@ -390,6 +508,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           index: i,
                           onTap: () {
                             homeViewmodel.selectCategory(category);
+                            homeViewmodel.filterTasksByCategory(category);
                             Navigator.of(context).pop();
                           },
                         );
@@ -397,7 +516,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       onReorder: (int oldIndex, int newIndex) {
                         homeViewmodel.reorderCategories(oldIndex, newIndex);
                       },
-
                     ),
                   ],
                 )

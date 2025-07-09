@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 Widget buildDrawerItem({
   required BuildContext context,
-  required IconData icon,
+  required Icon icon,
   required String text,
   int? count,
   bool showPlusIcon = false,
@@ -11,7 +11,7 @@ Widget buildDrawerItem({
   final theme = Theme.of(context);
 
   return ListTile(
-    leading: Icon(icon, color: Colors.white, size: 28),
+    leading: icon,
     title: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

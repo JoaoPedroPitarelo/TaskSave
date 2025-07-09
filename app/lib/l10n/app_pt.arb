@@ -91,5 +91,6 @@
     "theme": "Tema",
     "credits": "Créditos: ",
     "wantToLogout": "Deseja sair?",
-    "darkMode": "Modo escuro "
+    "darkMode": "Modo escuro: ",
+    "withoutCategory": "Sem categoria"
 }

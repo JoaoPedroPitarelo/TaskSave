@@ -643,8 +643,14 @@ abstract class AppLocalizations {
   /// No description provided for @darkMode.
   ///
   /// In pt, this message translates to:
-  /// **'Modo escuro '**
+  /// **'Modo escuro: '**
   String get darkMode;
+
+  /// No description provided for @withoutCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem categoria'**
+  String get withoutCategory;
 }
 
 class _AppLocalizationsDelegate

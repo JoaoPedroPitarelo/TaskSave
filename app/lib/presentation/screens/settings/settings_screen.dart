@@ -3,6 +3,7 @@ import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/providers/app_preferences_provider.dart';
 import 'package:app/presentation/providers/auth_provider.dart';
+import 'package:app/presentation/screens/home/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,6 +25,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     final preferencesProvider = context.watch<AppPreferencesProvider>();
     final authProvider = context.watch<AuthProvider>();
     final appColors = AppGlobalColors.of(context);
+
+    final userEmail = authProvider.user?.login!;
 
     Map<String, String> keyToLanguage = {
       'en': AppLocalizations.of(context)!.english,
@@ -98,7 +101,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          authProvider.user!.login!,
+                          userEmail!,
                           style: GoogleFonts.roboto(
                               fontSize: 17,
                               fontWeight: FontWeight.w500
@@ -122,7 +125,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 ],
               ),
             ),
-
             Container(
               decoration: BoxDecoration(
                 color: appColors.welcomeScreenCardColor,
@@ -339,7 +341,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   }
 }
 
-
 class _logoutConfirmDialog extends StatelessWidget {
 
   const _logoutConfirmDialog({super.key});
@@ -347,6 +348,7 @@ class _logoutConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final homeViewmodel = Provider.of<HomeViewmodel>(context, listen: false);
 
     return AlertDialog(
       backgroundColor: const Color.fromARGB(255, 24, 24, 24),
@@ -356,8 +358,11 @@ class _logoutConfirmDialog extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Icon(Icons.warning_amber_rounded,
-                  color: Colors.red, size: 40),
+              const Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.red,
+                size: 40
+              ),
               const SizedBox(width: 10),
               Text(
                 AppLocalizations.of(context)!.wantToLogout,
@@ -390,6 +395,7 @@ class _logoutConfirmDialog extends StatelessWidget {
             TextButton(
               onPressed: () {
                 authProvider.logout();
+                homeViewmodel.clearUserData();
               },
               child: Row(
                 children: [
@@ -399,7 +405,8 @@ class _logoutConfirmDialog extends StatelessWidget {
                     style: GoogleFonts.roboto(
                       fontSize: 17,
                       color: Colors.red,
-                    ))
+                    )
+                  )
                 ],
               ))
           ],

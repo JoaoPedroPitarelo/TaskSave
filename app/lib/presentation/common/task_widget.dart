@@ -87,25 +87,15 @@ class _TaskWidgetState extends State<TaskWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.check_circle_outline_rounded, 
-              color: const Color.fromARGB(255, 0, 255, 8), 
+              Icons.check_circle_outline_rounded,
+              color: const Color.fromARGB(255, 0, 255, 8),
               size: 80,
             ),
           ],
         ),
       ),
       child: Container(
-        decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black45,
-                  blurRadius: 15,
-                  spreadRadius: 1,
-                  offset: Offset(-4, 10))
-            ],
-            color: appColors.taskCardColor,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-        width: 320,
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -114,11 +104,11 @@ class _TaskWidgetState extends State<TaskWidget> {
                 width: 30,
                 decoration: BoxDecoration(
                     color: getPriorityColor(context, widget.priority),
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10)
-                      )
-                  ),
+                    )
+                ),
               ),
               Expanded(
                 child: Column(

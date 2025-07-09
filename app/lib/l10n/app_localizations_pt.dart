@@ -286,5 +286,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get wantToLogout => 'Deseja sair?';
 
   @override
-  String get darkMode => 'Modo escuro ';
+  String get darkMode => 'Modo escuro: ';
+
+  @override
+  String get withoutCategory => 'Sem categoria';
 }

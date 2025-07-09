@@ -40,6 +40,7 @@ class AuthProvider extends ChangeNotifier {
 
   void logout() {
     _isAuthenticated = false;
+    _authService.clearAuthData();
     _user = null;
     notifyListeners();
   }

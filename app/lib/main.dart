@@ -18,6 +18,7 @@ import 'package:app/presentation/screens/wrapper.dart';
 
 import 'package:app/repositories/auth_repository.dart';
 import 'package:app/repositories/category_repository.dart';
+import 'package:app/repositories/task_repository.dart';
 import 'package:app/services/auth/auth_service.dart';
 
 import 'package:app/l10n/app_localizations.dart';
@@ -49,7 +50,9 @@ Future<void> main() async {
           return AuthProvider(authService);
         }
       ),
-      Provider<Dio>(create: (context) => Dio()),
+      Provider<Dio>(
+        create: (context) => Dio()
+      ),
       Provider<AuthRepository>(
         create: (context) => AuthRepository(
           Provider.of<Dio>(context, listen: false),
@@ -61,6 +64,7 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: (ctx) => HomeViewmodel(
           CategoryRepository(Provider.of<Dio>(ctx, listen: false)),
+          TaskRepository(Provider.of<Dio>(ctx, listen: false)),
           mapFailureToKey
         ),
       ),

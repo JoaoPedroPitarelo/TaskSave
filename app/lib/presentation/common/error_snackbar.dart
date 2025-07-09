@@ -18,5 +18,3 @@ SnackBar showErrorSnackbar(String content) {
     backgroundColor: Colors.red,
   );
 }
-
-

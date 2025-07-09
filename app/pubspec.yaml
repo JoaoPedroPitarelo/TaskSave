@@ -47,6 +47,7 @@ flutter:
   assets:
     - assets/images/tasksave_logo_light.png
     - assets/images/tasksave_logo_dark.png
+    - assets/images/no_tasks_stay_safe.png
     - assets/images/confirm_email.png
     - assets/sounds/taskCompleted.mp3
 

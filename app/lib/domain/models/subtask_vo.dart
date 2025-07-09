@@ -5,18 +5,16 @@ import 'package:app/domain/models/task_vo.dart';
 class SubtaskVo {
   // Atributos
   final String id;
-  final TaskVo parentTask;
   final String title;
   final String? description;
   final DateTime deadline;
   final PriorityEnum priority;
-  final ReminderTypeNum reminderType;
+  final ReminderTypeNum? reminderType;
   final bool completed;
 
   // Construtor
   const SubtaskVo({
     required this.id,
-    required this.parentTask,
     required this.title,
     this.description,
     required this.deadline,
@@ -25,6 +23,16 @@ class SubtaskVo {
     required this.completed
   });
 
-  // Não precisa do fromJson
+  factory SubtaskVo.fromJson(Map<String, dynamic> json) {
+    return SubtaskVo(
+      id: json['id'].toString(),
+      title: json['title'],
+      description: json['description'],
+      deadline: DateTime.parse(json['deadline']),
+      priority: PriorityEnum.values.firstWhere((priority) => priority.name == json['priority'].toString().toLowerCase()),
+      reminderType: ReminderTypeNum.values.firstWhere((reminderType) => reminderType.name == json['reminderType'].toString().toLowerCase()),
+      completed: json['completed'],
+    );
+  }
 
 }

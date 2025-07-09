@@ -63,7 +63,7 @@
   "taskCategory": "Add category",
   "categoryNotFound": "Category not found",
   "allTasks": "All",
-  "wantToDelete": "Do you want to delete?",
+  "wantToDelete": "Wanna to delete?",
   "warningDeleteCategory": "Deleting a category will also delete all its related tasks.",
   "yes": "Yes",
   "no": "No",
@@ -89,6 +89,7 @@
   "espanish": "Spanish",
   "theme": "Theme",
   "credits": "Credits: ",
-  "wantToLogout": "Do you want to logout?",
-  "darkMode": "Dark mode: "
+  "wantToLogout": "Log out?",
+  "darkMode": "Dark mode: ",
+  "withoutCategory": "No Category"
 }

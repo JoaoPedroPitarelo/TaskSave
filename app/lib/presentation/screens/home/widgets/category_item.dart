@@ -48,7 +48,7 @@ class CategoryItem extends StatelessWidget {
             Expanded(
               child: Text(
                 category.description == "Default"
-                  ? "Sem categoria"
+                  ? AppLocalizations.of(context)!.withoutCategory
                   : category.description,
                 style: theme.textTheme.bodySmall,
               ),

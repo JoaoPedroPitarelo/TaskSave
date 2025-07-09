@@ -1,12 +1,10 @@
 enum ReminderTypeNum {
-  // Valores de desse enum
-  untilDeadLine("Até o prazo"),
-  beforeDeadLine("Antes do prazo"),
-  deadlineDay("Dia do prazo");
+  until_deadline("Até o prazo"),
+  before_deaddine("Antes do prazo"),
+  dead_line_Day("Dia do prazo");
 
-  // Atributo interno
   final String description;
 
-  // Construtor 
+
   const ReminderTypeNum(this.description);
 }
