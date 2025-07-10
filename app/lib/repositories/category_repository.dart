@@ -1,5 +1,5 @@
 import 'package:app/core/errors/failure.dart';
-import 'package:app/domain/exceptions/category_failures.dart';
+import 'package:app/core/errors/category_failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

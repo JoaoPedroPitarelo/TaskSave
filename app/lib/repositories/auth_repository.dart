@@ -1,5 +1,5 @@
 import 'package:app/core/errors/failure.dart';
-import 'package:app/domain/exceptions/auth_failures.dart';
+import 'package:app/core/errors/auth_failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

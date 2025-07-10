@@ -225,6 +225,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get category => 'Categoria';
 
   @override
+  String get task => 'Tarefa';
+
+  @override
   String get deleted => 'excluída';
 
   @override
@@ -290,4 +293,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get withoutCategory => 'Sem categoria';
+
+  @override
+  String get taskNotFound => 'Tarefa não encontrada';
 }

@@ -1,7 +1,5 @@
 import 'dart:async';
-
-import 'package:app/domain/events/auth_events.dart';
-
+import 'package:app/core/events/auth_events.dart';
 
 class AuthEventService {
   static final AuthEventService _instance = AuthEventService._internal();

@@ -1,8 +1,8 @@
 import "dart:async";
 import "package:app/core/themes/app_global_colors.dart";
 import "package:app/core/utils/translateFailureKey.dart";
-import 'package:app/domain/events/category_events.dart';
-import "package:app/domain/events/task_events.dart";
+import 'package:app/core/events/category_events.dart';
+import "package:app/core/events/task_events.dart";
 import "package:app/domain/models/category_vo.dart";
 import "package:app/domain/models/task_vo.dart";
 import "package:app/l10n/app_localizations.dart";
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       _categorySubscription = _categoryEventService.onCategoryChanged.listen( (event) {
         if (event is CategoryDeletionEvent) {
-          _showUndoSnackbar(event.category, event.originalIndex);
+          _showUndoSnackbarCategory(event.category, event.originalIndex);
         }
 
         if (event is CategoriesChangedEvent) {
@@ -79,6 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
             return;
           }
         }
+
+        if (event is TaskDeletionEvent) {
+          _showUndoSnackbarTask(event.task, event.originalIndex);
+        }
       });
 
     });
@@ -92,14 +96,18 @@ class _HomeScreenState extends State<HomeScreen> {
     await context.read<HomeViewmodel>().getTasks();
   }
 
-  void _showUndoSnackbar(CategoryVo category, int originalIndex) {
+  void _showUndoSnackbarCategory(CategoryVo category, int originalIndex) {
     final homeViewmodel = context.read<HomeViewmodel>();
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "${AppLocalizations.of(context)!.category} ${category.description} ${AppLocalizations.of(context)!.deleted}",
-          style: const TextStyle(color: Colors.white),
+          style: GoogleFonts.roboto(
+            fontSize: 15,
+            color: Colors.white,
+            fontWeight: FontWeight.w500
+          ),
         ),
         elevation: 2,
         backgroundColor: Colors.red,
@@ -121,6 +129,39 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _showUndoSnackbarTask(TaskVo task, int originalIndex) {
+    final homeViewmodel = context.read<HomeViewmodel>();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "${AppLocalizations.of(context)!.task} ${task.title} ${AppLocalizations.of(context)!.deleted}",
+          style: GoogleFonts.roboto(
+              fontSize: 15,
+              color: Colors.white,
+              fontWeight: FontWeight.w500
+          ),
+        ),
+        elevation: 2,
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: AppLocalizations.of(context)!.undo,
+          textColor: Colors.white,
+          onPressed: () {
+            homeViewmodel.undoDeletionTask(task, originalIndex);
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+        showCloseIcon: false,
+      ),
+    ).closed.then((reason) {
+      if (reason != SnackBarClosedReason.action) {
+        homeViewmodel.confirmDeletionTask(task, originalIndex);
+      }
+    });
+  }
+
   void _showSuccessSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       showSuccessSnackbar(message)
@@ -132,8 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
       showErrorSnackbar(message)
     );
   }
-
-
 
   @override
   void dispose() {
@@ -230,111 +269,115 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     ),
-
-      body: homeViewmodel.tasks.isNotEmpty
-        ? RefreshIndicator(
-        onRefresh: () async => loadTasks(),
-          child: ReorderableListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-            itemCount: homeViewmodel.filteredTasks.length,
-            proxyDecorator: (child, index, animation) {
-              return Material(
-                color: Colors.transparent,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 12, 43, 170),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3)
-                      )
-                    ]
-                  ),
-                  child: child,
-                ),
-              );
-            },
-            itemBuilder: (context, i) {
-              TaskVo task = homeViewmodel.filteredTasks[i];
-              return TaskWidget(
-                key: ValueKey(task.id),
-                id: task.id,
-                title: task.title,
-                description: task.description ?? "",
-                deadline: task.deadline,
-                priority: task.priority,
-                category: task.category,
-                completed: task.completed
-              );
-            },
-            onReorder: (int oldIndex, int newIndex) {
-              // TODO criar método para salvar ordenação das tarefas
-            },
-          ),
-        )
-        : RefreshIndicator(
-          onRefresh: () async => loadTasks(),
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 80.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          "assets/images/no_tasks_stay_safe.png",
-                          width: MediaQuery.of(context).size.width * 0.79,
-                        ),
-                        const SizedBox(height: 20),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: appColors.welcomeScreenCardColor,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black54,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3))
-                            ]),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 5),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Fique em paz...",
-                                  style: GoogleFonts.roboto(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 32,
-                                  ),
-                                ),
-                                Text(
-                                  "Não há nenhuma tarefa",
-                                  style: GoogleFonts.roboto(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 32,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+    body: homeViewmodel.tasks.isNotEmpty
+      ? RefreshIndicator(
+      onRefresh: () async {
+        loadTasks();
+        loadCategories();
+      },
+      child: ReorderableListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+        itemCount: homeViewmodel.filteredTasks.length,
+        proxyDecorator: (child, index, animation) {
+          return Material(
+            color: Colors.transparent,
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(50, 12, 43, 170),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 10,
+                    offset: const Offset(0, 2)
+                  )
+                ]
+              ),
+              child: child,
+            ),
+          );
+        },
+        itemBuilder: (context, i) {
+          TaskVo task = homeViewmodel.filteredTasks[i];
+          return TaskWidget(
+            key: ValueKey(task.id),
+            id: task.id,
+            title: task.title,
+            description: task.description ?? "",
+            deadline: task.deadline,
+            priority: task.priority,
+            category: task.category,
+            completed: task.completed,
+            onDismissedCallback: () async => homeViewmodel.prepareTaskForDeletion(task),
+          );
+        },
+        onReorder: (int oldIndex, int newIndex) {
+          // TODO criar método para salvar ordenação das tarefas
+          },
         ),
-
+      )
+      : RefreshIndicator(
+        onRefresh: () async {
+          loadTasks();
+          loadCategories();
+        },
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 80.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        "assets/images/no_tasks_stay_safe.png",
+                        width: MediaQuery.of(context).size.width * 0.79,
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: appColors.welcomeScreenCardColor,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black54,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3))
+                          ]),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 5),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Fique em paz...",
+                                style: GoogleFonts.roboto(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 32,
+                                ),
+                              ),
+                              Text(
+                                "Não há nenhuma tarefa",
+                                style: GoogleFonts.roboto(
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 32,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
       // Menu lateral
       drawer: Drawer(
         backgroundColor: const Color.fromARGB(255, 12, 43, 170),

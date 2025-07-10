@@ -70,6 +70,7 @@
   "delete": "Eliminar",
   "edit": "Editar",
   "category": "Categoría",
+  "task": "Tarea",
   "deleted": "eliminada",
   "undo": "Deshacer",
   "descriptionCategory": "Descripción",
@@ -91,5 +92,6 @@
   "credits": "Créditos: ",
   "wantToLogout": "¿Quieres irte?",
   "darkMode": "Modo oscuro: ",
-  "withoutCategory": "Sin categoría"
+  "withoutCategory": "Sin categoría",
+  "taskNotFound": "Tarea no encontrada"
 }

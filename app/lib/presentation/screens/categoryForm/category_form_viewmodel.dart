@@ -5,7 +5,7 @@ import 'package:app/repositories/category_repository.dart';
 import 'package:app/services/events/category_event_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:app/domain/events/category_events.dart';
+import 'package:app/core/events/category_events.dart';
 
 
 class CategoryFormViewmodel extends ChangeNotifier {

@@ -1,4 +1,4 @@
-import 'package:app/domain/enums/filtering_task_mode_enum.dart';
+import 'package:app/core/enums/filtering_task_mode_enum.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';

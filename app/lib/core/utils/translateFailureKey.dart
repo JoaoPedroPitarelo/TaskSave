@@ -6,6 +6,7 @@ String translateFailureKey(BuildContext context, FailureKey key) {
   final l10n = AppLocalizations.of(context)!;
 
   return switch (key) {
+    FailureKey.taskNotFound           => l10n.taskNotFound,
     FailureKey.categoryNotFound       => l10n.categoryNotFound,
     FailureKey.duplicatedUser         => l10n.duplicatedUser,
     FailureKey.invalidCredentials     => l10n.invalidCredentials,

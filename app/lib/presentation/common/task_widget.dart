@@ -70,9 +70,8 @@ class _TaskWidgetState extends State<TaskWidget> {
       key: Key(widget.id),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) async {
-        // TODO fazer a regra de negócio para mandar a requisição para a API, e realmente marcar como completed no BD
+
         await player.play(AssetSource("sounds/taskCompleted.mp3"));
-        print("Tarefa {$widget.title} completa");
         widget.completed = true;
 
         if (widget.onDismissedCallback != null) {

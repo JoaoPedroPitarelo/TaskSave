@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/domain/enums/filtering_task_mode_enum.dart';
-import 'package:app/domain/events/task_events.dart';
+import 'package:app/core/enums/filtering_task_mode_enum.dart';
+import 'package:app/core/events/task_events.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 import 'package:app/repositories/category_repository.dart';
@@ -10,7 +10,7 @@ import 'package:app/repositories/task_repository.dart';
 import 'package:app/services/events/category_event_service.dart';
 import 'package:app/services/events/task_event_service.dart';
 import 'package:flutter/material.dart';
-import 'package:app/domain/events/category_events.dart';
+import 'package:app/core/events/category_events.dart';
 import 'package:app/core/utils/date_utils.dart';
 
 class HomeViewmodel extends ChangeNotifier {
@@ -108,6 +108,42 @@ class HomeViewmodel extends ChangeNotifier {
     );
   }
 
+  void prepareTaskForDeletion(TaskVo task) {
+    final originalIndex = _filteredTasks.indexOf(task);
+    if (originalIndex == -1)  return;
+
+    _filteredTasks.removeAt(originalIndex);
+
+    _taskEventService.add(TaskDeletionEvent(task, originalIndex));
+    notifyListeners();
+  }
+
+  void undoDeletionTask(TaskVo task, int originalIndex) {
+    if(!_filteredTasks.contains(task)) {
+      _filteredTasks.insert(originalIndex.clamp(0, _filteredTasks.length), task);
+
+      notifyListeners();
+    }
+  }
+
+  Future<void> confirmDeletionTask(task, originalIndex) async {
+    final result = await _taskRepository.delete(task.id);
+
+    result.fold(
+     (failure) {
+        _errorKey = _mapFailureToKey(failure);
+        _loading = false;
+        undoDeletionTask(task, originalIndex);
+        notifyListeners();
+      },
+      (noContent) {
+        _tasks.remove(task);
+        _calculateCountTasks();
+        notifyListeners();
+      }
+    );
+  }
+
   void _calculateCountTasks() {
     _countAllTasks = _tasks.length;
     _countTodayTasks = _filteredTasks.where((task) => (task.deadline as DateTime).isToday).length;
@@ -160,7 +196,7 @@ class HomeViewmodel extends ChangeNotifier {
   // Category ------------------------------------------------------------------
   void prepareCategoryForDeletion(CategoryVo category) {
     final originalIndex = _categories.indexOf(category);
-    if (originalIndex == -1)  return;
+    if (originalIndex == -1) return;
 
     _categories.removeAt(originalIndex);
 
@@ -169,9 +205,8 @@ class HomeViewmodel extends ChangeNotifier {
       _deletedSelectedCategory = category;
     }
 
-    notifyListeners();
-
     _categoryEventsService.add(CategoryDeletionEvent(category, originalIndex));
+    notifyListeners();
   }
 
   Future<void> confirmDeletionCategory(category, originalIndex) async {
@@ -192,7 +227,7 @@ class HomeViewmodel extends ChangeNotifier {
 
   void undoDeletionCategory(CategoryVo category, int originalIndex) {
     if (!_categories.contains(category)) {
-      _categories.insert(originalIndex.clamp(0,_categories.length), category);
+      _categories.insert(originalIndex.clamp(0, _categories.length), category);
 
       if (_deletedSelectedCategory != null && _deletedSelectedCategory!.id == category.id) {
         _selectedCategory = category;

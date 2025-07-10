@@ -1,6 +1,6 @@
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/domain/events/auth_events.dart';
+import 'package:app/core/events/auth_events.dart';
 import 'package:app/domain/models/user_vo.dart';
 import 'package:app/presentation/providers/auth_provider.dart';
 import 'package:app/services/auth/auth_service.dart';

@@ -71,6 +71,7 @@
     "delete": "Excluir",
     "edit": "Editar",
     "category": "Categoria",
+    "task": "Tarefa",
     "deleted": "excluída",
     "undo": "Desfazer",
     "descriptionCategory": "Descrição",
@@ -92,5 +93,6 @@
     "credits": "Créditos: ",
     "wantToLogout": "Deseja sair?",
     "darkMode": "Modo escuro: ",
-    "withoutCategory": "Sem categoria"
+    "withoutCategory": "Sem categoria",
+    "taskNotFound": "Tarefa não encontrada"
 }

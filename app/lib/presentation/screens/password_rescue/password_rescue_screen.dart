@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/core/utils/translateFailureKey.dart';
-import 'package:app/domain/events/auth_events.dart';
+import 'package:app/core/events/auth_events.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/common/error_snackbar.dart';
 import 'package:app/presentation/common/sucess_snackbar.dart';

@@ -70,6 +70,7 @@
   "delete": "Delete",
   "edit": "Edit",
   "category": "Category",
+  "task": "Task",
   "deleted": "deleted",
   "undo": "Undo",
   "descriptionCategory": "Description",
@@ -91,5 +92,6 @@
   "credits": "Credits: ",
   "wantToLogout": "Log out?",
   "darkMode": "Dark mode: ",
-  "withoutCategory": "No Category"
+  "withoutCategory": "No Category",
+  "taskNotFound": "Task not found"
 }

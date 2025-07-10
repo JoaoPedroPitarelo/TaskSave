@@ -1,7 +1,7 @@
 
 import 'dart:async';
 
-import 'package:app/domain/events/task_events.dart';
+import 'package:app/core/events/task_events.dart';
 
 class TaskEventService {
   static final TaskEventService _instance = TaskEventService._internal();

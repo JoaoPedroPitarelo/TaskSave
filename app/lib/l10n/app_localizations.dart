@@ -520,6 +520,12 @@ abstract class AppLocalizations {
   /// **'Categoria'**
   String get category;
 
+  /// No description provided for @task.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tarefa'**
+  String get task;
+
   /// No description provided for @deleted.
   ///
   /// In pt, this message translates to:
@@ -651,6 +657,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Sem categoria'**
   String get withoutCategory;
+
+  /// No description provided for @taskNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tarefa não encontrada'**
+  String get taskNotFound;
 }
 
 class _AppLocalizationsDelegate
