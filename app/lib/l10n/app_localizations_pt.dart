@@ -296,4 +296,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get taskNotFound => 'Tarefa não encontrada';
+
+  @override
+  String get staySafe => 'Fique tranquilo...';
+
+  @override
+  String get noHaveTasks => 'Não há nenhuma tarefa';
 }

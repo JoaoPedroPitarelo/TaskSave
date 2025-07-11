@@ -1,6 +1,7 @@
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
+import 'package:app/domain/models/task_vo.dart';
 import 'package:app/presentation/common/task_widget.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/screens/login/login_screen.dart';
@@ -25,19 +26,24 @@ class FinalWelcomeScreen extends StatelessWidget {
               height: 250, width: 250
             ),
           ),
-          TaskWidget(
-            id: "0",
-            title: AppLocalizations.of(context)!.titleTask,
-            description: AppLocalizations.of(context)!.descriptionTask,
-            deadline: DateTime.now(),
-            priority: PriorityEnum.low,
-            category: CategoryVo(id: 0, description: "None", isDefault: false, color: "None", activate: true, position: -1),
-            completed: false,
-            onDismissedCallback: () => Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => LoginScreen()
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: TaskWidget(task: TaskVo(
+              id: "0",
+              title: AppLocalizations.of(context)!.titleTask,
+              description: AppLocalizations.of(context)!.descriptionTask,
+              subtaskList: [],
+              attachmentList: [],
+              deadline: DateTime.now(),
+              priority: PriorityEnum.low,
+              category: CategoryVo(id: 0, description: "None", isDefault: false, color: "None", activate: true, position: -1),
+              completed: false),
+              onDismissedCallback: () => Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => LoginScreen()
+                )
               )
-            )
+            ),
           ),
           Expanded(
             child: Column(

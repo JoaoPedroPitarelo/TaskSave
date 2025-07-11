@@ -93,5 +93,7 @@
   "wantToLogout": "Log out?",
   "darkMode": "Dark mode: ",
   "withoutCategory": "No Category",
-  "taskNotFound": "Task not found"
+  "taskNotFound": "Task not found",
+  "staySafe": "Stay safe...",
+  "noHaveTasks": "You have no tasks"
 }

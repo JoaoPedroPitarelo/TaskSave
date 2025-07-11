@@ -2,12 +2,10 @@ import 'package:app/core/themes/dark/app_theme_data_dark.dart';
 import 'package:app/core/themes/light/app_theme_data_light.dart';
 import 'package:app/core/utils/auth_interceptor.dart';
 import 'package:app/core/utils/map_failure_to_failure_key.dart';
-import 'package:app/core/utils/translateFailureKey.dart';
-
 import 'package:app/presentation/providers/auth_provider.dart';
 import 'package:app/presentation/providers/app_preferences_provider.dart';
 import 'package:app/presentation/providers/password_rescue_provider.dart';
-import 'package:app/presentation/screens/categoryForm/category_form_viewmodel.dart';
+import 'package:app/presentation/screens/category_form/category_form_viewmodel.dart';
 import 'package:app/presentation/screens/home/home_viewmodel.dart';
 import 'package:app/presentation/screens/login/login_viewmodel.dart';
 import 'package:app/presentation/screens/password_change/password_change_screen.dart';
@@ -15,14 +13,11 @@ import 'package:app/presentation/screens/password_change/password_change_viewmod
 import 'package:app/presentation/screens/password_rescue/password_rescue_viewmodel.dart';
 import 'package:app/presentation/screens/register/register_viewmodel.dart';
 import 'package:app/presentation/screens/wrapper.dart';
-
 import 'package:app/repositories/auth_repository.dart';
 import 'package:app/repositories/category_repository.dart';
 import 'package:app/repositories/task_repository.dart';
 import 'package:app/services/auth/auth_service.dart';
-
 import 'package:app/l10n/app_localizations.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';

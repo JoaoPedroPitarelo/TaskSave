@@ -10,7 +10,7 @@ import "package:app/l10n/app_localizations.dart";
 import "package:app/presentation/common/error_snackbar.dart";
 import "package:app/presentation/common/sucess_snackbar.dart";
 import "package:app/presentation/common/task_widget.dart";
-import "package:app/presentation/screens/categoryForm/category_form_screen.dart";
+import "package:app/presentation/screens/category_form/category_form_screen.dart";
 import "package:app/presentation/screens/home/widgets/widget_filter_mode.dart";
 import "package:app/presentation/screens/settings/settings_screen.dart";
 import "package:app/presentation/screens/home/home_viewmodel.dart";
@@ -288,16 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
           TaskVo task = homeViewmodel.filteredTasks[i];
           return TaskWidget(
             key: ValueKey(task.id),
-            id: task.id,
-            title: task.title,
-            description: task.description ?? "",
-            deadline: task.deadline,
-            priority: task.priority,
-            category: task.category,
-            completed: task.completed,
-            reminderType: task.reminderType,
-            attachments: task.attachmentList,
-            subtasks: task.subtaskList,
+            task: task,
             onDismissedCallback: () async => homeViewmodel.prepareTaskForDeletion(task),
           );
         },
@@ -344,14 +335,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             children: [
                               Text(
-                                "Fique em paz...",
+                                AppLocalizations.of(context)!.staySafe,
                                 style: GoogleFonts.roboto(
                                   fontWeight: FontWeight.w300,
                                   fontSize: 32,
                                 ),
                               ),
                               Text(
-                                "Não há nenhuma tarefa",
+                                AppLocalizations.of(context)!.noHaveTasks,
                                 style: GoogleFonts.roboto(
                                   fontWeight: FontWeight.w300,
                                   fontSize: 32,

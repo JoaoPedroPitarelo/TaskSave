@@ -4,7 +4,7 @@ import 'package:app/core/events/category_events.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/common/hex_to_color.dart';
-import 'package:app/presentation/screens/categoryForm/category_form_viewmodel.dart';
+import 'package:app/presentation/screens/category_form/category_form_viewmodel.dart';
 import 'package:app/services/events/category_event_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';

@@ -663,6 +663,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Tarefa não encontrada'**
   String get taskNotFound;
+
+  /// No description provided for @staySafe.
+  ///
+  /// In pt, this message translates to:
+  /// **'Fique tranquilo...'**
+  String get staySafe;
+
+  /// No description provided for @noHaveTasks.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não há nenhuma tarefa'**
+  String get noHaveTasks;
 }
 
 class _AppLocalizationsDelegate

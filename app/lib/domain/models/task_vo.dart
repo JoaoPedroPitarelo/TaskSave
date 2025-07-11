@@ -3,11 +3,9 @@ import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/enums/reminder_type_num.dart';
 import 'package:app/domain/models/subtask_vo.dart';
-import 'package:intl/date_time_patterns.dart';
 
 class TaskVo {
 
-  // Atributos  
   final String id;
   final String title;
   final String? description;
@@ -17,17 +15,16 @@ class TaskVo {
   final ReminderTypeNum? reminderType;
   final List<SubtaskVo> subtaskList;
   final List<AttachmentVo> attachmentList;
-  final bool completed;
+  bool completed;
 
-  // Construtor
-  const TaskVo({
+  TaskVo({
     required this.id,
     required this.title,
     this.description,
     required this.deadline,
     required this.priority,
     required this.category,
-    required this.reminderType,
+    this.reminderType,
     required this.subtaskList,
     required this.attachmentList,
     required this.completed,

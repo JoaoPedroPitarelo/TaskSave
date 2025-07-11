@@ -94,5 +94,7 @@
     "wantToLogout": "Deseja sair?",
     "darkMode": "Modo escuro: ",
     "withoutCategory": "Sem categoria",
-    "taskNotFound": "Tarefa não encontrada"
+    "taskNotFound": "Tarefa não encontrada",
+    "staySafe": "Fique tranquilo...",
+    "noHaveTasks": "Não há nenhuma tarefa"
 }

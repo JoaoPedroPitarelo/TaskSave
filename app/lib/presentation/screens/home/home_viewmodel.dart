@@ -101,6 +101,7 @@ class HomeViewmodel extends ChangeNotifier {
         _tasks = tasks['tasks'].map((task) => TaskVo.fromJson(task)).toList();
         _filteredTasks = _tasks;
         _calculateCountTasks();
+        filterTasks(_filterMode);
         _taskEventService.add(GetTasksEvent(success: true));
         _loading = false;
         notifyListeners();
@@ -176,15 +177,34 @@ class HomeViewmodel extends ChangeNotifier {
     );
   }
 
+  String _searchQuery = '';
+
   void searchTask(String query) {
-    if (query.isEmpty) {
-      filterTasks(_filterMode);
-      notifyListeners();
+    _searchQuery = query.trim();
+    filterTasks(_filterMode);
+  }
+
+  void _applySearchFilter() {
+    if (_searchQuery.isEmpty) {
       return;
     }
 
-    _filteredTasks = _filteredTasks.where((task) => task.title.toLowerCase().contains(query.toLowerCase())).toList();
-    notifyListeners();
+    final searchTerms = _searchQuery.toLowerCase().split(' ').where((term) => term.isNotEmpty).toList();
+
+    if (searchTerms.isEmpty) {
+      return;
+    }
+
+    _filteredTasks = _filteredTasks.where((task) {
+      final taskContent = [
+        task.title.toLowerCase(),
+        task.description?.toLowerCase() ?? '',
+        task.category.description.toLowerCase(),
+        ...task.subtaskList.map((s) => s.title.toLowerCase())
+      ].join(' ');
+
+      return searchTerms.every((term) => taskContent.contains(term));
+    }).toList();
   }
 
   void _calculateCountTasks() {
@@ -196,68 +216,40 @@ class HomeViewmodel extends ChangeNotifier {
   }
 
   void filterTasks(FilteringTaskModeEnum filterMode) {
+    _filterMode = filterMode;
+    if (filterMode != FilteringTaskModeEnum.category) { _selectedCategory = null; }
+
+    List<dynamic> tasks = List.from(_tasks);
+
     switch (filterMode) {
       case FilteringTaskModeEnum.all:
-        clearAllFiltersForTasks();
         break;
       case FilteringTaskModeEnum.today:
-        _filterTodayTasks();
+        tasks = tasks.where((task) => (task.deadline as DateTime).isToday).toList();
         break;
       case FilteringTaskModeEnum.nextWeek:
-        _filterNextWeekTasks();
+        tasks = tasks.where((task) => (task.deadline as DateTime).isNextWeek).toList();
         break;
       case FilteringTaskModeEnum.nextMonth:
-        _filterNextMonthTasks();
+        tasks = tasks.where((task) => (task.deadline as DateTime).isNextMonth).toList();
         break;
       case FilteringTaskModeEnum.overdue:
-        _filterOverdueTasks();
+        tasks = tasks.where((task) => DateTime.now().isOverdue(task.deadline as DateTime)).toList();
         break;
       case FilteringTaskModeEnum.category:
-        _filterTasksByCategory(_selectedCategory);
+        if (_selectedCategory != null) {
+          tasks = tasks.where((task) => task.category.id == _selectedCategory!.id).toList();
+        }
         break;
     }
-    notifyListeners();
-  }
-
-  void _filterTodayTasks() {
-    _filteredTasks = _tasks.where((task) => (task.deadline as DateTime).isToday).toList();
-    _selectedCategory = null;
-    _filterMode = FilteringTaskModeEnum.today;
-    notifyListeners();
-  }
-
-  void _filterNextWeekTasks() {
-    _filteredTasks = _tasks.where((task) => (task.deadline as DateTime).isNextWeek).toList();
-    _selectedCategory = null;
-    _filterMode = FilteringTaskModeEnum.nextWeek;
-    notifyListeners();
-  }
-
-  void _filterNextMonthTasks() {
-    _filteredTasks = _tasks.where((task) => (task.deadline as DateTime).isNextMonth).toList();
-    _selectedCategory = null;
-    _filterMode = FilteringTaskModeEnum.nextMonth;
-    notifyListeners();
-  }
-
-  void _filterOverdueTasks() {
-    _filteredTasks = _tasks.where((task) => DateTime.now().isOverdue(task.deadline as DateTime)).toList();
-    _selectedCategory = null;
-    _filterMode = FilteringTaskModeEnum.overdue;
-    notifyListeners();
-  }
-
-  void _filterTasksByCategory(CategoryVo? category) {
-    _filteredTasks = _tasks.where((task) => task.category.id == category!.id).toList();
-    _filterMode = FilteringTaskModeEnum.category;
+    _filteredTasks = tasks;
+    _applySearchFilter();
     notifyListeners();
   }
 
   void clearAllFiltersForTasks() {
-    _filteredTasks = _tasks;
     _selectedCategory = null;
-    _filterMode = FilteringTaskModeEnum.all;
-    notifyListeners();
+    filterTasks(FilteringTaskModeEnum.all);
   }
 
   // Category ------------------------------------------------------------------
