@@ -144,6 +144,49 @@ class HomeViewmodel extends ChangeNotifier {
     );
   }
 
+  Future<void> reorderTask(int oldIndex, int newIndex) async {
+    if (oldIndex < 0 || oldIndex >= _filteredTasks.length) return;
+    if (newIndex < 0 || newIndex > _filteredTasks.length) return;
+
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final TaskVo item = _filteredTasks.removeAt(oldIndex);
+    _filteredTasks.insert(newIndex, item);
+
+    notifyListeners();
+
+    final result = await _taskRepository.update(
+        id: item.id.toString(),
+        position: newIndex
+    );
+
+    result.fold(
+      (failure) {
+        _loading = false;
+        _errorKey = _mapFailureToKey(failure);
+        _taskEventService.add(TaskReorderEvent(success: false, failureKey: _errorKey));
+        notifyListeners();
+      },
+      (updatedTask) {
+        _taskEventService.add(TaskReorderEvent(success: true));
+        notifyListeners();
+      }
+    );
+  }
+
+  void searchTask(String query) {
+    if (query.isEmpty) {
+      filterTasks(_filterMode);
+      notifyListeners();
+      return;
+    }
+
+    _filteredTasks = _filteredTasks.where((task) => task.title.toLowerCase().contains(query.toLowerCase())).toList();
+    notifyListeners();
+  }
+
   void _calculateCountTasks() {
     _countAllTasks = _tasks.length;
     _countTodayTasks = _filteredTasks.where((task) => (task.deadline as DateTime).isToday).length;
@@ -152,35 +195,59 @@ class HomeViewmodel extends ChangeNotifier {
     _overdueTasks = _filteredTasks.where((task) => DateTime.now().isOverdue(task.deadline as DateTime)).length;
   }
 
-  void filterTodayTasks() {
+  void filterTasks(FilteringTaskModeEnum filterMode) {
+    switch (filterMode) {
+      case FilteringTaskModeEnum.all:
+        clearAllFiltersForTasks();
+        break;
+      case FilteringTaskModeEnum.today:
+        _filterTodayTasks();
+        break;
+      case FilteringTaskModeEnum.nextWeek:
+        _filterNextWeekTasks();
+        break;
+      case FilteringTaskModeEnum.nextMonth:
+        _filterNextMonthTasks();
+        break;
+      case FilteringTaskModeEnum.overdue:
+        _filterOverdueTasks();
+        break;
+      case FilteringTaskModeEnum.category:
+        _filterTasksByCategory(_selectedCategory);
+        break;
+    }
+    notifyListeners();
+  }
+
+  void _filterTodayTasks() {
     _filteredTasks = _tasks.where((task) => (task.deadline as DateTime).isToday).toList();
     _selectedCategory = null;
     _filterMode = FilteringTaskModeEnum.today;
     notifyListeners();
   }
 
-  void filterNextWeekTasks() {
+  void _filterNextWeekTasks() {
     _filteredTasks = _tasks.where((task) => (task.deadline as DateTime).isNextWeek).toList();
     _selectedCategory = null;
     _filterMode = FilteringTaskModeEnum.nextWeek;
     notifyListeners();
   }
 
-  void filterNextMonthTasks() {
+  void _filterNextMonthTasks() {
     _filteredTasks = _tasks.where((task) => (task.deadline as DateTime).isNextMonth).toList();
     _selectedCategory = null;
     _filterMode = FilteringTaskModeEnum.nextMonth;
     notifyListeners();
   }
 
-  void filterOverdueTasks() {
+  void _filterOverdueTasks() {
     _filteredTasks = _tasks.where((task) => DateTime.now().isOverdue(task.deadline as DateTime)).toList();
     _selectedCategory = null;
     _filterMode = FilteringTaskModeEnum.overdue;
     notifyListeners();
   }
 
-  void filterTasksByCategory(CategoryVo? category) {
+  void _filterTasksByCategory(CategoryVo? category) {
     _filteredTasks = _tasks.where((task) => task.category.id == category!.id).toList();
     _filterMode = FilteringTaskModeEnum.category;
     notifyListeners();

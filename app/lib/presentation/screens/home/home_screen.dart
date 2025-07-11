@@ -1,4 +1,5 @@
 import "dart:async";
+import "package:app/core/enums/filtering_task_mode_enum.dart";
 import "package:app/core/themes/app_global_colors.dart";
 import "package:app/core/utils/translateFailureKey.dart";
 import 'package:app/core/events/category_events.dart';
@@ -33,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription? _taskSubscription;
   final _categoryEventService = CategoryEventService();
   final _taskEventService = TaskEventService();
+
+  final searchController = TextEditingController();
 
   @override
   initState() {
@@ -82,6 +85,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (event is TaskDeletionEvent) {
           _showUndoSnackbarTask(event.task, event.originalIndex);
+        }
+
+        if (event is TaskReorderEvent) {
+          if (!event.success) {
+            _showErrorSnackbar(translateFailureKey(context, event.failureKey!));
+            return;
+          }
         }
       });
 
@@ -223,44 +233,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SearchAnchor(
-                          builder: (BuildContext context,
-                            SearchController controller) {
-                              return SearchBar(
-                                constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width * 0.9,
-                                  minHeight: MediaQuery.of(context).size.height * 0.061
-                                ),
-                                textStyle: const WidgetStatePropertyAll(TextStyle(color: Colors.white)),
-                                backgroundColor: const WidgetStatePropertyAll(Colors.black38),
-                                elevation: const WidgetStatePropertyAll(2.0),
-                                controller: controller,
-                                padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
-                                onTap: () {},
-                                onChanged: (_) {
-                                  // TODO implementar mecanismo de pesquisa
-                                },
-                                leading: const Icon(Icons.search, color: Colors.white,),
-                                hintText: AppLocalizations.of(context)!
-                                    .searchForTasks,
-                              );
+                        SearchBar(
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.9,
+                            minHeight: MediaQuery.of(context).size.height * 0.061
+                          ),
+                          textStyle: const WidgetStatePropertyAll(TextStyle(color: Colors.white70)),
+                          backgroundColor: const WidgetStatePropertyAll(Colors.black38),
+                          elevation: const WidgetStatePropertyAll(2.0),
+                          controller: searchController,
+                          padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
+                          onChanged: (query) {
+                            homeViewmodel.searchTask(query);
                           },
-                          suggestionsBuilder: (BuildContext context, SearchController controller) {
-                            return List<ListTile>.generate(5, (int index) {
-                              final String item = index.toString();
-                              return ListTile(
-                                title: Text('Suggestion $index'),
-                                onTap: () {
-                                  setState(() {
-                                    controller.closeView(item);
-                                  }
-                                );
-                              },
-                            );
-                            }
-                          );
-                        }
-                      )
+                          leading: const Icon(Icons.search, color: Colors.white70),
+                          hintText: AppLocalizations.of(context)!.searchForTasks,
+                       )
                     ],
                   )
                 ],
@@ -307,11 +295,14 @@ class _HomeScreenState extends State<HomeScreen> {
             priority: task.priority,
             category: task.category,
             completed: task.completed,
+            reminderType: task.reminderType,
+            attachments: task.attachmentList,
+            subtasks: task.subtaskList,
             onDismissedCallback: () async => homeViewmodel.prepareTaskForDeletion(task),
           );
         },
         onReorder: (int oldIndex, int newIndex) {
-          // TODO criar método para salvar ordenação das tarefas
+          homeViewmodel.reorderTask(oldIndex, newIndex);
           },
         ),
       )
@@ -431,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       text: AppLocalizations.of(context)!.taskToday,
                       count: homeViewmodel.countTodayTasks,
                       onTap: () {
-                        homeViewmodel.filterTodayTasks();
+                        homeViewmodel.filterTasks(FilteringTaskModeEnum.today);
                         Navigator.pop(context);
                       },
                     ),
@@ -445,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       text: AppLocalizations.of(context)!.taskWeek,
                       count: homeViewmodel.countNextWeekTasks,
                       onTap: () {
-                        homeViewmodel.filterNextWeekTasks();
+                        homeViewmodel.filterTasks(FilteringTaskModeEnum.nextWeek);
                         Navigator.pop(context);
                       },
                     ),
@@ -459,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       text: AppLocalizations.of(context)!.taskMonth,
                       count: homeViewmodel.countNextMonthTasks,
                       onTap: () {
-                        homeViewmodel.filterNextMonthTasks();
+                        homeViewmodel.filterTasks(FilteringTaskModeEnum.nextMonth);
                         Navigator.pop(context);
                       },
                     ),
@@ -473,7 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       text: AppLocalizations.of(context)!.taskLate,
                       count: homeViewmodel.countOverdueTasks,
                       onTap: () {
-                        homeViewmodel.filterOverdueTasks();
+                        homeViewmodel.filterTasks(FilteringTaskModeEnum.overdue);
                         Navigator.pop(context);
                       },
                     ),
@@ -551,7 +542,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           index: i,
                           onTap: () {
                             homeViewmodel.selectCategory(category);
-                            homeViewmodel.filterTasksByCategory(category);
+                            homeViewmodel.filterTasks(FilteringTaskModeEnum.category);
                             Navigator.of(context).pop();
                           },
                         );

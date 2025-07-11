@@ -26,7 +26,7 @@ class CategoryRepository {
     }
   }
 
-  Map<String, dynamic> makePayloadForUpdate(String? description, String? color, int? position) {
+  Map<String, dynamic> _makePayloadForUpdate(String? description, String? color, int? position) {
     final payload = <String, dynamic>{};
 
     if (description != null) { payload['description'] = description; }
@@ -40,7 +40,7 @@ class CategoryRepository {
     try {
       final response = await _dio.put(
         '/category/$id',
-        data: makePayloadForUpdate(description, color, position)
+        data: _makePayloadForUpdate(description, color, position)
       );
 
       return Right(response.data);

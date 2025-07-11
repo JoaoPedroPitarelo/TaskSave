@@ -1,7 +1,9 @@
 import 'package:app/core/themes/app_global_colors.dart';
+import 'package:app/domain/enums/reminder_type_num.dart';
+import 'package:app/domain/models/attachmentVo.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
-import 'package:app/domain/models/task_vo.dart';
+import 'package:app/domain/models/subtask_vo.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:intl/intl.dart';
@@ -13,10 +15,12 @@ class TaskWidget extends StatefulWidget {
   final DateTime deadline;
   final PriorityEnum priority;
   final CategoryVo category;
+  final ReminderTypeNum? reminderType;
+  final List<SubtaskVo>? subtasks;
+  final List<AttachmentVo>? attachments;
   bool completed;
   VoidCallback? onDismissedCallback;
 
-  // Construtor comum ou padrão
   TaskWidget(
     {
       super.key,
@@ -27,18 +31,12 @@ class TaskWidget extends StatefulWidget {
       required this.priority,
       required this.category,
       required this.completed,
+      this.reminderType,
+      this.subtasks,
+      this.attachments,
       this.onDismissedCallback
     }
   );
-
-  TaskWidget.fromTaskVo(TaskVo task, {super.key, this.onDismissedCallback})
-      : id = task.id,
-        title = task.title,
-        description = task.description != null ? task.description! : "",
-        deadline = task.deadline,
-        priority = task.priority,
-        category = task.category,
-        completed = task.completed;
 
   @override
   State<TaskWidget> createState() => _TaskWidgetState();
@@ -68,7 +66,7 @@ class _TaskWidgetState extends State<TaskWidget> {
     
     return Dismissible(
       key: Key(widget.id),
-      direction: DismissDirection.endToStart,
+      direction: DismissDirection.startToEnd,
       onDismissed: (direction) async {
 
         await player.play(AssetSource("sounds/taskCompleted.mp3"));
@@ -83,7 +81,7 @@ class _TaskWidgetState extends State<TaskWidget> {
         alignment: Alignment.center,
         padding: EdgeInsets.all(20),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(
               Icons.check_circle_outline_rounded,
@@ -93,92 +91,127 @@ class _TaskWidgetState extends State<TaskWidget> {
           ],
         ),
       ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                width: 30,
+      child: Stack(
+        children: [
+          if (widget.subtasks != null && widget.subtasks!.isNotEmpty) ...[
+            Positioned(
+              bottom: 4,
+              left: 16,
+              right: 16,
+              height: 12,
+              child: Container(
                 decoration: BoxDecoration(
-                    color: getPriorityColor(context, widget.priority),
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10)
-                    )
+                  color: appColors.taskCardColor,
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: appColors.taskCardColor,
-                        borderRadius:
-                            BorderRadius.only(topRight: Radius.circular(20)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.title, style: theme.textTheme.labelMedium),
-                            SizedBox(height: 8),
-                            Container(
-                              width: 140,
-                              height: 24,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                                color: appColors.taskFooterColor
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 6.0, right: 6.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Icon(Icons.date_range, size: 18),
-                                    Text(DateFormat('dd/MM/yyyy').format(widget.deadline), style: theme.textTheme.displaySmall),
-                                    Icon(Icons.alarm, size: 18),
-                                  ],
+            ),
+            Positioned(
+              bottom: 0,
+              left: 24,
+              right: 24,
+              height: 12,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: appColors.taskCardColor?.withAlpha(125),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ],
+          Container(
+            margin: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    width: 30,
+                    decoration: BoxDecoration(
+                        color: getPriorityColor(context, widget.priority),
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            bottomLeft: Radius.circular(10)
+                        )
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: appColors.taskCardColor,
+                            borderRadius:
+                                BorderRadius.only(topRight: Radius.circular(20)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(widget.title, style: theme.textTheme.labelMedium),
+                                SizedBox(height: 8),
+                                Container(
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    color: appColors.taskFooterColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.date_range, size: 18),
+                                        SizedBox(width: 4),
+                                        Text(DateFormat('dd/MM/yyyy').format(widget.deadline), style: theme.textTheme.displaySmall),
+                                        if (widget.reminderType != null) ...[
+                                          SizedBox(width: 8),
+                                          Icon(Icons.alarm, size: 18),
+                                        ],
+                                        if (widget.attachments != null && widget.attachments!.isNotEmpty) ...[
+                                          SizedBox(width: 8),
+                                          Icon(Icons.file_present_outlined, size: 18),
+                                        ]
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: appColors.taskFooterColor,
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(20),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: appColors.taskFooterColor,
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(20),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black,
+                                blurRadius: 0.1,
+                                offset: Offset(0.1, 0)
+                              )
+                            ]
+                          ),
+                          padding: EdgeInsets.all(9),
+                          child: Text(
+                            widget.description,
+                            style: theme.textTheme.displaySmall,
+                            textAlign: TextAlign.start,
+                          ),
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 0.1,
-                            offset: Offset(0.1, 0)
-                          )
-                        ]
-                      ),
-                      padding: EdgeInsets.all(9),
-                      child: Text(
-                        widget.description,
-                        style: theme.textTheme.displaySmall,
-                        textAlign: TextAlign.start,
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

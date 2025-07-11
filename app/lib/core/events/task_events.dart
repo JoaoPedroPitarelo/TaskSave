@@ -1,4 +1,3 @@
-
 import 'package:app/core/errors/failure_keys.dart';
 import 'package:app/domain/models/task_vo.dart';
 
@@ -18,4 +17,11 @@ class TaskDeletionEvent extends TaskDataEvent {
   int originalIndex;
 
   TaskDeletionEvent(this.task, this.originalIndex);
+}
+
+class TaskReorderEvent extends TaskDataEvent {
+  final bool success;
+  final FailureKey? failureKey;
+
+  TaskReorderEvent({required this.success, this.failureKey});
 }
