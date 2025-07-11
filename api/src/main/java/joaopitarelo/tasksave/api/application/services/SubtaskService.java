@@ -65,23 +65,56 @@ public class SubtaskService {
             throw new InvalidPositionException("invalid position");
         }
 
-        Subtask subtaskOnDesiredPosition;
-        Optional<Subtask> subtaskOnDesiredPositionOpt = subtaskRepository.findByUserIdAndParentTaskIdAndPositionAndCompletedFalse(
+        Subtask subtaskOnOldPosition;
+        Subtask subtaskOnNewPosition;
+
+        Optional<Subtask> subtaskOnOldPositionOpt = subtaskRepository.findByUserIdAndParentTaskIdAndPositionAndCompletedFalse(
+                subtaskToReplace.getUser().getId(),
+                subtaskToReplace.getParentTask().getId(),
+                oldPosition
+        );
+        Optional<Subtask> subtaskOnNewPositionOpt = subtaskRepository.findByUserIdAndParentTaskIdAndPositionAndCompletedFalse(
                 subtaskToReplace.getUser().getId(),
                 subtaskToReplace.getParentTask().getId(),
                 newPosition
         );
 
-        if (subtaskOnDesiredPositionOpt.isEmpty()) {
+        if (subtaskOnNewPositionOpt.isEmpty() || subtaskOnOldPositionOpt.isEmpty()) {
             throw new RuntimeException();
         }
 
-        subtaskOnDesiredPosition = subtaskOnDesiredPositionOpt.get();
-        subtaskOnDesiredPosition.setPosition(oldPosition);
-        subtaskToReplace.setPosition(newPosition);
+        if (Math.abs(oldPosition - newPosition) == 1) {
+            subtaskOnOldPosition = subtaskOnOldPositionOpt.get();
+            subtaskOnNewPosition = subtaskOnNewPositionOpt.get();
 
-        subtaskRepository.save(subtaskOnDesiredPosition);
-        subtaskRepository.save(subtaskToReplace);
+            subtaskOnOldPosition.setPosition(newPosition);
+            subtaskOnNewPosition.setPosition(oldPosition);
+
+            subtaskRepository.save(subtaskOnOldPosition);
+            subtaskRepository.save(subtaskOnNewPosition);
+            return;
+        }
+
+        if (Math.abs(oldPosition - newPosition) >= 2) {
+            Stream<Subtask> subtaskList = subtaskRepository.findByUserIdAndParentTaskIdAndCompletedFalse(subtaskToReplace.getUser().getId(), subtaskToReplace.getParentTask().getId()).stream();
+
+            List<Subtask> newOrdenedList;
+
+            if ((oldPosition - newPosition) < 0) {
+                newOrdenedList = subtaskList
+                        .filter(s -> s.getPosition() <= newPosition && !s.getPosition().equals(oldPosition) && s.getPosition() > 0)
+                        .peek(s -> s.setPosition(s.getPosition() -1L)).toList();
+            } else {
+                newOrdenedList = subtaskList
+                        .filter(s -> s.getPosition() >= newPosition && !s.getPosition().equals(oldPosition) && s.getPosition() < oldPosition)
+                        .peek(s -> s.setPosition(s.getPosition() +1L)).toList();
+            }
+
+            subtaskToReplace.setPosition(newPosition);
+            subtaskRepository.save(subtaskToReplace);
+
+            subtaskRepository.saveAll(newOrdenedList);
+        }
     }
 
     private boolean isValidPosition(Long position, Long userId, Long parentTaskId) {

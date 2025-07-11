@@ -93,19 +93,47 @@ public class TaskService {
             throw new InvalidPositionException("Invalid position");
         }
 
-        Task taskAtNewPosition;
-        Optional<Task> taskAtNewPositionOpt = taskRepository.findByUserIdAndPositionAndCompletedFalse(taskToReplace.getUser().getId(), newPosition);
+        Task taskOnNewPosition;
+        Task taskOnOldPosition;
+        Optional<Task> taskOnNewPositionOpt = taskRepository.findByUserIdAndPositionAndCompletedFalse(taskToReplace.getUser().getId(), newPosition);
+        Optional<Task> taskOnOldPositionOpt = taskRepository.findByUserIdAndPositionAndCompletedFalse(taskToReplace.getUser().getId(), oldPosition);
 
-        if (taskAtNewPositionOpt.isEmpty()) {
+        if (taskOnNewPositionOpt.isEmpty() || taskOnOldPositionOpt.isEmpty()) {
             throw new RuntimeException("Task not found to be replaced");
         }
 
-        taskAtNewPosition = taskAtNewPositionOpt.get();
-        taskAtNewPosition.setPosition(oldPosition);
-        taskToReplace.setPosition(newPosition);
+        if (Math.abs(oldPosition - newPosition) == 1) {
+            taskOnNewPosition = taskOnNewPositionOpt.get();
+            taskOnOldPosition = taskOnOldPositionOpt.get();
 
-        taskRepository.save(taskAtNewPosition);
-        taskRepository.save(taskToReplace);
+            taskOnOldPosition.setPosition(newPosition);
+            taskOnNewPosition.setPosition(oldPosition);
+
+            taskRepository.save(taskOnOldPosition);
+            taskRepository.save(taskOnNewPosition);
+            return;
+        }
+
+        if (Math.abs(oldPosition - newPosition) >= 2) {
+            Stream<Task> taskList = taskRepository.findByCompletedFalseAndUserIdOrderByPosition(taskToReplace.getUser().getId()).stream();
+
+            List<Task> newOrdenedList;
+
+            if ((oldPosition - newPosition) < 0) {
+                newOrdenedList = taskList
+                        .filter(t -> t.getPosition() <= newPosition && !t.getPosition().equals(oldPosition) && t.getPosition() > 0)
+                        .peek(t -> t.setPosition(t.getPosition() -1L)).toList();
+            } else {
+                newOrdenedList = taskList
+                        .filter(t -> t.getPosition() >= newPosition && !t.getPosition().equals(oldPosition) && t.getPosition() < oldPosition)
+                        .peek(t -> t.setPosition(t.getPosition() +1L)).toList();
+            }
+
+            taskToReplace.setPosition(newPosition);
+            taskRepository.save(taskToReplace);
+
+            taskRepository.saveAll(newOrdenedList);
+        }
     }
 
     private boolean isAValidPosition(Long position, Long userId) {

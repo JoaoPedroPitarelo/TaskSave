@@ -61,28 +61,56 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    private void orderCategoryOnCategoryList(Long oldPosition, Long newPosition, Category categoryToReplace) {
+    private void orderCategoryOnCategoryList(Long oldPosition, Long newPosition, Category category) {
         if (Objects.equals(oldPosition, newPosition)) {
             return;
         }
 
-        if (!isAValidPosition(newPosition, categoryToReplace.getUser().getId())) {
+        if (!isAValidPosition(newPosition, category.getUser().getId())) {
             throw new InvalidPositionException("Invalid Position");
         }
 
-        Category categoryOnDesiredPosition;
-        Optional<Category> categoryAtNewPositionOpt = categoryRepository.findByUserIdAndPositionAndAtivoTrue(categoryToReplace.getUser().getId(), newPosition);
+        Category categoryOnOldPosition;
+        Category categoryOnNewPosition;
+        Optional<Category> categoryAtOldPositionOpt = categoryRepository.findByUserIdAndPositionAndAtivoTrue(category.getUser().getId(), oldPosition);
+        Optional<Category> categoryAtNewPositonOpt = categoryRepository.findByUserIdAndPositionAndAtivoTrue(category.getUser().getId(), newPosition);
 
-        if (categoryAtNewPositionOpt.isEmpty()) {
-            throw new RuntimeException("Category not found to be Replaced");
+        if (categoryAtOldPositionOpt.isEmpty() || categoryAtNewPositonOpt.isEmpty() ) {
+            throw new RuntimeException("Category not found");
         }
 
-        categoryOnDesiredPosition = categoryAtNewPositionOpt.get();
-        categoryOnDesiredPosition.setPosition(oldPosition);
-        categoryToReplace.setPosition(newPosition);
+        if (Math.abs(oldPosition - newPosition) == 1) {
+            categoryOnOldPosition = categoryAtOldPositionOpt.get();
+            categoryOnNewPosition = categoryAtNewPositonOpt.get();
 
-        categoryRepository.save(categoryOnDesiredPosition);
-        categoryRepository.save(categoryToReplace);
+            categoryOnOldPosition.setPosition(newPosition);
+            categoryOnNewPosition.setPosition(oldPosition);
+
+            categoryRepository.save(categoryOnOldPosition);
+            categoryRepository.save(categoryOnNewPosition);
+            return;
+        }
+
+        if (Math.abs(oldPosition - newPosition) >= 2) {
+            Stream<Category> categoriesList = categoryRepository.findByAtivoTrueAndUserIdOrderByPosition(category.getUser().getId()).stream();
+
+            List<Category> newOrdenedList;
+
+            if ((oldPosition - newPosition) < 0) {
+                newOrdenedList = categoriesList
+                    .filter(c -> c.getPosition() <= newPosition && !c.getPosition().equals(oldPosition) && c.getPosition() > 0)
+                    .peek(c -> c.setPosition(c.getPosition() -1L)).toList();
+            } else {
+                newOrdenedList = categoriesList
+                    .filter(c -> c.getPosition() >= newPosition && !c.getPosition().equals(oldPosition) && c.getPosition() < oldPosition)
+                    .peek(c -> c.setPosition(c.getPosition() +1L)).toList();
+            }
+
+            category.setPosition(newPosition);
+            categoryRepository.save(category);
+
+            categoryRepository.saveAll(newOrdenedList);
+        }
     }
 
     private boolean isAValidPosition(Long position, Long userId) {
