@@ -1,7 +1,7 @@
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/failure_keys.dart';
 import 'package:app/core/events/auth_events.dart';
-import 'package:app/repositories/auth_repository.dart';
+import 'package:app/repositories/api/auth_repository.dart';
 import 'package:app/services/events/auth_event_service.dart';
 import 'package:flutter/cupertino.dart';
 

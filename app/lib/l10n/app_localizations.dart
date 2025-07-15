@@ -675,6 +675,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Não há nenhuma tarefa'**
   String get noHaveTasks;
+
+  /// No description provided for @attachments.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anexos'**
+  String get attachments;
 }
 
 class _AppLocalizationsDelegate

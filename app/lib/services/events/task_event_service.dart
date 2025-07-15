@@ -1,6 +1,4 @@
-
 import 'dart:async';
-
 import 'package:app/core/events/task_events.dart';
 
 class TaskEventService {
@@ -21,6 +19,5 @@ class TaskEventService {
 
   void dispose() {
     _taskEventsController.close();
-
   }
 }

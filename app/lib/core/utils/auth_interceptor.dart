@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app/repositories/auth_repository.dart';
+import 'package:app/repositories/api/auth_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:app/services/auth/auth_service.dart';
 import 'package:app/presentation/providers/auth_provider.dart';

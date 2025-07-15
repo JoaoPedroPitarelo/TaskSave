@@ -26,7 +26,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     final authProvider = context.watch<AuthProvider>();
     final appColors = AppGlobalColors.of(context);
 
-    final userEmail = authProvider.user?.login!;
+    final userEmail = authProvider.user?.login ?? "";
 
     Map<String, String> keyToLanguage = {
       'en': AppLocalizations.of(context)!.english,
@@ -101,7 +101,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          userEmail!,
+                          userEmail,
                           style: GoogleFonts.roboto(
                               fontSize: 17,
                               fontWeight: FontWeight.w500

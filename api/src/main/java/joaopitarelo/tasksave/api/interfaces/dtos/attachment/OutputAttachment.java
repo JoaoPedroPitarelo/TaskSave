@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public record OutputAttachment(
         Long id,
+        Long taskId,
         String filePath,
         String fileName,
         String fileType,
@@ -16,6 +17,7 @@ public record OutputAttachment(
     public OutputAttachment(Attachment attachment) {
         this(
             attachment.getId(),
+            attachment.getTask().getId(),
             attachment.getFilePath(),
             attachment.getFileName(),
             attachment.getFileType(),

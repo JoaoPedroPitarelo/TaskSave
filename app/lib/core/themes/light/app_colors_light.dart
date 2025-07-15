@@ -13,7 +13,7 @@ class AppColorsLight {
   static final Color taskCardColor = Color.fromARGB(255, 218, 218, 218);
   static final Color taskFooterColor =Color.fromARGB(255, 208, 208, 208);
   static final Color taskPriorityNeutralColor = const Color.fromARGB(255, 33, 198, 243);
-  static final Color taskPriorityLowColor = const Color.fromARGB(255, 33, 243, 89);
-  static final Color taskPriorityMediumColor = const Color.fromARGB(255, 239, 251, 11);
+  static final Color taskPriorityLowColor = const Color.fromARGB(255, 15, 201, 63);
+  static final Color taskPriorityMediumColor = const Color.fromARGB(255, 250, 105, 15);
   static final Color taskPriorityHighColor = const Color.fromARGB(255, 206, 8, 8);
 }

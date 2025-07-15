@@ -25,3 +25,11 @@ class TaskReorderEvent extends TaskDataEvent {
 
   TaskReorderEvent({required this.success, this.failureKey});
 }
+
+class TaskDownloadAttachmentEvent extends TaskDataEvent {
+  final bool success;
+  final String? filePath;
+  final FailureKey? failureKey;
+
+  TaskDownloadAttachmentEvent({required this.success, this.filePath, this.failureKey});
+}

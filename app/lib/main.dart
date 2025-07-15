@@ -12,10 +12,12 @@ import 'package:app/presentation/screens/password_change/password_change_screen.
 import 'package:app/presentation/screens/password_change/password_change_viewmodel.dart';
 import 'package:app/presentation/screens/password_rescue/password_rescue_viewmodel.dart';
 import 'package:app/presentation/screens/register/register_viewmodel.dart';
+import 'package:app/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:app/presentation/screens/wrapper.dart';
-import 'package:app/repositories/auth_repository.dart';
-import 'package:app/repositories/category_repository.dart';
-import 'package:app/repositories/task_repository.dart';
+import 'package:app/repositories/api/auth_repository.dart';
+import 'package:app/repositories/api/category_repository.dart';
+import 'package:app/repositories/api/task_repository.dart';
+import 'package:app/repositories/local/local_attachment_repository.dart';
 import 'package:app/services/auth/auth_service.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +41,9 @@ Future<void> main() async {
           create: (context) => authService,
           lazy: false
       ),
+      Provider<LocalAttachmentRepository>(
+        create: (context) => LocalAttachmentRepository(),
+      ),
       ChangeNotifierProvider(
         create: (context) {
           final authService = context.read<AuthService>();
@@ -59,7 +64,10 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: (ctx) => HomeViewmodel(
           CategoryRepository(Provider.of<Dio>(ctx, listen: false)),
-          TaskRepository(Provider.of<Dio>(ctx, listen: false)),
+          TaskRepository(
+            Provider.of<Dio>(ctx, listen: false),
+            Provider.of<LocalAttachmentRepository>(ctx, listen: false)
+          ),
           mapFailureToKey
         ),
       ),
@@ -94,6 +102,15 @@ Future<void> main() async {
           Provider.of<AuthRepository>(ctx, listen: false),
           mapFailureToKey
         ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => TaskDetailsViewmodel(
+          TaskRepository(
+            Provider.of<Dio>(ctx, listen: false),
+            Provider.of<LocalAttachmentRepository>(ctx, listen: false)
+          ),
+          mapFailureToKey
+        )
       )
     ],
       child: const MyApp(),

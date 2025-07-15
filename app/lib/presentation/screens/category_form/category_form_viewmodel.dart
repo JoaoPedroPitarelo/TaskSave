@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/repositories/category_repository.dart';
+import 'package:app/repositories/api/category_repository.dart';
 import 'package:app/services/events/category_event_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';

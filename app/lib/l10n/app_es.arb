@@ -95,5 +95,6 @@
   "withoutCategory": "Sin categoría",
   "taskNotFound": "Tarea no encontrada",
   "staySafe": "¡Mantente seguro...",
-  "noHaveTasks": "No tienes ninguna tarea"
+  "noHaveTasks": "No tienes ninguna tarea",
+  "attachments": "Archivos adjuntos"
 }

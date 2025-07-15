@@ -5,8 +5,8 @@ import 'package:app/core/enums/filtering_task_mode_enum.dart';
 import 'package:app/core/events/task_events.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
-import 'package:app/repositories/category_repository.dart';
-import 'package:app/repositories/task_repository.dart';
+import 'package:app/repositories/api/category_repository.dart';
+import 'package:app/repositories/api/task_repository.dart';
 import 'package:app/services/events/category_event_service.dart';
 import 'package:app/services/events/task_event_service.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +128,7 @@ class HomeViewmodel extends ChangeNotifier {
   }
 
   Future<void> confirmDeletionTask(task, originalIndex) async {
-    final result = await _taskRepository.delete(task.id);
+    final result = await _taskRepository.delete(task);
 
     result.fold(
      (failure) {

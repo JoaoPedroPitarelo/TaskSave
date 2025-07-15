@@ -95,5 +95,6 @@
   "withoutCategory": "No Category",
   "taskNotFound": "Task not found",
   "staySafe": "Stay safe...",
-  "noHaveTasks": "You have no tasks"
+  "noHaveTasks": "You have no tasks",
+  "attachments": "Attachments"
 }

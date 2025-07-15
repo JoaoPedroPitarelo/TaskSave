@@ -9,6 +9,7 @@ import java.util.Date;
 
 public record OutputSubtask(
         Long id,
+        Long taskId,
         String title,
         String description,
         Date deadline,
@@ -20,6 +21,7 @@ public record OutputSubtask(
 ) {
     public OutputSubtask(Subtask subtask) {
         this(subtask.getId(),
+            subtask.getParentTask().getId(),
             subtask.getTitle(),
             subtask.getDescription(),
             subtask.getDeadline(),

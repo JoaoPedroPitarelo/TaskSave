@@ -302,4 +302,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get noHaveTasks => 'Não há nenhuma tarefa';
+
+  @override
+  String get attachments => 'Anexos';
 }

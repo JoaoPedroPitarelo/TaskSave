@@ -54,12 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
           loadCategories();
 
           if (event.isCreating) {
-            _showSuccessSnackbar(AppLocalizations.of(context)!.categoryCreated);
+            _showSuccessSnackBar(AppLocalizations.of(context)!.categoryCreated);
             return;
           }
 
           if (!event.isCreating) {
-            _showSuccessSnackbar(AppLocalizations.of(context)!.categoryModified);
+            _showSuccessSnackBar(AppLocalizations.of(context)!.categoryModified);
             return;
           }
         }
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
           loadCategories();
 
           if (!event.success) {
-            _showErrorSnackbar(translateFailureKey(context, event.failureKey!));
+            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
             return;
           }
         }
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (event is GetTasksEvent) {
 
           if (!event.success) {
-            _showErrorSnackbar(translateFailureKey(context, event.failureKey!));
+            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
             return;
           }
         }
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (event is TaskReorderEvent) {
           if (!event.success) {
-            _showErrorSnackbar(translateFailureKey(context, event.failureKey!));
+            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
             return;
           }
         }
@@ -172,13 +172,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _showSuccessSnackbar(String message) {
+  void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       showSuccessSnackbar(message)
     );
   }
   
-  void _showErrorSnackbar(String message) {
+  void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       showErrorSnackbar(message)
     );
