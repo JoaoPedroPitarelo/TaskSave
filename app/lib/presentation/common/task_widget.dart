@@ -113,11 +113,11 @@ class _TaskWidgetState extends State<TaskWidget> {
                     Container(
                       width: 30,
                       decoration: BoxDecoration(
-                          color: getPriorityColor(context, widget.task.priority),
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              bottomLeft: Radius.circular(10)
-                          )
+                        color: getPriorityColor(context, widget.task.priority),
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            bottomLeft: Radius.circular(10)
+                        )
                       ),
                     ),
                     Expanded(
@@ -139,10 +139,14 @@ class _TaskWidgetState extends State<TaskWidget> {
                                   Text(widget.task.title, style: theme.textTheme.labelMedium),
                                   SizedBox(height: 8),
                                   Container(
-                                    height: 28,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                                      color: appColors.taskFooterColor),
+                                      color: appColors.taskFooterColor!.withAlpha(130),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: appColors.taskFooterColor!.withAlpha(50)
+                                      )
+                                    ),
+                                    height: 28,
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 6.0),
                                       child: Row(
@@ -174,13 +178,6 @@ class _TaskWidgetState extends State<TaskWidget> {
                               borderRadius: BorderRadius.only(
                                 bottomRight: Radius.circular(20),
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black,
-                                  blurRadius: 0.1,
-                                  offset: Offset(0.1, 0)
-                                )
-                              ]
                             ),
                             padding: EdgeInsets.all(9),
                             child: Text(

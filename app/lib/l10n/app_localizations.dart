@@ -681,6 +681,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Anexos'**
   String get attachments;
+
+  /// No description provided for @download.
+  ///
+  /// In pt, this message translates to:
+  /// **'Baixar'**
+  String get download;
 }
 
 class _AppLocalizationsDelegate

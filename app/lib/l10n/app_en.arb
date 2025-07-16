@@ -96,5 +96,6 @@
   "taskNotFound": "Task not found",
   "staySafe": "Stay safe...",
   "noHaveTasks": "You have no tasks",
-  "attachments": "Attachments"
+  "attachments": "Attachments",
+  "download": "Download"
 }

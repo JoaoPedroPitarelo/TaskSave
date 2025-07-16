@@ -97,5 +97,6 @@
     "taskNotFound": "Tarefa não encontrada",
     "staySafe": "Fique tranquilo...",
     "noHaveTasks": "Não há nenhuma tarefa",
-    "attachments": "Anexos"
+    "attachments": "Anexos",
+    "download": "Baixar"
 }

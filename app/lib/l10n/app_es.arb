@@ -96,5 +96,6 @@
   "taskNotFound": "Tarea no encontrada",
   "staySafe": "¡Mantente seguro...",
   "noHaveTasks": "No tienes ninguna tarea",
-  "attachments": "Archivos adjuntos"
+  "attachments": "Archivos adjuntos",
+  "download": "Descargar"
 }

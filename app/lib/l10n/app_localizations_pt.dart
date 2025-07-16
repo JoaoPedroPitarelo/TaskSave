@@ -305,4 +305,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get attachments => 'Anexos';
+
+  @override
+  String get download => 'Baixar';
 }
