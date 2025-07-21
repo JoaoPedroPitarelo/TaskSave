@@ -685,8 +685,20 @@ abstract class AppLocalizations {
   /// No description provided for @download.
   ///
   /// In pt, this message translates to:
-  /// **'Baixar'**
+  /// **'Salvar como...'**
   String get download;
+
+  /// No description provided for @attachmentError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao baixar anexo'**
+  String get attachmentError;
+
+  /// No description provided for @attachmentSavedAs.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anexo salvo com sucesso!'**
+  String get attachmentSavedAs;
 }
 
 class _AppLocalizationsDelegate

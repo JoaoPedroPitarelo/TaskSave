@@ -97,5 +97,7 @@
   "staySafe": "Stay safe...",
   "noHaveTasks": "You have no tasks",
   "attachments": "Attachments",
-  "download": "Download"
+  "download": "Save as...",
+  "attachmentError": "Attachment error",
+  "attachmentSavedAs": "Attachment saved successfully!"
 }

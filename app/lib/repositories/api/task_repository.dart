@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/core/errors/attachment_failures.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/task_failures.dart';
 import 'package:app/domain/enums/priority_enum.dart';
@@ -51,7 +52,7 @@ class TaskRepository {
 
       if (task.attachmentList != null && task.attachmentList!.isNotEmpty) {
         for (final attachment in task.attachmentList!) {
-          await _deleteAttachment(attachment);
+          await deleteAttachment(attachment);
         }
       }
 
@@ -66,7 +67,30 @@ class TaskRepository {
     }
   }
 
-  Future<bool> _deleteAttachment(AttachmentVo attachment) async {
+  Future<Either<Failure, String?>> deleteAttachment(AttachmentVo attachment) async {
+
+    if (!await _deleteLocalAttachment(attachment)) {
+      return Left(AttachmentFailure());
+    }
+
+    try {
+      final response = await _dio.delete(
+          '/task/${attachment.taskId}/attachment/${attachment.id}'
+      );
+
+      return Right(response.data);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(AttachmentFailure());
+      }
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
+    } catch (e) {
+      return Left(UnexpectedFailure());
+    }
+  }
+
+
+  Future<bool> _deleteLocalAttachment(AttachmentVo attachment) async {
     try {
       attachment.localFilePath = await _localAttachmentRepository.getFilePath(attachment.id);
 

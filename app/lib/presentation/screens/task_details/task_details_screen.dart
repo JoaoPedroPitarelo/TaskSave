@@ -9,6 +9,8 @@ import 'package:app/domain/models/task_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/common/error_snackbar.dart';
 import 'package:app/presentation/common/hex_to_color.dart';
+import 'package:app/presentation/common/sucess_snackbar.dart';
+import 'package:app/presentation/screens/home/home_viewmodel.dart';
 import 'package:app/presentation/screens/task_details/attachment_widget.dart';
 import 'package:app/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:app/services/events/task_event_service.dart';
@@ -65,6 +67,21 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
           }
         }
+
+        if (event is TaskAttachmentSavedAsEvent) {
+          if (!event.success) {
+            _showErrorSnackBar(AppLocalizations.of(context)!.attachmentError);
+          } else {
+            _showSuccessSnackBar(AppLocalizations.of(context)!.attachmentSavedAs);
+          }
+        }
+
+        if (event is TaskAttachmentDeletedEvent) {
+          if (!event.success) {
+            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
+          }
+          widget.task.attachmentList.remove(event.attachment);
+        }
       });
     });
 
@@ -74,6 +91,12 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       showErrorSnackbar(message)
+    );
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      showSuccessSnackbar(message)
     );
   }
 
@@ -131,7 +154,10 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   // TODO quando estiver pronto a tela de edição
                 }
                 if (value == "delete") {
-                  // TODO chamar o deleteTask do taskDetaisViewmodel
+                  final homeViewmodel = context.read<HomeViewmodel>();
+                  homeViewmodel.prepareTaskForDeletion(widget.task);
+
+                  Navigator.of(context).pop();
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[

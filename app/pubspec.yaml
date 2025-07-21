@@ -36,6 +36,7 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   flutter_localizations:
     sdk: flutter
+  file_picker: ^10.2.0
 
 
 dev_dependencies:

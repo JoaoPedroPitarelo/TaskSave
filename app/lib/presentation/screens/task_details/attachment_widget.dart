@@ -4,11 +4,11 @@ import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/domain/enums/file_type_enum.dart';
 import 'package:app/domain/models/attachmentVo.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class AttachmentWidget extends StatefulWidget {
   final AttachmentVo attachment;
@@ -23,7 +23,6 @@ class AttachmentWidget extends StatefulWidget {
 }
 
 class _AttachmentWidgetState extends State<AttachmentWidget> {
-
   Widget _buildImage(FileTypeEnum type) {
     if (type == FileTypeEnum.jpeg || type == FileTypeEnum.png || type == FileTypeEnum.jpg) {
       return Image.file(File(widget.attachment.localFilePath!), fit: BoxFit.cover);
@@ -35,9 +34,14 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final taskDetailsViewmodel = context.read<TaskDetailsViewmodel>();
     final appColors = AppGlobalColors.of(context);
-    final theme = Theme.of(context);
 
     return GestureDetector(
       onTap: () async {
@@ -75,17 +79,22 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
                                  shape: RoundedRectangleBorder(
                                    borderRadius: BorderRadius.circular(20),
                                  ),
-                                 onSelected: (value) {
-                                   if (value == "edit") {
-                                     // TODO quando estiver pronto a tela de edição
+                                 onSelected: (value) async {
+                                   if (value == "saveAs") {
+                                     await taskDetailsViewmodel.saveAsAttachment(
+                                       widget.attachment,
+                                       AppLocalizations.of(context)!.download
+                                     );
+                                     Navigator.of(context).pop();
                                    }
                                    if (value == "delete") {
-                                     // TODO chamar o deleteTask do taskDetaisViewmodel
+                                      await taskDetailsViewmodel.deleteAttachment(widget.attachment);
+                                      Navigator.of(context).pop();
                                    }
                                  },
                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                                    PopupMenuItem<String>(
-                                     value: "download",
+                                     value: "saveAs",
                                      child: Row(
                                        spacing: 10,
                                        children: [

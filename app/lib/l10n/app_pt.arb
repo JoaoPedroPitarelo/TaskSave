@@ -98,5 +98,7 @@
     "staySafe": "Fique tranquilo...",
     "noHaveTasks": "Não há nenhuma tarefa",
     "attachments": "Anexos",
-    "download": "Baixar"
+    "download": "Salvar como...",
+    "attachmentError": "Erro ao baixar anexo",
+    "attachmentSavedAs": "Anexo salvo com sucesso!"
 }

@@ -10,4 +10,5 @@ enum FailureKey {
   generalServerError,
   passwordAreNotTheSame,
   generalUnexpectedError,
+  attachmentError
 }

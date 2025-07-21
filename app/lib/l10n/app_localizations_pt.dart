@@ -307,5 +307,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get attachments => 'Anexos';
 
   @override
-  String get download => 'Baixar';
+  String get download => 'Salvar como...';
+
+  @override
+  String get attachmentError => 'Erro ao baixar anexo';
+
+  @override
+  String get attachmentSavedAs => 'Anexo salvo com sucesso!';
 }
