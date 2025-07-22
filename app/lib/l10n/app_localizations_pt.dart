@@ -314,4 +314,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get attachmentSavedAs => 'Anexo salvo com sucesso!';
+
+  @override
+  String get attachmentDeleted => 'Anexo excluído com sucesso';
+
+  @override
+  String get subtasks => 'SubTarefas';
 }

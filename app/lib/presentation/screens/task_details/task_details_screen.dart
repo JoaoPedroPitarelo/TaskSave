@@ -1,14 +1,15 @@
 import 'dart:async';
-
 import 'package:app/core/events/task_events.dart';
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/core/utils/translateFailureKey.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/subtask_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/common/error_snackbar.dart';
 import 'package:app/presentation/common/hex_to_color.dart';
+import 'package:app/presentation/common/subtask_widget.dart';
 import 'package:app/presentation/common/sucess_snackbar.dart';
 import 'package:app/presentation/screens/home/home_viewmodel.dart';
 import 'package:app/presentation/screens/task_details/attachment_widget.dart';
@@ -80,7 +81,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           if (!event.success) {
             _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
           }
-          widget.task.attachmentList.remove(event.attachment);
+
+          if (event.success) {
+            _showErrorSnackBar(AppLocalizations.of(context)!.attachmentDeleted);
+            widget.task.attachmentList.remove(event.attachment);
+          }
         }
       });
     });
@@ -111,7 +116,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     final taskDetailsViewModel = context.watch<TaskDetailsViewmodel>();
 
     final textStyle = GoogleFonts.schibstedGrotesk(
-      fontWeight: FontWeight.normal,
+      fontWeight: FontWeight.w400,
       fontSize: 28,
       color: Colors.white,
     );
@@ -126,13 +131,20 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     textPainter.layout(maxWidth: textMaxWidth);
 
     final contentHeight = 100 + textPainter.height + 20;
-    final preferredHeight = contentHeight < 110 ? 100 : contentHeight;
+
+    double preferredHeight(double contentHeight) {
+      if (contentHeight > 200) {
+        return contentHeight;
+      } else {
+        return 110;
+      }
+    }
 
     final appColors = AppGlobalColors.of(context);
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(preferredHeight as double),
+        preferredSize: Size.fromHeight(preferredHeight(contentHeight)),
         child: AppBar(
           backgroundColor: _getPriorityColor(context, widget.task.priority),
           elevation: 12,
@@ -202,9 +214,9 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 50),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -278,14 +290,15 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   )
                 ),
                 Divider(),
+
                 // Attachments
                 if (widget.task.attachmentList.isNotEmpty) ...[
                   Row(
                     spacing: 10,
                     children: [
                       Icon(
-                        Icons.file_present_outlined ,
-                        size: 35,
+                        Icons.file_present_rounded,
+                        size: 35
                       ),
                       Text(
                         AppLocalizations.of(context)!.attachments,
@@ -318,11 +331,72 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       )
                   )
                 ],
+
+                // SubTasks
+                if (widget.task.subtaskList.isNotEmpty) ... [
+                  Row(
+                    spacing: 10,
+                    children: [
+                      Icon(
+                        Icons.list,
+                        size: 35
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.subtasks,
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 23,
+                        )
+                      )
+                    ],
+                  ),
+                  ReorderableListView.builder(
+                    proxyDecorator: (child, index, animation) {
+                      return Material(
+                        color: Colors.transparent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black12,
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                          child: child,
+                        ),
+                      );
+                    },
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, i) {
+                      SubtaskVo subtask = widget.task.subtaskList[i];
+                      return SubtaskWidget(
+                        key: ValueKey(subtask.id),
+                        subtask: subtask,
+                        onDismissedCallback: () async {
+                          // TODO fazer método de exclusão de substasks em taskDetailsViewmodel
+                        }
+                      );
+                    },
+                    itemCount: widget.task.subtaskList.length,
+                    onReorder: (oldIndex, newIndex) {
+                      // TODO fazer método de reordenação de substasks
+                    }
+                  )
+                ]
               ]
             ),
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // TODO criar método de criação de subtarefas
+        },
+        backgroundColor:  _getPriorityColor(context, widget.task.priority),
+        child: Icon(
+          Icons.add_rounded,
+          color: Colors.white,
+          size: 30,
+        ),
+      )
     );
   }
 }

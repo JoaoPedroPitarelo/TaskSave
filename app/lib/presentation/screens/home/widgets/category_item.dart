@@ -107,8 +107,7 @@ class _CategoryDetailsDialog extends StatelessWidget {
                   const Icon(Icons.edit, size: 24, color: Colors.blue),
                   const SizedBox(width: 10),
                   Text(AppLocalizations.of(context)!.edit,
-                      style: GoogleFonts.roboto(
-                          fontSize: 16, color: Colors.white)),
+                      style: GoogleFonts.roboto(fontSize: 16, color: Colors.white)),
                 ],
               )
             ),

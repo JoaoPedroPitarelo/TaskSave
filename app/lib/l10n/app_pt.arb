@@ -100,5 +100,7 @@
     "attachments": "Anexos",
     "download": "Salvar como...",
     "attachmentError": "Erro ao baixar anexo",
-    "attachmentSavedAs": "Anexo salvo com sucesso!"
+    "attachmentSavedAs": "Anexo salvo com sucesso!",
+    "attachmentDeleted": "Anexo excluído com sucesso",
+    "subtasks": "SubTarefas"
 }

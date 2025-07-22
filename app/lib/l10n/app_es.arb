@@ -99,5 +99,7 @@
   "attachments": "Archivos adjuntos",
   "download": "Guardar como...",
   "attachmentError": "Error al descargar el archivo",
-  "attachmentSavedAs": "Archivo guardado exitosamente"
+  "attachmentSavedAs": "Archivo guardado exitosamente",
+  "attachmentDeleted": "Archivo eliminado exitosamente",
+  "subtasks": "SubTareas"
 }

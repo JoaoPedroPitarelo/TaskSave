@@ -14,7 +14,7 @@ class TaskVo {
   final CategoryVo category;
   final ReminderTypeNum? reminderType;
   final List<SubtaskVo> subtaskList;
-  final List<AttachmentVo> attachmentList;
+  List<AttachmentVo> attachmentList;
   bool completed;
 
   TaskVo({

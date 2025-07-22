@@ -25,8 +25,6 @@ class TaskRepository {
       );
 
       for (var task in (response.data['tasks'] as List)) {
-        print(task);
-
         if (task.containsKey('attachments') && (task['attachments'] as List).isNotEmpty ) {
           for (final attachment in task['attachments']) {
             await _localAttachmentRepository.insertAttachment(AttachmentVo.fromJson(attachment));
@@ -50,8 +48,8 @@ class TaskRepository {
         '/task/${task.id}'
       );
 
-      if (task.attachmentList != null && task.attachmentList!.isNotEmpty) {
-        for (final attachment in task.attachmentList!) {
+      if (task.attachmentList.isNotEmpty) {
+        for (final attachment in task.attachmentList) {
           await deleteAttachment(attachment);
         }
       }

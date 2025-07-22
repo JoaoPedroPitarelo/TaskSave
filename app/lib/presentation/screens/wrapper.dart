@@ -2,7 +2,7 @@ import 'package:app/presentation/screens/home/home_screen.dart';
 import 'package:app/presentation/screens/welcome/welcome_screen1.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import 'package:app/presentation/global_providers/auth_provider.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});

@@ -40,7 +40,6 @@ class TaskDetailsViewmodel extends ChangeNotifier {
       },(filePath) {
         _loading = false;
         notifyListeners();
-        print("to aqui");
         _taskEventService.add(TaskDownloadAttachmentEvent(success: true, filePath: filePath));
       }
     );

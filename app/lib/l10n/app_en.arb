@@ -99,5 +99,7 @@
   "attachments": "Attachments",
   "download": "Save as...",
   "attachmentError": "Attachment error",
-  "attachmentSavedAs": "Attachment saved successfully!"
+  "attachmentSavedAs": "Attachment saved successfully!",
+  "attachmentDeleted": "Attachmente deleted successfully",
+  "subtasks": "SubTasks"
 }

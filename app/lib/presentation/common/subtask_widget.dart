@@ -1,30 +1,26 @@
 import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/domain/enums/reminder_type_num.dart';
-import 'package:app/domain/models/attachmentVo.dart';
-import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/models/subtask_vo.dart';
-import 'package:app/domain/models/task_vo.dart';
 import 'package:app/presentation/screens/task_details/task_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:intl/intl.dart';
 
-class TaskWidget extends StatefulWidget {
-  final TaskVo task;
+class SubtaskWidget extends StatefulWidget {
+  final SubtaskVo subtask;
   VoidCallback? onDismissedCallback;
 
-  TaskWidget({
+  SubtaskWidget({
     super.key,
-    required this.task,
+    required this.subtask,
     this.onDismissedCallback
   });
 
   @override
-  State<TaskWidget> createState() => _TaskWidgetState();
+  State<SubtaskWidget> createState() => _SubtaskWidgetState();
 }
 
-class _TaskWidgetState extends State<TaskWidget> {
+class _SubtaskWidgetState extends State<SubtaskWidget> {
   final player = AudioPlayer();
 
   Color getPriorityColor(BuildContext context, PriorityEnum priority) {
@@ -38,21 +34,20 @@ class _TaskWidgetState extends State<TaskWidget> {
         return appColor.taskPriorityMediumColor!;
       case PriorityEnum.high:
         return appColor.taskPriorityHighColor!;
-      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
-    
-    return Dismissible(
-      key: Key(widget.task.id),
-      direction: DismissDirection.startToEnd,
-      onDismissed: (direction) async {
 
+    return Dismissible(
+      key: Key(widget.subtask.id),
+      direction: DismissDirection.horizontal,
+      onDismissed: (direction) async {
         await player.play(AssetSource("sounds/taskCompleted.mp3"));
-        widget.task.completed = true;
+        widget.subtask.completed = true;
 
         if (widget.onDismissedCallback != null) {
           widget.onDismissedCallback!();
@@ -60,7 +55,7 @@ class _TaskWidgetState extends State<TaskWidget> {
       },
       background: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.all(30),
+        padding: EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -74,36 +69,7 @@ class _TaskWidgetState extends State<TaskWidget> {
       ),
       child: Stack(
         children: [
-          if (widget.task.subtaskList.isNotEmpty) ...[
-            Positioned(
-              bottom: 4,
-              left: 16,
-              right: 16,
-              height: 12,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: appColors.taskCardColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 24,
-              right: 24,
-              height: 12,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: appColors.taskCardColor?.withAlpha(100),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-          ],
           GestureDetector(
-            onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => TaskDetailsScreen(task: widget.task))
-            ),
             child: Container(
               margin: const EdgeInsets.only(bottom: 8.0, top: 8.0),
               child: IntrinsicHeight(
@@ -113,10 +79,10 @@ class _TaskWidgetState extends State<TaskWidget> {
                     Container(
                       width: 30,
                       decoration: BoxDecoration(
-                        color: getPriorityColor(context, widget.task.priority),
+                        color: getPriorityColor(context, widget.subtask.priority),
                         borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            bottomLeft: Radius.circular(10)
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)
                         )
                       ),
                     ),
@@ -129,21 +95,21 @@ class _TaskWidgetState extends State<TaskWidget> {
                             decoration: BoxDecoration(
                               color: appColors.taskCardColor,
                               borderRadius:
-                                  BorderRadius.only(topRight: Radius.circular(20)),
+                              BorderRadius.only(topRight: Radius.circular(20)),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(formatTitle(widget.task.title), style: theme.textTheme.labelMedium),
+                                  Text(widget.subtask.title, style: theme.textTheme.labelMedium),
                                   SizedBox(height: 8),
                                   Container(
                                     decoration: BoxDecoration(
                                       color: appColors.taskFooterColor!.withAlpha(130),
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(
-                                        color: appColors.taskFooterColor!.withAlpha(50)
+                                          color: appColors.taskFooterColor!.withAlpha(50)
                                       )
                                     ),
                                     height: 28,
@@ -154,15 +120,11 @@ class _TaskWidgetState extends State<TaskWidget> {
                                         children: [
                                           Icon(Icons.date_range, size: 18),
                                           SizedBox(width: 4),
-                                          Text(DateFormat('dd/MM/yyyy').format(widget.task.deadline), style: theme.textTheme.displaySmall),
-                                          if (widget.task.reminderType != null) ...[
+                                          Text(DateFormat('dd/MM/yyyy').format(widget.subtask.deadline), style: theme.textTheme.displaySmall),
+                                          if (widget.subtask.reminderType != null) ...[
                                             SizedBox(width: 8),
                                             Icon(Icons.alarm, size: 18),
                                           ],
-                                          if (widget.task.attachmentList.isNotEmpty) ...[
-                                            SizedBox(width: 8),
-                                            Icon(Icons.file_present_outlined, size: 18),
-                                          ]
                                         ],
                                       ),
                                     ),
@@ -181,7 +143,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                             ),
                             padding: EdgeInsets.all(9),
                             child: Text(
-                              formatDescription(widget.task.description),
+                              widget.subtask.description ?? "",
                               style: theme.textTheme.displaySmall,
                               textAlign: TextAlign.start,
                             ),
@@ -197,24 +159,5 @@ class _TaskWidgetState extends State<TaskWidget> {
         ],
       ),
     );
-  }
-
-  String formatDescription(String? description) {
-    if (description == null) {
-      return "";
-    }
-
-    if (description.length > 150) {
-      return "${description.substring(0, 150)}...";
-    }
-
-    return description;
-  }
-
-  String formatTitle(String title) {
-    if (title.length > 28) {
-      return "${title.substring(0, 28)}...";
-    }
-    return title;
   }
 }

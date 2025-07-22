@@ -699,6 +699,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Anexo salvo com sucesso!'**
   String get attachmentSavedAs;
+
+  /// No description provided for @attachmentDeleted.
+  ///
+  /// In pt, this message translates to:
+  /// **'Anexo excluído com sucesso'**
+  String get attachmentDeleted;
+
+  /// No description provided for @subtasks.
+  ///
+  /// In pt, this message translates to:
+  /// **'SubTarefas'**
+  String get subtasks;
 }
 
 class _AppLocalizationsDelegate

@@ -88,8 +88,13 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
                                      Navigator.of(context).pop();
                                    }
                                    if (value == "delete") {
-                                      await taskDetailsViewmodel.deleteAttachment(widget.attachment);
-                                      Navigator.of(context).pop();
+                                     Navigator.pop(context);
+                                     showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return _DeleteAttachmentDialog(attachment: widget.attachment);
+                                        }
+                                      );
                                    }
                                  },
                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -219,6 +224,82 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
           ]
         )
       ),
+    );
+  }
+}
+
+class _DeleteAttachmentDialog extends StatelessWidget {
+  final AttachmentVo attachment;
+
+  const _DeleteAttachmentDialog({super.key, required this.attachment});
+
+  @override
+  Widget build(BuildContext context) {
+    final taskDetailsViewmodel = context.read<TaskDetailsViewmodel>();
+
+    return AlertDialog(
+      backgroundColor: const Color.fromARGB(255, 24, 24, 24),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Icon(
+                  Icons.warning_amber_rounded, color: Colors.red, size: 40),
+              const SizedBox(width: 10),
+              Text(
+                AppLocalizations.of(context)!.wantToDelete,
+                style: GoogleFonts.roboto(fontSize: 24, color: Colors.white),
+              ),
+            ],
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Row(
+                  children: [
+                    const Icon(Icons.close, size: 24, color: Colors.green),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.no,
+                        style: GoogleFonts.roboto(
+                            fontSize: 17,
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold
+                        )
+                    ),
+                  ],
+                )
+            ),
+            const SizedBox(width: 10),
+            TextButton(
+              onPressed: () async {
+                await taskDetailsViewmodel.deleteAttachment(attachment);
+                Navigator.pop(context);
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.check, size: 24, color: Colors.red),
+                  const SizedBox(width: 10),
+                  Text(AppLocalizations.of(context)!.yes,
+                      style: GoogleFonts.roboto(
+                        fontSize: 17,
+                        color: Colors.red,
+                      )
+                  )
+                ],
+              )
+            )
+          ],
+        ),
+      ],
     );
   }
 }
