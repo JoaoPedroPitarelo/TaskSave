@@ -102,5 +102,7 @@
     "attachmentError": "Erro ao baixar anexo",
     "attachmentSavedAs": "Anexo salvo com sucesso!",
     "attachmentDeleted": "Anexo excluído com sucesso",
-    "subtasks": "SubTarefas"
+    "subtasks": "SubTarefas",
+    "subtask": "SubTarefa",
+    "subTaskNotFound": "SubTarefa não encontrada"
 }

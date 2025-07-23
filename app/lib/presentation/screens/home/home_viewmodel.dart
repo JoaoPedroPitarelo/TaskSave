@@ -122,7 +122,6 @@ class HomeViewmodel extends ChangeNotifier {
   void undoDeletionTask(TaskVo task, int originalIndex) {
     if(!_filteredTasks.contains(task)) {
       _filteredTasks.insert(originalIndex.clamp(0, _filteredTasks.length), task);
-
       notifyListeners();
     }
   }
@@ -135,6 +134,7 @@ class HomeViewmodel extends ChangeNotifier {
         _errorKey = _mapFailureToKey(failure);
         _loading = false;
         undoDeletionTask(task, originalIndex);
+        // TODO lançar um evento de exclusão de tarefas (nesse caso success = false)
         notifyListeners();
       },
       (noContent) {

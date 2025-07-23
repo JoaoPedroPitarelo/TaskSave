@@ -711,6 +711,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'SubTarefas'**
   String get subtasks;
+
+  /// No description provided for @subtask.
+  ///
+  /// In pt, this message translates to:
+  /// **'SubTarefa'**
+  String get subtask;
+
+  /// No description provided for @subTaskNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'SubTarefa não encontrada'**
+  String get subTaskNotFound;
 }
 
 class _AppLocalizationsDelegate

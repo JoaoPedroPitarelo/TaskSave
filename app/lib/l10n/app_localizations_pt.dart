@@ -320,4 +320,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get subtasks => 'SubTarefas';
+
+  @override
+  String get subtask => 'SubTarefa';
+
+  @override
+  String get subTaskNotFound => 'SubTarefa não encontrada';
 }

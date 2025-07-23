@@ -1,19 +1,20 @@
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/models/subtask_vo.dart';
-import 'package:app/presentation/screens/task_details/task_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:intl/intl.dart';
 
 class SubtaskWidget extends StatefulWidget {
   final SubtaskVo subtask;
-  VoidCallback? onDismissedCallback;
+  VoidCallback? rightDismissedCallback;
+  VoidCallback? leftDismissedCallback;
 
   SubtaskWidget({
     super.key,
     required this.subtask,
-    this.onDismissedCallback
+    this.rightDismissedCallback,
+    this.leftDismissedCallback
   });
 
   @override
@@ -46,16 +47,24 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
       key: Key(widget.subtask.id),
       direction: DismissDirection.horizontal,
       onDismissed: (direction) async {
-        await player.play(AssetSource("sounds/taskCompleted.mp3"));
-        widget.subtask.completed = true;
+        if (direction == DismissDirection.startToEnd) {
+          player.play(AssetSource("sounds/taskCompleted.mp3"));
+          widget.subtask.completed = true;
 
-        if (widget.onDismissedCallback != null) {
-          widget.onDismissedCallback!();
+          if (widget.rightDismissedCallback != null) {
+            widget.rightDismissedCallback!();
+          }
+        }
+
+        if (direction == DismissDirection.endToStart) {
+          if (widget.leftDismissedCallback != null) {
+            widget.leftDismissedCallback!();
+          }
         }
       },
       background: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(30),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -65,6 +74,20 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
               size: 80,
             ),
           ],
+        ),
+      ),
+      secondaryBackground: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.edit,
+              color: Colors.blue,
+              size: 70,
+            ),
+          ]
         ),
       ),
       child: Stack(

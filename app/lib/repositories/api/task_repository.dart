@@ -65,64 +65,15 @@ class TaskRepository {
     }
   }
 
-  Future<Either<Failure, String?>> deleteAttachment(AttachmentVo attachment) async {
-
-    if (!await _deleteLocalAttachment(attachment)) {
-      return Left(AttachmentFailure());
-    }
-
-    try {
-      final response = await _dio.delete(
-          '/task/${attachment.taskId}/attachment/${attachment.id}'
-      );
-
-      return Right(response.data);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return Left(AttachmentFailure());
-      }
-      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
-    } catch (e) {
-      return Left(UnexpectedFailure());
-    }
-  }
-
-
-  Future<bool> _deleteLocalAttachment(AttachmentVo attachment) async {
-    try {
-      attachment.localFilePath = await _localAttachmentRepository.getFilePath(attachment.id);
-
-      // retorna true, por que realmente ele não existe no dispositivo
-      if (attachment.localFilePath == null) {
-        return true;
-      }
-
-      final File attachmentFile = File(attachment.localFilePath!);
-
-      // verifica se o arquivo existe realmente
-      final bool fileExists = await attachmentFile.exists();
-
-      if (fileExists) {
-        // Se existir deletamos do dispositivo
-        await attachmentFile.delete();
-      }
-
-      // deleta do banco de dados local (sqflite)
-      await _localAttachmentRepository.deleteAttachment(attachment.id);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   Map<String, dynamic> _makePayloadForUpdate(
-    String? title,
-    String? description,
-    DateTime? deadline,
-    int? categoryId,
-    PriorityEnum? priority,
-    ReminderTypeNum? reminderType,
-    int? position) {
+      String? title,
+      String? description,
+      DateTime? deadline,
+      int? categoryId,
+      PriorityEnum? priority,
+      ReminderTypeNum? reminderType,
+      int? position)
+  {
     final payload = <String, dynamic>{};
 
     if (title != null) { payload['title'] = title; }
@@ -160,6 +111,57 @@ class TaskRepository {
     }
   }
 
+  // TODO criar método de criação de tarefas
+
+  Future<Either<Failure, String?>> deleteAttachment(AttachmentVo attachment) async {
+
+    if (!await _deleteLocalAttachment(attachment)) {
+      return Left(AttachmentFailure());
+    }
+
+    try {
+      final response = await _dio.delete(
+          '/task/${attachment.taskId}/attachment/${attachment.id}'
+      );
+
+      return Right(response.data);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(AttachmentFailure());
+      }
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
+    } catch (e) {
+      return Left(UnexpectedFailure());
+    }
+  }
+
+  Future<bool> _deleteLocalAttachment(AttachmentVo attachment) async {
+    try {
+      attachment.localFilePath = await _localAttachmentRepository.getFilePath(attachment.id);
+
+      // retorna true, por que realmente ele não existe no dispositivo
+      if (attachment.localFilePath == null) {
+        return true;
+      }
+
+      final File attachmentFile = File(attachment.localFilePath!);
+
+      // verifica se o arquivo existe realmente
+      final bool fileExists = await attachmentFile.exists();
+
+      if (fileExists) {
+        // Se existir deletamos do dispositivo
+        await attachmentFile.delete();
+      }
+
+      // deleta do banco de dados local (sqflite)
+      await _localAttachmentRepository.deleteAttachment(attachment.id);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   /* Download attachment
   * Este é um metdo que abaixa o anexo quando ele não estiver salvo localmente e retorna o caminho do arquivo baixado
   * para posteriormente ser usado para mostrar o anexo na tela
@@ -189,5 +191,4 @@ class TaskRepository {
       return Left(UnexpectedFailure());
     }
   }
-
 }

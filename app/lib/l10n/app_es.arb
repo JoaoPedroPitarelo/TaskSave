@@ -101,5 +101,7 @@
   "attachmentError": "Error al descargar el archivo",
   "attachmentSavedAs": "Archivo guardado exitosamente",
   "attachmentDeleted": "Archivo eliminado exitosamente",
-  "subtasks": "SubTareas"
+  "subtasks": "SubTareas",
+  "subtask": "SubTarea",
+  "subTaskNotFound": "SubTarea no encontrada"
 }

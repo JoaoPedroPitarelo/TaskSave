@@ -15,7 +15,6 @@ import 'package:app/presentation/screens/home/home_viewmodel.dart';
 import 'package:app/presentation/screens/task_details/attachment_widget.dart';
 import 'package:app/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:app/services/events/task_event_service.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -87,6 +86,17 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             widget.task.attachmentList.remove(event.attachment);
           }
         }
+
+        if (event is SubtaskDeletionEvent) {
+          if (event.success == null) {
+            _showUndoSnackbarSubtask(event.task, event.subtask, event.originalIndex);
+            return;
+          }
+
+          if (!event.success!) {
+            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
+          }
+        }
       });
     });
 
@@ -103,6 +113,41 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       showSuccessSnackbar(message)
     );
+  }
+
+
+  // TODO criar um método geral para isso aqui, com VoidCallbakck
+  void _showUndoSnackbarSubtask(TaskVo task, SubtaskVo subtask, int originalIndex) {
+    final taskDetailsViewmodel = context.read<TaskDetailsViewmodel>();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "${AppLocalizations.of(context)!.subtask} ${subtask.title} ${AppLocalizations.of(context)!.deleted}",
+          style: GoogleFonts.roboto(
+              fontSize: 15,
+              color: Colors.white,
+              fontWeight: FontWeight.w500
+          ),
+        ),
+        elevation: 2,
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: AppLocalizations.of(context)!.undo,
+          textColor: Colors.white,
+          onPressed: () {
+            taskDetailsViewmodel.undoDeletionSubtask(task, subtask, originalIndex);
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+        showCloseIcon: false,
+      ),
+    ).closed.then((reason) {
+      if (reason != SnackBarClosedReason.action) {
+        taskDetailsViewmodel.confirmDeletionSubtask(task, subtask, originalIndex);
+      }
+    });
   }
 
   @override
@@ -370,14 +415,15 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       return SubtaskWidget(
                         key: ValueKey(subtask.id),
                         subtask: subtask,
-                        onDismissedCallback: () async {
-                          // TODO fazer método de exclusão de substasks em taskDetailsViewmodel
-                        }
+                        rightDismissedCallback: () async {
+                          taskDetailsViewModel.prepareSubtaskForDeletion(widget.task, subtask);
+                        },
+                        leftDismissedCallback: () => {},
                       );
                     },
                     itemCount: widget.task.subtaskList.length,
                     onReorder: (oldIndex, newIndex) {
-                      // TODO fazer método de reordenação de substasks
+                      taskDetailsViewModel.reorderSubtask(widget.task, widget.task.subtaskList[oldIndex], oldIndex, newIndex);
                     }
                   )
                 ]

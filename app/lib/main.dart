@@ -16,6 +16,7 @@ import 'package:app/presentation/screens/task_details/task_details_viewmodel.dar
 import 'package:app/presentation/screens/wrapper.dart';
 import 'package:app/repositories/api/auth_repository.dart';
 import 'package:app/repositories/api/category_repository.dart';
+import 'package:app/repositories/api/subtask_repository.dart';
 import 'package:app/repositories/api/task_repository.dart';
 import 'package:app/repositories/local/local_attachment_repository.dart';
 import 'package:app/services/auth/auth_service.dart';
@@ -109,6 +110,7 @@ Future<void> main() async {
             Provider.of<Dio>(ctx, listen: false),
             Provider.of<LocalAttachmentRepository>(ctx, listen: false)
           ),
+          SubtaskRepository(Provider.of<Dio>(ctx, listen: false)),
           mapFailureToKey
         )
       )

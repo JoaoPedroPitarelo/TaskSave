@@ -6,6 +6,9 @@ import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/failure_keys.dart';
 import 'package:app/core/events/task_events.dart';
 import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/subtask_vo.dart';
+import 'package:app/domain/models/task_vo.dart';
+import 'package:app/repositories/api/subtask_repository.dart';
 import 'package:app/repositories/api/task_repository.dart';
 import 'package:app/services/events/task_event_service.dart';
 import 'package:file_picker/file_picker.dart';
@@ -13,6 +16,7 @@ import 'package:flutter/cupertino.dart';
 
 class TaskDetailsViewmodel extends ChangeNotifier {
   final TaskRepository _taskRepository;
+  final SubtaskRepository _subtaskRepository;
   final FailureKey Function(Failure) mapFailureToKey;
   final TaskEventService _taskEventService = TaskEventService();
 
@@ -22,7 +26,7 @@ class TaskDetailsViewmodel extends ChangeNotifier {
   bool _loading = false;
   bool get isLoading => _loading;
 
-  TaskDetailsViewmodel(this._taskRepository, this.mapFailureToKey);
+  TaskDetailsViewmodel(this._taskRepository, this._subtaskRepository, this.mapFailureToKey);
 
   Future<void> downloadAttachment(AttachmentVo attachment) async {
     _loading = true;
@@ -101,4 +105,75 @@ class TaskDetailsViewmodel extends ChangeNotifier {
     });
   }
 
+  void prepareSubtaskForDeletion(TaskVo task, SubtaskVo subtask) {
+    final originalIndex = task.subtaskList.indexOf(subtask);
+    if (originalIndex == -1) return;
+
+    task.subtaskList.removeAt(originalIndex);
+
+    _taskEventService.add(SubtaskDeletionEvent(
+        task: task,
+        subtask: subtask,
+        originalIndex: originalIndex
+    ));
+    notifyListeners();
+  }
+
+  void undoDeletionSubtask(TaskVo task, SubtaskVo subtask, int originalIndex) {
+    if (!task.subtaskList.contains(subtask)) {
+      task.subtaskList.insert(originalIndex.clamp(0, task.subtaskList.length), subtask);
+      notifyListeners();
+    }
+  }
+
+  Future<void> confirmDeletionSubtask(task, subtask, originalIndex) async {
+    final result = await _subtaskRepository.delete(task, subtask);
+
+    result.fold(
+      (failure) {
+        _loading = false;
+        _errorKey = mapFailureToKey(failure);
+        undoDeletionSubtask(task, subtask, originalIndex);
+        _taskEventService.add(SubtaskDeletionEvent(
+            success: false,
+            failureKey: _errorKey,
+            task: task,
+            subtask: subtask,
+            originalIndex: originalIndex
+        ));
+        notifyListeners();
+      },
+      (noContent) {
+        notifyListeners();
+      }
+    );
+  }
+
+  Future<void> reorderSubtask(TaskVo task, SubtaskVo subtask, int oldIndex, int newIndex) async {
+    if (oldIndex < 0 || oldIndex >= task.subtaskList.length) return;
+    if (newIndex < 0 || newIndex > task.subtaskList.length) return;
+
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final SubtaskVo item = task.subtaskList.removeAt(oldIndex);
+    task.subtaskList.insert(newIndex, item);
+    notifyListeners();
+
+    final result = await _subtaskRepository.update(id: subtask.id, position: newIndex);
+
+    result.fold(
+      (failure) {
+        _loading = false;
+        _errorKey = mapFailureToKey(failure);
+        _taskEventService.add(SubtaskReorderEvent(success: false, failureKey: _errorKey));
+        notifyListeners();
+      },
+      (updatedSubtask) {
+        _taskEventService.add(SubtaskReorderEvent(success: true));
+        notifyListeners();
+      }
+    );
+  }
 }

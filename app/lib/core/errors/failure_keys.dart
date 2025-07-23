@@ -1,4 +1,5 @@
 enum FailureKey {
+  subtaskNotFound,
   taskNotFound,
   categoryNotFound,
   duplicatedUser,

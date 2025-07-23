@@ -101,5 +101,7 @@
   "attachmentError": "Attachment error",
   "attachmentSavedAs": "Attachment saved successfully!",
   "attachmentDeleted": "Attachmente deleted successfully",
-  "subtasks": "SubTasks"
+  "subtasks": "SubTasks",
+  "subtask": "SubTask",
+  "subTaskNotFound": "Subtask Not found"
 }
