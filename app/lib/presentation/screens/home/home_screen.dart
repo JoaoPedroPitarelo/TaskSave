@@ -17,6 +17,7 @@ import "package:app/presentation/screens/home/home_viewmodel.dart";
 import "package:app/presentation/screens/home/widgets/category_item.dart";
 import "package:app/services/events/category_event_service.dart";
 import "package:app/services/events/task_event_service.dart";
+import "package:app/services/notifications/notification_service.dart";
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
@@ -570,8 +571,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: ()  async {
           // TODO fazer a tela de formulário para adicionar novas tarefas
+           await NotificationService.showTestNotification('La ele', 'Bora bill');
         },
         elevation: 3,
         child: const Icon(

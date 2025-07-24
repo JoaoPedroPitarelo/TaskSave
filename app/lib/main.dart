@@ -21,6 +21,7 @@ import 'package:app/repositories/api/task_repository.dart';
 import 'package:app/repositories/local/local_attachment_repository.dart';
 import 'package:app/services/auth/auth_service.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/services/notifications/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,8 @@ Future<void> main() async {
 
   final authService = AuthService();
   await authService.init();
+
+  await NotificationService.initNotificationPlugin();
 
   runApp(MultiProvider(
     providers: [
@@ -133,7 +136,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initiliazeInterceptorAndListeners();
+    initializeInterceptorAndListeners();
   }
 
   @override
@@ -149,7 +152,7 @@ class _MyAppState extends State<MyApp> {
     _checkAndNavigateBasedOnDeepLink();
   }
 
-  void initiliazeInterceptorAndListeners() {
+  void initializeInterceptorAndListeners() {
      WidgetsBinding.instance.addPostFrameCallback((_) {
       final dio = Provider.of<Dio>(context, listen: false);
       final authService = Provider.of<AuthService>(context, listen: false);

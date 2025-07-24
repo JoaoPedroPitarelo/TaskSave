@@ -37,13 +37,15 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   file_picker: ^10.2.0
+  flutter_local_notifications: ^19.3.1
+  timezone: ^0.10.1
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   generate: true
