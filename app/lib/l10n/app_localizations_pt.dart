@@ -326,4 +326,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get subTaskNotFound => 'SubTarefa não encontrada';
+
+  @override
+  String get expiredTask => 'irá expirar!';
+
+  @override
+  String get yourTask => 'Sua tarefa com prazo para';
+
+  @override
+  String get clickToShowDetailsTask => 'Clique para ver mais detalhes...';
 }

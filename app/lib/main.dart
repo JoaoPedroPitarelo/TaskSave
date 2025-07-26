@@ -6,7 +6,9 @@ import 'package:app/presentation/global_providers/auth_provider.dart';
 import 'package:app/presentation/global_providers/app_preferences_provider.dart';
 import 'package:app/presentation/global_providers/password_rescue_provider.dart';
 import 'package:app/presentation/screens/category_form/category_form_viewmodel.dart';
+import 'package:app/presentation/screens/home/category_viewmodel.dart';
 import 'package:app/presentation/screens/home/home_viewmodel.dart';
+import 'package:app/presentation/screens/home/task_viewmodel.dart';
 import 'package:app/presentation/screens/login/login_viewmodel.dart';
 import 'package:app/presentation/screens/password_change/password_change_screen.dart';
 import 'package:app/presentation/screens/password_change/password_change_viewmodel.dart';
@@ -34,12 +36,16 @@ Future<void> main() async {
   final authService = AuthService();
   await authService.init();
 
-  await NotificationService.initNotificationPlugin();
+  final notificationService = NotificationService();
+  notificationService.initNotificationPlugin();
 
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
         create: (context) => AppPreferencesProvider(),
+      ),
+      Provider<NotificationService>(
+        create: (context) => notificationService
       ),
       Provider<AuthService>(
           create: (context) => authService,
@@ -66,13 +72,26 @@ Future<void> main() async {
         create: (context) => PasswordRescueProvider(),
       ),
       ChangeNotifierProvider(
-        create: (ctx) => HomeViewmodel(
+        create: (ctx) => CategoryViewmodel(
           CategoryRepository(Provider.of<Dio>(ctx, listen: false)),
-          TaskRepository(
-            Provider.of<Dio>(ctx, listen: false),
-            Provider.of<LocalAttachmentRepository>(ctx, listen: false)
-          ),
           mapFailureToKey
+        )
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => TaskViewmodel(
+          TaskRepository(
+              Provider.of<Dio>(ctx, listen: false),
+              Provider.of<LocalAttachmentRepository>(ctx, listen: false)
+          ),
+          notificationService,
+          mapFailureToKey,
+          Provider.of<CategoryViewmodel>(ctx, listen: false)
+        ),
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => HomeViewmodel(
+          Provider.of<TaskViewmodel>(ctx, listen: false),
+          Provider.of<CategoryViewmodel>(ctx, listen: false)
         ),
       ),
       ChangeNotifierProvider(

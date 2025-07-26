@@ -11,10 +11,11 @@ import "package:app/presentation/common/error_snackbar.dart";
 import "package:app/presentation/common/sucess_snackbar.dart";
 import "package:app/presentation/common/task_widget.dart";
 import "package:app/presentation/screens/category_form/category_form_screen.dart";
+import "package:app/presentation/screens/home/category_viewmodel.dart";
+import "package:app/presentation/screens/home/task_viewmodel.dart";
 import "package:app/presentation/screens/home/widgets/widget_filter_mode.dart";
 import "package:app/presentation/screens/settings/settings_screen.dart";
-import "package:app/presentation/screens/home/home_viewmodel.dart";
-import "package:app/presentation/screens/home/widgets/category_item.dart";
+  import "package:app/presentation/screens/home/widgets/category_item.dart";
 import "package:app/services/events/category_event_service.dart";
 import "package:app/services/events/task_event_service.dart";
 import "package:app/services/notifications/notification_service.dart";
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       _categorySubscription = _categoryEventService.onCategoryChanged.listen( (event) {
         if (event is CategoryDeletionEvent) {
-          _showUndoSnackbarCategory(event.category, event.originalIndex);
+          _showUndoSnackBarCategory(event.category, event.originalIndex);
         }
 
         if (event is CategoriesChangedEvent) {
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         if (event is TaskDeletionEvent) {
-          _showUndoSnackbarTask(event.task, event.originalIndex);
+          _showUndoSnackBarTask(event.task, event.originalIndex);
         }
 
         if (event is TaskReorderEvent) {
@@ -100,15 +101,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void loadCategories() async {
-    await context.read<HomeViewmodel>().getCategories();
+    await context.read<CategoryViewmodel>().getCategories();
   }
 
   void loadTasks() async {
-    await context.read<HomeViewmodel>().getTasks();
+    await context.read<TaskViewmodel>().getTasks();
+    await context.read<TaskViewmodel>().scheduleNotificationsForTasks(context.read<TaskViewmodel>().tasks, context);
   }
 
-  void _showUndoSnackbarCategory(CategoryVo category, int originalIndex) {
-    final homeViewmodel = context.read<HomeViewmodel>();
+  void _showUndoSnackBarCategory(CategoryVo category, int originalIndex) {
+    final categoryViewmodel = context.read<CategoryViewmodel>();
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -127,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
           label: AppLocalizations.of(context)!.undo,
           textColor: Colors.white,
           onPressed: () {
-            homeViewmodel.undoDeletionCategory(category, originalIndex);
+            categoryViewmodel.undoDeletionCategory(category, originalIndex);
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },
         ),
@@ -135,13 +137,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ).closed.then((reason) {
       if (reason != SnackBarClosedReason.action) {
-        homeViewmodel.confirmDeletionCategory(category, originalIndex);
+        categoryViewmodel.confirmDeletionCategory(category, originalIndex);
       }
     });
   }
 
-  void _showUndoSnackbarTask(TaskVo task, int originalIndex) {
-    final homeViewmodel = context.read<HomeViewmodel>();
+  void _showUndoSnackBarTask(TaskVo task, int originalIndex) {
+    final taskViewmodel = context.read<TaskViewmodel>();
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -160,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
           label: AppLocalizations.of(context)!.undo,
           textColor: Colors.white,
           onPressed: () {
-            homeViewmodel.undoDeletionTask(task, originalIndex);
+            taskViewmodel.undoDeletionTask(task, originalIndex);
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },
         ),
@@ -168,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ).closed.then((reason) {
       if (reason != SnackBarClosedReason.action) {
-        homeViewmodel.confirmDeletionTask(task, originalIndex);
+        taskViewmodel.confirmTaskDeletion(task, originalIndex);
       }
     });
   }
@@ -197,7 +199,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
 
-    final homeViewmodel = context.watch<HomeViewmodel>();
+    final taskViewmodel = context.watch<TaskViewmodel>();
+    final categoryViewmodel = context.watch<CategoryViewmodel>();
 
     return Scaffold(
       appBar: PreferredSize(
@@ -207,6 +210,14 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 12,
           shadowColor: Colors.black,
           iconTheme: const IconThemeData(color: Colors.white, size: 30),
+          leading: Builder(builder: (context) {
+            return IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: const Icon(Icons.menu_rounded),
+            );
+          }),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               bottom: Radius.circular(20),
@@ -225,8 +236,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           WidgetFilterMode(
-                            filterMode: homeViewmodel.filterMode,
-                            selectedCategory: homeViewmodel.selectedCategory
+                            filterMode: taskViewmodel.filterMode,
+                            selectedCategory: categoryViewmodel.selectedCategory
                           )
                         ],
                       ),
@@ -243,9 +254,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           backgroundColor: const WidgetStatePropertyAll(Colors.black38),
                           elevation: const WidgetStatePropertyAll(2.0),
                           controller: searchController,
+                          autoFocus: false,
                           padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
                           onChanged: (query) {
-                            homeViewmodel.searchTask(query);
+                            taskViewmodel.searchTask(query);
                           },
                           leading: const Icon(Icons.search, color: Colors.white70),
                           hintText: AppLocalizations.of(context)!.searchForTasks,
@@ -258,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     ),
-    body: homeViewmodel.tasks.isNotEmpty
+    body: taskViewmodel.tasks.isNotEmpty
       ? RefreshIndicator(
       onRefresh: () async {
         loadTasks();
@@ -266,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: ReorderableListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-        itemCount: homeViewmodel.filteredTasks.length,
+        itemCount: taskViewmodel.filteredTasks.length,
         proxyDecorator: (child, index, animation) {
           return Material(
             color: Colors.transparent,
@@ -286,15 +298,15 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
         itemBuilder: (context, i) {
-          TaskVo task = homeViewmodel.filteredTasks[i];
+          TaskVo task = taskViewmodel.filteredTasks[i];
           return TaskWidget(
             key: ValueKey(task.id),
             task: task,
-            onDismissedCallback: () async => homeViewmodel.prepareTaskForDeletion(task),
+            onDismissedCallback: () async => taskViewmodel.prepareTaskForDeletion(task),
           );
         },
         onReorder: (int oldIndex, int newIndex) {
-          homeViewmodel.reorderTask(oldIndex, newIndex);
+          taskViewmodel.reorderTask(oldIndex, newIndex);
           },
         ),
       )
@@ -397,9 +409,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         size: 28,
                       ),
                       text: AppLocalizations.of(context)!.allTasks,
-                      count: homeViewmodel.countAllTasks,
+                      count: taskViewmodel.countAllTasks,
                       onTap: () {
-                        homeViewmodel.clearAllFiltersForTasks();
+                        taskViewmodel.clearAllFiltersForTasks();
                         Navigator.pop(context);
                       },
                     ),
@@ -412,9 +424,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                       ),
                       text: AppLocalizations.of(context)!.taskToday,
-                      count: homeViewmodel.countTodayTasks,
+                      count: taskViewmodel.countTodayTasks,
                       onTap: () {
-                        homeViewmodel.filterTasks(FilteringTaskModeEnum.today);
+                        taskViewmodel.filterTasks(FilteringTaskModeEnum.today);
                         Navigator.pop(context);
                       },
                     ),
@@ -426,9 +438,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                       ),
                       text: AppLocalizations.of(context)!.taskWeek,
-                      count: homeViewmodel.countNextWeekTasks,
+                      count: taskViewmodel.countNextWeekTasks,
                       onTap: () {
-                        homeViewmodel.filterTasks(FilteringTaskModeEnum.nextWeek);
+                        taskViewmodel.filterTasks(FilteringTaskModeEnum.nextWeek);
                         Navigator.pop(context);
                       },
                     ),
@@ -440,9 +452,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                       ),
                       text: AppLocalizations.of(context)!.taskMonth,
-                      count: homeViewmodel.countNextMonthTasks,
+                      count: taskViewmodel.countNextMonthTasks,
                       onTap: () {
-                        homeViewmodel.filterTasks(FilteringTaskModeEnum.nextMonth);
+                        taskViewmodel.filterTasks(FilteringTaskModeEnum.nextMonth);
                         Navigator.pop(context);
                       },
                     ),
@@ -454,9 +466,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                       ),
                       text: AppLocalizations.of(context)!.taskLate,
-                      count: homeViewmodel.countOverdueTasks,
+                      count: taskViewmodel.countOverdueTasks,
                       onTap: () {
-                        homeViewmodel.filterTasks(FilteringTaskModeEnum.overdue);
+                        taskViewmodel.filterTasks(FilteringTaskModeEnum.overdue);
                         Navigator.pop(context);
                       },
                     ),
@@ -497,7 +509,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const Padding(
                             padding: EdgeInsets.only(right: 11),
-                            child: Icon(Icons.add, color: Colors.greenAccent, size: 28),
+                            child: Icon(
+                              Icons.add_rounded,
+                              color: Colors.white,
+                              size: 28
+                            ),
                           )
                         ],
                       ),
@@ -506,7 +522,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ReorderableListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: homeViewmodel.categories.length,
+                      itemCount: categoryViewmodel.categories.length,
                       proxyDecorator: (child, index, animation) {
                         return Material(
                           color: Colors.transparent,
@@ -527,20 +543,20 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                       itemBuilder: (context, i) {
-                        CategoryVo category = homeViewmodel.categories[i];
+                        CategoryVo category = categoryViewmodel.categories[i];
                         return CategoryItem(
                           key: ValueKey(category.id),
                           category: category,
                           index: i,
                           onTap: () {
-                            homeViewmodel.selectCategory(category);
-                            homeViewmodel.filterTasks(FilteringTaskModeEnum.category);
+                            categoryViewmodel.selectCategory(category);
+                            taskViewmodel.filterTasks(FilteringTaskModeEnum.category);
                             Navigator.of(context).pop();
                           },
                         );
                       },
                       onReorder: (int oldIndex, int newIndex) {
-                        homeViewmodel.reorderCategories(oldIndex, newIndex);
+                        categoryViewmodel.reorderCategory(oldIndex, newIndex);
                       },
                     ),
                   ],
@@ -556,7 +572,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),
                 child: Row(
                   children: [
-                    const Icon(Icons.settings_sharp, color: Colors.white, size: 28),
+                    const Icon(Icons.settings_rounded, color: Colors.white, size: 28),
                     const SizedBox(width: 12),
                     Text(
                       AppLocalizations.of(context)!.settings,
@@ -573,11 +589,12 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: ()  async {
           // TODO fazer a tela de formulário para adicionar novas tarefas
-           await NotificationService.showTestNotification('La ele', 'Bora bill');
+           final notificationService = context.read<NotificationService>();
+           notificationService.showTestNotification("Lá ele", 'Tome, bora bill');
         },
         elevation: 3,
         child: const Icon(
-          Icons.add_outlined,
+          Icons.add_rounded,
           size: 30,
           color: Colors.white,
         ),

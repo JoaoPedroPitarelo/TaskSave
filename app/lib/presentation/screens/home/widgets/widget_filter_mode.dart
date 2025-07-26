@@ -30,7 +30,7 @@ class WidgetFilterMode extends StatelessWidget {
       case FilteringTaskModeEnum.category:
         return selectedCategory!.description != "Default"
             ? Icon(Icons.dashboard_customize_outlined, size: 30, color: hexToColor(selectedCategory!.color))
-            : const Icon(Icons.close_rounded, size: 32, color: Colors.white);
+            : const Icon(Icons.close_rounded, size: 35, color: Colors.white);
     }
   }
 

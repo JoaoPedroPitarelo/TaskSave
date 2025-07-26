@@ -12,6 +12,7 @@ import 'package:app/presentation/common/hex_to_color.dart';
 import 'package:app/presentation/common/subtask_widget.dart';
 import 'package:app/presentation/common/sucess_snackbar.dart';
 import 'package:app/presentation/screens/home/home_viewmodel.dart';
+import 'package:app/presentation/screens/home/task_viewmodel.dart';
 import 'package:app/presentation/screens/task_details/attachment_widget.dart';
 import 'package:app/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:app/services/events/task_event_service.dart';
@@ -211,8 +212,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   // TODO quando estiver pronto a tela de edição
                 }
                 if (value == "delete") {
-                  final homeViewmodel = context.read<HomeViewmodel>();
-                  homeViewmodel.prepareTaskForDeletion(widget.task);
+                  final taskViewmodel = context.read<TaskViewmodel>();
+                  taskViewmodel.prepareTaskForDeletion(widget.task);
 
                   Navigator.of(context).pop();
                 }

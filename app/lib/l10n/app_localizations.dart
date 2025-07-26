@@ -723,6 +723,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'SubTarefa não encontrada'**
   String get subTaskNotFound;
+
+  /// No description provided for @expiredTask.
+  ///
+  /// In pt, this message translates to:
+  /// **'irá expirar!'**
+  String get expiredTask;
+
+  /// No description provided for @yourTask.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua tarefa com prazo para'**
+  String get yourTask;
+
+  /// No description provided for @clickToShowDetailsTask.
+  ///
+  /// In pt, this message translates to:
+  /// **'Clique para ver mais detalhes...'**
+  String get clickToShowDetailsTask;
 }
 
 class _AppLocalizationsDelegate

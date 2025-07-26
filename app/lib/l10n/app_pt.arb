@@ -104,5 +104,8 @@
     "attachmentDeleted": "Anexo excluído com sucesso",
     "subtasks": "SubTarefas",
     "subtask": "SubTarefa",
-    "subTaskNotFound": "SubTarefa não encontrada"
+    "subTaskNotFound": "SubTarefa não encontrada",
+    "expiredTask": "irá expirar!",
+    "yourTask": "Sua tarefa com prazo para",
+    "clickToShowDetailsTask": "Clique para ver mais detalhes..."
 }

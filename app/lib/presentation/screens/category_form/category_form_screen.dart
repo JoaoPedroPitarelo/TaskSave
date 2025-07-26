@@ -272,7 +272,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
             ),
         ),
         icon: Icon(
-            Icons.add,
+            Icons.add_rounded,
             color: Colors.white,
             size: 35
         ),

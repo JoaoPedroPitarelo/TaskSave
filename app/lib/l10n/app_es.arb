@@ -103,5 +103,8 @@
   "attachmentDeleted": "Archivo eliminado exitosamente",
   "subtasks": "SubTareas",
   "subtask": "SubTarea",
-  "subTaskNotFound": "SubTarea no encontrada"
+  "subTaskNotFound": "SubTarea no encontrada",
+  "expiredTask": "caducará",
+  "yourTask": "Su tarea con fecha límite para",
+  "clickToShowDetailsTask": "Haga clic para ver más detalles..."
 }

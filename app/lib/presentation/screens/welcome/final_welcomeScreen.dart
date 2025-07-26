@@ -7,8 +7,32 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 
-class FinalWelcomeScreen extends StatelessWidget {
+class FinalWelcomeScreen extends StatefulWidget {
   const FinalWelcomeScreen({super.key});
+
+  @override
+  State<FinalWelcomeScreen> createState() => _FinalWelcomeScreenState();
+}
+
+class _FinalWelcomeScreenState extends State<FinalWelcomeScreen> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  )..repeat(reverse: false);
+
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: const Offset(-0.5, 0.0),
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.decelerate,
+  ));
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,47 +47,73 @@ class FinalWelcomeScreen extends StatelessWidget {
             height: 450,
             child: Image.asset(
               appColors.taskSaveLogo!,
-              height: 250, width: 250
+              height: 250,
+              width: 250,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TaskWidget(task: TaskVo(
-              id: "0",
-              title: AppLocalizations.of(context)!.titleTask,
-              description: AppLocalizations.of(context)!.descriptionTask,
-              subtaskList: [],
-              attachmentList: [],
-              deadline: DateTime.now(),
-              priority: PriorityEnum.low,
-              category: CategoryVo(id: 0, description: "None", isDefault: false, color: "None", activate: true, position: -1),
-              completed: false),
-              onDismissedCallback: () => Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => LoginScreen()
-                )
-              )
-            ),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: TaskWidget(
+                  task: TaskVo(
+                    id: "0",
+                    title: AppLocalizations.of(context)!.titleTask,
+                    description: AppLocalizations.of(context)!.descriptionTask,
+                    subtaskList: [],
+                    attachmentList: [],
+                    deadline: DateTime.now(),
+                    priority: PriorityEnum.low,
+                    category: CategoryVo(
+                        id: 0,
+                        description: "None",
+                        isDefault: false,
+                        color: "None",
+                        activate: true,
+                        position: -1),
+                    completed: false,
+                  ),
+                  onDismissedCallback: () => Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(
+                          builder: (context) => LoginScreen())),
+                ),
+              ),
+              Positioned(
+                top: 20,
+                left: 0,
+                right: 0,
+                child: SlideTransition(
+                  position: _offsetAnimation,
+                  child: FadeTransition(
+                    opacity: _controller.drive(CurveTween(curve: Curves.decelerate)),
+                    child: const Icon(
+                      Icons.double_arrow_outlined,
+                      size: 80,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.arrow_back_ios_outlined,
                             size: 40,
                             weight: 200.0,
                           ),
-                          onPressed: () => Navigator.of(context).pop()
-                      ),
+                          onPressed: () => Navigator.of(context).pop()),
                     ),
-                  ]
+                  ],
                 )
               ],
             ),

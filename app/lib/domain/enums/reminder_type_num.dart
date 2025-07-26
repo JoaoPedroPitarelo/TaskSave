@@ -5,6 +5,5 @@ enum ReminderTypeNum {
 
   final String description;
 
-
   const ReminderTypeNum(this.description);
 }

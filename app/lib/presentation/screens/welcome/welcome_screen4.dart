@@ -4,8 +4,6 @@ import 'package:app/presentation/screens/welcome/final_welcomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 
-// TODO Quando a norificação estiver pronta, colocar neste Widget um exemplo de notificação do android
-
 class WelcomeScreen4 extends StatelessWidget {
   const WelcomeScreen4({super.key});
 
@@ -43,6 +41,13 @@ class WelcomeScreen4 extends StatelessWidget {
                   child: Text(AppLocalizations.of(context)!.notified,
                       textAlign: TextAlign.center,
                       style: theme.textTheme.displayMedium
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18.0),
+                    child: Image.asset("assets/images/notification_example.jpg")
                   ),
                 )
               ],

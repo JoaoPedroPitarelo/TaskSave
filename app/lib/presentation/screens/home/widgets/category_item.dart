@@ -1,6 +1,7 @@
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/screens/category_form/category_form_screen.dart';
+import 'package:app/presentation/screens/home/category_viewmodel.dart';
 import 'package:app/presentation/screens/home/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:app/presentation/common/hex_to_color.dart';
@@ -42,7 +43,7 @@ class CategoryItem extends StatelessWidget {
                 ? Icons.close_rounded
                 : Icons.dashboard_customize_outlined,
               color: hexToColor(category.color),
-              size: 23,
+              size: 25,
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -57,7 +58,8 @@ class CategoryItem extends StatelessWidget {
               ReorderableDragStartListener(
                 index: index,
                 child: const Icon(
-                  Icons.drag_handle,
+                  Icons.drag_handle_rounded,
+                  size: 25,
                   color: Colors.white,
                 ),
               ),
@@ -147,7 +149,7 @@ class _DeleteCategoryDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeViewmodel = Provider.of<HomeViewmodel>(context, listen: false);
+    final categoryViewmodel = Provider.of<CategoryViewmodel>(context, listen: false);
 
     return AlertDialog(
       backgroundColor: const Color.fromARGB(255, 24, 24, 24),
@@ -195,7 +197,7 @@ class _DeleteCategoryDialog extends StatelessWidget {
             const SizedBox(width: 10),
             TextButton(
               onPressed: () {
-                homeViewmodel.prepareCategoryForDeletion(category);
+                categoryViewmodel.prepareCategoryForDeletion(category);
                 Navigator.of(context).pop();
               },
               child: Row(

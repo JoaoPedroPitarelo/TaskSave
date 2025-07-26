@@ -103,5 +103,8 @@
   "attachmentDeleted": "Attachmente deleted successfully",
   "subtasks": "SubTasks",
   "subtask": "SubTask",
-  "subTaskNotFound": "Subtask Not found"
+  "subTaskNotFound": "Subtask Not found",
+  "expiredTask": "will expired!",
+  "yourTask": "Your task with deadline for",
+  "clickToShowDetailsTask": "Click for show more details..."
 }
