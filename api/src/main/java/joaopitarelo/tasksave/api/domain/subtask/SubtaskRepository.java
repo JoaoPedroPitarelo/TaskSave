@@ -16,4 +16,5 @@ public interface SubtaskRepository {
     );
     List<Subtask> findByUserIdAndParentTaskIdAndCompletedFalse(Long userId, Long parentTaskId);
     Optional<Subtask> findByUserIdAndParentTaskIdAndPositionAndCompletedFalse(Long userId, Long parentTaskId, Long position);
+    Optional<List<Subtask>> findByParentTaskIdAndUserIdAndCompletedFalse(Long parentTaskId, Long userId);
 }

@@ -149,9 +149,11 @@ public class TaskService {
     public void delete(Task task) {
         task.setCompleted(true);
 
-        List<Subtask> subtaskList = task.getSubtasks();
+        List<Subtask> subtaskList = subtaskService.getSubtasks(task.getUser().getId(), task.getId());
 
-        subtaskList.forEach(subtask -> subtaskService.delete(subtask.getId(), task.getUser().getId()));
+        if (!subtaskList.isEmpty()) {
+            subtaskList.forEach(subtask -> subtaskService.delete(subtask.getId(), task.getUser().getId()));
+        }
 
         reorderPositionListAfterDelete(task.getPosition(), task.getUser().getId());
         taskRepository.save(task);

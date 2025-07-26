@@ -36,6 +36,11 @@ public class SubtaskService {
         return subtaskRepository.findByIdAndUserIdAndCompletedFalse(subtaskId, userId);
     }
 
+    public List<Subtask> getSubtasks(Long userId, Long taskId) {
+        Optional<List<Subtask>> subtasks = subtaskRepository.findByParentTaskIdAndUserIdAndCompletedFalse(taskId, userId);
+        return subtasks.orElse(List.of());
+    }
+
     public void update(@Valid UpdateSubtask modifiedSubtask, Subtask subtask) {
         LocalDateTime lastModification = LocalDateTime.now();
 
