@@ -1,24 +1,22 @@
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/enums/reminder_type_num.dart';
+import 'package:app/domain/models/notifiable.dart';
 
-class SubtaskVo {
-  final String id;
+class SubtaskVo extends Notifiable {
   final String title;
   final String? description;
-  final DateTime deadline;
   final PriorityEnum priority;
-  final ReminderTypeNum? reminderType;
   bool completed;
 
   SubtaskVo({
-    required this.id,
+    required id,
     required this.title,
     this.description,
-    required this.deadline,
+    required deadline,
     required this.priority,
-    required this.reminderType,
+    required reminderType,
     required this.completed
-  });
+  }) : super(id, reminderType, deadline);
 
   factory SubtaskVo.fromJson(Map<String, dynamic> json) {
     return SubtaskVo(

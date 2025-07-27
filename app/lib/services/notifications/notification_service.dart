@@ -13,12 +13,7 @@ class NotificationService {
     return _instance;
   }
 
-  @pragma('vm:entry-point')
-  void onBackgroundNotificationResponse(NotificationResponse notificationResponse) {
-    // TODO criar lógica para navegar para determinar tarefa ou subtarefa que foi notificada
-  }
-
-  Future<void> initNotificationPlugin() async {
+  Future<void> initNotificationPlugin({required Function(String? payload) onNotificationTap}) async {
     tz.initializeTimeZones();
 
     const androidSettings = AndroidInitializationSettings('notification_icon');
@@ -30,8 +25,12 @@ class NotificationService {
 
     await _notificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: onBackgroundNotificationResponse,
-      onDidReceiveBackgroundNotificationResponse: onBackgroundNotificationResponse,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        onNotificationTap(response.payload);
+      },
+      onDidReceiveBackgroundNotificationResponse: (NotificationResponse response) {
+        onNotificationTap(response.payload);
+      },
     );
 
     await _notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();

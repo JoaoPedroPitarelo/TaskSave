@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void loadTasks() async {
     await context.read<TaskViewmodel>().getTasks();
-    await context.read<TaskViewmodel>().scheduleNotificationsForTasks(context.read<TaskViewmodel>().tasks, context);
+    await context.read<TaskViewmodel>().scheduleNotifications(context.read<TaskViewmodel>().tasks, context);
   }
 
   void _showUndoSnackBarCategory(CategoryVo category, int originalIndex) {

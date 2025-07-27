@@ -335,4 +335,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get clickToShowDetailsTask => 'Clique para ver mais detalhes...';
+
+  @override
+  String get yourSubtask => 'Sua subTarefa com prazo para';
 }

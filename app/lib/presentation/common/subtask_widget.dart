@@ -43,6 +43,8 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
 
+    print(widget.subtask.reminderType);
+
     return Dismissible(
       key: Key(widget.subtask.id),
       direction: DismissDirection.horizontal,

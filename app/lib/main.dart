@@ -28,6 +28,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
+import 'dart:convert';
+
+import 'package:app/core/enums/task_type_enum.dart';
+import 'package:app/domain/models/task_vo.dart';
+import 'package:app/presentation/screens/task_details/task_details_screen.dart';
 
 
 Future<void> main() async {
@@ -37,7 +42,6 @@ Future<void> main() async {
   await authService.init();
 
   final notificationService = NotificationService();
-  notificationService.initNotificationPlugin();
 
   runApp(MultiProvider(
     providers: [
@@ -176,6 +180,9 @@ class _MyAppState extends State<MyApp> {
       final dio = Provider.of<Dio>(context, listen: false);
       final authService = Provider.of<AuthService>(context, listen: false);
       final authApiDioService = Provider.of<AuthRepository>(context, listen: false);
+      final notificationService = Provider.of<NotificationService>(context, listen: false);
+
+      notificationService.initNotificationPlugin(onNotificationTap: _onNotificationTap);
 
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final passwordRescueProvider = Provider.of<PasswordRescueProvider>(context, listen: false);
@@ -194,6 +201,31 @@ class _MyAppState extends State<MyApp> {
       authProvider.addListener(_onAuthChanged);
       passwordRescueProvider.addListener(_checkAndNavigateBasedOnDeepLink);
     });
+  }
+
+  void _onNotificationTap(String? payload) {
+    if (payload == null) return;
+
+    final payloadData = jsonDecode(payload);
+    final String id = payloadData['id'];
+    final TaskType taskType = TaskType.values.firstWhere((e) => e.name == payloadData['taskType']);
+
+    final taskViewModel = context.read<TaskViewmodel>();
+    TaskVo? task;
+
+    if (taskType == TaskType.T) {
+      task = taskViewModel.findTaskById(id);
+    } else if (taskType == TaskType.ST) {
+      task = taskViewModel.findParentTaskOfSubtask(id);
+    }
+
+    if (task != null) {
+      navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => TaskDetailsScreen(task: task!),
+        ),
+      );
+    }
   }
 
   void _checkAndNavigateBasedOnDeepLink() {

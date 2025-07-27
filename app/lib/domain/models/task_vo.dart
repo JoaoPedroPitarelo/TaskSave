@@ -2,33 +2,30 @@ import 'package:app/domain/models/attachmentVo.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/enums/reminder_type_num.dart';
+import 'package:app/domain/models/notifiable.dart';
 import 'package:app/domain/models/subtask_vo.dart';
 
-class TaskVo {
-
-  final String id;
+class TaskVo extends Notifiable {
   final String title;
   final String? description;
-  final DateTime deadline;
   final PriorityEnum priority;
   final CategoryVo category;
-  final ReminderTypeNum? reminderType;
   final List<SubtaskVo> subtaskList;
   List<AttachmentVo> attachmentList;
   bool completed;
 
   TaskVo({
-    required this.id,
+    required id,
     required this.title,
     this.description,
-    required this.deadline,
+    required deadline,
     required this.priority,
     required this.category,
-    this.reminderType,
+    reminderType,
     required this.subtaskList,
     required this.attachmentList,
     required this.completed,
-  });
+  }) : super(id, reminderType, deadline);
 
   factory TaskVo.fromJson(Map<String, dynamic> json) { 
 

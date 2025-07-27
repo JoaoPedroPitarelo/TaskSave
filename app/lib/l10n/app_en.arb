@@ -106,5 +106,6 @@
   "subTaskNotFound": "Subtask Not found",
   "expiredTask": "will expired!",
   "yourTask": "Your task with deadline for",
-  "clickToShowDetailsTask": "Click for show more details..."
+  "clickToShowDetailsTask": "Click for show more details...",
+  "yourSubtask": "Your subtask with deadline for"
 }

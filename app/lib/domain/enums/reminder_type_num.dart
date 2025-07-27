@@ -1,6 +1,6 @@
 enum ReminderTypeNum {
   until_deadline("Até o prazo"),
-  before_deaddine("Antes do prazo"),
+  before_deadline("Antes do prazo"),
   dead_line_Day("Dia do prazo");
 
   final String description;

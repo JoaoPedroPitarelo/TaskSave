@@ -741,6 +741,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Clique para ver mais detalhes...'**
   String get clickToShowDetailsTask;
+
+  /// No description provided for @yourSubtask.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua subTarefa com prazo para'**
+  String get yourSubtask;
 }
 
 class _AppLocalizationsDelegate

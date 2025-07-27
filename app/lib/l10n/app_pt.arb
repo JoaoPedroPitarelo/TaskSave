@@ -107,5 +107,6 @@
     "subTaskNotFound": "SubTarefa não encontrada",
     "expiredTask": "irá expirar!",
     "yourTask": "Sua tarefa com prazo para",
-    "clickToShowDetailsTask": "Clique para ver mais detalhes..."
+    "clickToShowDetailsTask": "Clique para ver mais detalhes...",
+    "yourSubtask": "Sua subTarefa com prazo para"
 }
