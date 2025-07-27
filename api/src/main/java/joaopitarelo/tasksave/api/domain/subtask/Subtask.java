@@ -62,6 +62,6 @@ public class Subtask {
         this.deadline = subTask.deadline();
         this.priority = subTask.priority();
         this.completed = false;
-        this.reminderType = task.getReminderType();
+        this.reminderType = subTask.reminderType();
     }
 }
