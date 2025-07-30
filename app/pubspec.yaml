@@ -1,4 +1,4 @@
-name: app
+name: task_save
 description: "TaskSave is a Flutter App for save your tasks and responsibilities"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -41,6 +41,30 @@ dependencies:
   timezone: ^0.10.1
   flutter_speed_dial: ^7.0.0
   path_provider: ^2.1.5
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
+
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/images/tasksave_app_icon.png"
+  adaptive_icon_background: "#181818"
+  adaptive_icon_foreground: "assets/images/tasksave_app_icon.png"
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#181818"
+  image: "assets/images/tasksave_app_dark_icon.png"
+  image_dark: "assets/images/tasksave_app_light_icon.png"
+  branding: "assets/images/branding_dark.png"
+  branding_dark: "assets/images/branding_light.png"
+
+  android_12:
+    image: "assets/images/tasksave_app_dark_icon.png"
+    image_dark: "assets/images/tasksave_app_light_icon.png"
+    color: "#FFFFFF"
+    color_dark: "#181818"
+    branding: "assets/images/branding_dark.png"
+    branding_dark: "assets/images/branding_light.png"
 
 
 dev_dependencies:
@@ -60,6 +84,8 @@ flutter:
     - assets/images/confirm_email.png
     - assets/images/notification_example.jpg
     - assets/sounds/taskCompleted.mp3
+    - assets/images/branding_dark.png
+    - assets/images/branding_light.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

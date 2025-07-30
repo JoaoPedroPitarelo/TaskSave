@@ -1,16 +1,16 @@
 import 'dart:async';
-import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/core/utils/translateFailureKey.dart';
-import 'package:app/core/events/auth_events.dart';
-import 'package:app/presentation/common/error_snackbar.dart';
-import 'package:app/presentation/common/sucess_snackbar.dart';
-import 'package:app/presentation/screens/password_rescue/password_rescue_screen.dart';
-import 'package:app/presentation/screens/register/register_screen.dart';
-import 'package:app/services/events/auth_event_service.dart';
+import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/core/utils/translateFailureKey.dart';
+import 'package:task_save/core/events/auth_events.dart';
+import 'package:task_save/presentation/common/error_snackbar.dart';
+import 'package:task_save/presentation/common/sucess_snackbar.dart';
+import 'package:task_save/presentation/screens/password_rescue/password_rescue_screen.dart';
+import 'package:task_save/presentation/screens/register/register_screen.dart';
+import 'package:task_save/services/events/auth_event_service.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:app/l10n/app_localizations.dart';
+import 'package:task_save/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'login_viewmodel.dart';
 

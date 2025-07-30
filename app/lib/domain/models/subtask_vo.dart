@@ -1,6 +1,6 @@
-import 'package:app/domain/enums/priority_enum.dart';
-import 'package:app/domain/enums/reminder_type_num.dart';
-import 'package:app/domain/models/notifiable.dart';
+import 'package:task_save/domain/enums/priority_enum.dart';
+import 'package:task_save/domain/enums/reminder_type_num.dart';
+import 'package:task_save/domain/models/notifiable.dart';
 
 class SubtaskVo extends Notifiable {
   final String title;

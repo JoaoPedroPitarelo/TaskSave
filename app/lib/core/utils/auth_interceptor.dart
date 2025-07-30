@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:app/repositories/api/auth_repository.dart';
+import 'package:task_save/repositories/api/auth_repository.dart';
 import 'package:dio/dio.dart';
-import 'package:app/services/auth/auth_service.dart';
-import 'package:app/presentation/global_providers/auth_provider.dart';
+import 'package:task_save/services/auth/auth_service.dart';
+import 'package:task_save/presentation/global_providers/auth_provider.dart';
 
 class AuthInterceptor extends Interceptor {
   final AuthService _authService;

@@ -1,4 +1,4 @@
-import 'package:app/domain/enums/reminder_type_num.dart';
+import 'package:task_save/domain/enums/reminder_type_num.dart';
 
 abstract class Notifiable {
   String id;

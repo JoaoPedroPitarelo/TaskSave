@@ -1,5 +1,5 @@
-import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/domain/models/user_vo.dart';
+import 'package:task_save/core/errors/failure_keys.dart';
+import 'package:task_save/domain/models/user_vo.dart';
 
 abstract class AuthDataEvent {}
 

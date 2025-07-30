@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:app/core/errors/failure.dart';
-import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/repositories/api/category_repository.dart';
-import 'package:app/services/events/category_event_service.dart';
+import 'package:task_save/core/errors/failure.dart';
+import 'package:task_save/core/errors/failure_keys.dart';
+import 'package:task_save/repositories/api/category_repository.dart';
+import 'package:task_save/services/events/category_event_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:app/core/events/category_events.dart';
+import 'package:task_save/core/events/category_events.dart';
 
 
 class CategoryFormViewmodel extends ChangeNotifier {

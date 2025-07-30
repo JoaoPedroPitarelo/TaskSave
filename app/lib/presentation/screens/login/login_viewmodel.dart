@@ -1,13 +1,13 @@
-import 'package:app/core/errors/failure.dart';
-import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/core/events/auth_events.dart';
-import 'package:app/domain/models/user_vo.dart';
-import 'package:app/presentation/global_providers/auth_provider.dart';
-import 'package:app/services/auth/auth_service.dart';
-import 'package:app/services/events/auth_event_service.dart';
+import 'package:task_save/core/errors/failure.dart';
+import 'package:task_save/core/errors/failure_keys.dart';
+import 'package:task_save/core/events/auth_events.dart';
+import 'package:task_save/domain/models/user_vo.dart';
+import 'package:task_save/presentation/global_providers/auth_provider.dart';
+import 'package:task_save/services/auth/auth_service.dart';
+import 'package:task_save/services/events/auth_event_service.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app/repositories/api/auth_repository.dart';
+import 'package:task_save/repositories/api/auth_repository.dart';
 
 class LoginViewmodel extends ChangeNotifier {
   final AuthService _authService;

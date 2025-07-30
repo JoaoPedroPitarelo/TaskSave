@@ -1,8 +1,8 @@
-import 'package:app/core/enums/filtering_task_mode_enum.dart';
-import 'package:app/domain/models/category_vo.dart';
-import 'package:app/l10n/app_localizations.dart';
+import 'package:task_save/core/enums/filtering_task_mode_enum.dart';
+import 'package:task_save/domain/models/category_vo.dart';
+import 'package:task_save/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:app/presentation/common/hex_to_color.dart';
+import 'package:task_save/presentation/common/hex_to_color.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidgetFilterMode extends StatelessWidget {

@@ -1,8 +1,7 @@
-import 'package:app/core/themes/app_global_colors.dart';
-
-import 'package:app/presentation/screens/welcome/final_welcome_screen.dart';
+import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/presentation/screens/welcome/final_welcome_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:app/l10n/app_localizations.dart';
+import 'package:task_save/l10n/app_localizations.dart';
 
 class FourthWelcomeScreen extends StatelessWidget {
   const FourthWelcomeScreen({super.key});

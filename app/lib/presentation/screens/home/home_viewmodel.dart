@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:app/presentation/screens/home/category_viewmodel.dart';
-import 'package:app/presentation/screens/home/task_viewmodel.dart';
+import 'package:task_save/presentation/screens/home/category_viewmodel.dart';
+import 'package:task_save/presentation/screens/home/task_viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class HomeViewmodel extends ChangeNotifier {

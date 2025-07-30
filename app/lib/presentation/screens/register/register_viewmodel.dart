@@ -1,8 +1,8 @@
-import 'package:app/core/errors/failure.dart';
-import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/core/events/auth_events.dart';
-import 'package:app/repositories/api/auth_repository.dart';
-import 'package:app/services/events/auth_event_service.dart';
+import 'package:task_save/core/errors/failure.dart';
+import 'package:task_save/core/errors/failure_keys.dart';
+import 'package:task_save/core/events/auth_events.dart';
+import 'package:task_save/repositories/api/auth_repository.dart';
+import 'package:task_save/services/events/auth_event_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

@@ -1,5 +1,5 @@
-import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/l10n/app_localizations.dart';
+import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmPasswordRescueEmailScreen extends StatelessWidget {

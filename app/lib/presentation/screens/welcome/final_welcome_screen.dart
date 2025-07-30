@@ -1,10 +1,10 @@
-import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/domain/models/category_vo.dart';
-import 'package:app/domain/enums/priority_enum.dart';
-import 'package:app/domain/models/task_vo.dart';
-import 'package:app/presentation/common/task_widget.dart';
-import 'package:app/l10n/app_localizations.dart';
-import 'package:app/presentation/screens/login/login_screen.dart';
+import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/domain/models/category_vo.dart';
+import 'package:task_save/domain/enums/priority_enum.dart';
+import 'package:task_save/domain/models/task_vo.dart';
+import 'package:task_save/presentation/common/task_widget.dart';
+import 'package:task_save/l10n/app_localizations.dart';
+import 'package:task_save/presentation/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class FinalWelcomeScreen extends StatefulWidget {

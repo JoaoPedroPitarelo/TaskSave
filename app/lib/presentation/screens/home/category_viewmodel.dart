@@ -1,9 +1,9 @@
-import 'package:app/core/errors/failure.dart';
-import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/core/events/category_events.dart';
-import 'package:app/domain/models/category_vo.dart';
-import 'package:app/repositories/api/category_repository.dart';
-import 'package:app/services/events/category_event_service.dart';
+import 'package:task_save/core/errors/failure.dart';
+import 'package:task_save/core/errors/failure_keys.dart';
+import 'package:task_save/core/events/category_events.dart';
+import 'package:task_save/domain/models/category_vo.dart';
+import 'package:task_save/repositories/api/category_repository.dart';
+import 'package:task_save/services/events/category_event_service.dart';
 import 'package:flutter/cupertino.dart';
 
 class CategoryViewmodel extends ChangeNotifier {

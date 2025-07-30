@@ -1,9 +1,8 @@
-
-import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/l10n/app_localizations.dart';
-import 'package:app/presentation/global_providers/app_preferences_provider.dart';
-import 'package:app/presentation/global_providers/auth_provider.dart';
-import 'package:app/presentation/screens/home/home_viewmodel.dart';
+import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/l10n/app_localizations.dart';
+import 'package:task_save/presentation/global_providers/app_preferences_provider.dart';
+import 'package:task_save/presentation/global_providers/auth_provider.dart';
+import 'package:task_save/presentation/screens/home/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';

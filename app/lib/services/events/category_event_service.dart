@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:app/core/events/category_events.dart';
+import 'package:task_save/core/events/category_events.dart';
 
 class CategoryEventService {
   static final CategoryEventService _instance = CategoryEventService._internal();

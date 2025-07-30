@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
-import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/core/themes/dark/app_colors_dark.dart';
-import 'package:app/core/themes/app_text_styles.dart';
+import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/core/themes/dark/app_colors_dark.dart';
+import 'package:task_save/core/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AppThemeDataDark {

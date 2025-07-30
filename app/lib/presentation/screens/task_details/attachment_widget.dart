@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/domain/enums/file_type_enum.dart';
-import 'package:app/domain/models/attachment_vo.dart';
-import 'package:app/l10n/app_localizations.dart';
-import 'package:app/presentation/screens/task_details/task_details_viewmodel.dart';
+import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/domain/enums/file_type_enum.dart';
+import 'package:task_save/domain/models/attachment_vo.dart';
+import 'package:task_save/l10n/app_localizations.dart';
+import 'package:task_save/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:google_fonts/google_fonts.dart';

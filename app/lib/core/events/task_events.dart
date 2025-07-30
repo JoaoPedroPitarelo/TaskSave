@@ -1,7 +1,7 @@
-import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/domain/models/attachment_vo.dart';
-import 'package:app/domain/models/subtask_vo.dart';
-import 'package:app/domain/models/task_vo.dart';
+import 'package:task_save/core/errors/failure_keys.dart';
+import 'package:task_save/domain/models/attachment_vo.dart';
+import 'package:task_save/domain/models/subtask_vo.dart';
+import 'package:task_save/domain/models/task_vo.dart';
 
 abstract class TaskDataEvent {}
 

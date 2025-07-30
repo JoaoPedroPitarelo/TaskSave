@@ -1,9 +1,9 @@
-import 'package:app/core/errors/failure.dart';
-import 'package:app/core/errors/subtask_failures.dart';
-import 'package:app/domain/enums/priority_enum.dart';
-import 'package:app/domain/enums/reminder_type_num.dart';
-import 'package:app/domain/models/subtask_vo.dart';
-import 'package:app/domain/models/task_vo.dart';
+import 'package:task_save/core/errors/failure.dart';
+import 'package:task_save/core/errors/subtask_failures.dart';
+import 'package:task_save/domain/enums/priority_enum.dart';
+import 'package:task_save/domain/enums/reminder_type_num.dart';
+import 'package:task_save/domain/models/subtask_vo.dart';
+import 'package:task_save/domain/models/task_vo.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

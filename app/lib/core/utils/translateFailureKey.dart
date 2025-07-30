@@ -1,5 +1,5 @@
-import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/l10n/app_localizations.dart';
+import 'package:task_save/core/errors/failure_keys.dart';
+import 'package:task_save/l10n/app_localizations.dart';
 
 String translateFailureKey(AppLocalizations l10n, FailureKey key) {
   return switch (key) {

@@ -1,10 +1,10 @@
-import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/domain/enums/priority_enum.dart';
-import 'package:app/domain/models/task_vo.dart';
-import 'package:app/presentation/screens/task_details/task_details_screen.dart';
+import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/domain/enums/priority_enum.dart';
+import 'package:task_save/domain/models/task_vo.dart';
+import 'package:task_save/presentation/screens/task_details/task_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:app/presentation/global_providers/app_preferences_provider.dart';
+import 'package:task_save/presentation/global_providers/app_preferences_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart' as intl;
 
