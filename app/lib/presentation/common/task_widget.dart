@@ -1,20 +1,18 @@
 import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/domain/enums/reminder_type_num.dart';
-import 'package:app/domain/models/attachmentVo.dart';
-import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
-import 'package:app/domain/models/subtask_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 import 'package:app/presentation/screens/task_details/task_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:intl/intl.dart';
+import 'package:app/presentation/global_providers/app_preferences_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart' as intl;
 
 class TaskWidget extends StatefulWidget {
   final TaskVo task;
-  VoidCallback? onDismissedCallback;
+  final VoidCallback? onDismissedCallback;
 
-  TaskWidget({
+  const TaskWidget({
     super.key,
     required this.task,
     this.onDismissedCallback
@@ -45,18 +43,17 @@ class _TaskWidgetState extends State<TaskWidget> {
   Widget build(BuildContext context) {
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
+    final locale = Provider.of<AppPreferencesProvider>(context, listen: false).appLanguage.toString();
     
     return Dismissible(
       key: Key(widget.task.id),
       direction: DismissDirection.startToEnd,
-      onDismissed: (direction) async {
-
-        await player.play(AssetSource("sounds/taskCompleted.mp3"));
-        widget.task.completed = true;
-
+      onDismissed: (direction) {
         if (widget.onDismissedCallback != null) {
-          widget.onDismissedCallback!();
+         widget.onDismissedCallback!();
         }
+        player.play(AssetSource("sounds/taskCompleted.mp3"));
+        widget.task.completed = true;
       },
       background: Container(
         alignment: Alignment.center,
@@ -152,9 +149,11 @@ class _TaskWidgetState extends State<TaskWidget> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(Icons.date_range, size: 18),
-                                          SizedBox(width: 4),
-                                          Text(DateFormat('dd/MM/yyyy').format(widget.task.deadline), style: theme.textTheme.displaySmall),
+                                          if (widget.task.deadline != null) ... [
+                                            Icon(Icons.date_range_rounded, size: 18),
+                                            SizedBox(width: 4),
+                                            Text(intl.DateFormat.yMMMd(locale).format(widget.task.deadline!), style: theme.textTheme.displaySmall),
+                                          ],
                                           if (widget.task.reminderType != null) ...[
                                             SizedBox(width: 8),
                                             Icon(Icons.alarm, size: 18),

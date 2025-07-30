@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/core/utils/translateFailureKey.dart';
 import 'package:app/core/events/auth_events.dart';
@@ -34,6 +33,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   bool _obscureTextPassword = true;
   bool _obscureTextConfirmedPassword = true;
 
+  late AppLocalizations appLocalizations;
+  bool _isInit = true;
+
   @override
   void dispose() {
     _passwordController.dispose();
@@ -43,29 +45,34 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _passwordRescueSubscription = _authEventService.onAuthChanged.listen( (event) {
-        if (event is PasswordResetedEvent) {
-         if (event.success) {
-           ScaffoldMessenger.of(context).showSnackBar(
-             showSuccessSnackbar(AppLocalizations.of(context)!.passwordReseted)
-           );
-           Navigator.of(context).pop();
-         } else {
-           ScaffoldMessenger.of(context).showSnackBar(
-             showErrorSnackbar(translateFailureKey(context, event.failureKey!))
-           );
-         }
-        }
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      _isInit = false;
+      appLocalizations = AppLocalizations.of(context)!;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _passwordRescueSubscription = _authEventService.onAuthChanged.listen( (event) {
+          if (event is PasswordResetedEvent) {
+            if (event.success) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(showSuccessSnackBar(appLocalizations.passwordReseted));
+                Navigator.of(context).pop();
+              }
+            } else {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!)));
+              }
+            }
+          }
+        });
       });
-    });
+    }
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    final passswordRescueViewmodel = context.watch<PasswordResetViewmodel>();
+    final passwordRescueViewmodel = context.watch<PasswordResetViewmodel>();
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
 
@@ -198,11 +205,11 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: passswordRescueViewmodel.isLoading ? null : () {
+                      onPressed: passwordRescueViewmodel.isLoading ? null : () {
                         if (!_formKey.currentState!.validate()) {
                           return;
                         }
-                        passswordRescueViewmodel.resetPassword(widget.rescueToken, _passwordController.text);
+                        passwordRescueViewmodel.resetPassword(widget.rescueToken, _passwordController.text);
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -211,7 +218,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                         minimumSize: Size(350, 50),
                         backgroundColor: Color.fromARGB(255, 0, 101, 32)
                       ),
-                      child: passswordRescueViewmodel.isLoading ? CircularProgressIndicator()
+                      child: passwordRescueViewmodel.isLoading ? CircularProgressIndicator()
                       : Text(
                         AppLocalizations.of(context)!.confirm,
                         style: GoogleFonts.roboto(

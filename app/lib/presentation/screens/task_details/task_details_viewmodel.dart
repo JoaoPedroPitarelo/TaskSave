@@ -1,11 +1,9 @@
-
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/failure_keys.dart';
 import 'package:app/core/events/task_events.dart';
-import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/attachment_vo.dart';
 import 'package:app/domain/models/subtask_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 import 'package:app/repositories/api/subtask_repository.dart';
@@ -126,7 +124,7 @@ class TaskDetailsViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<void> confirmDeletionSubtask(task, subtask, originalIndex) async {
+  Future<void> confirmDeletionSubtask(TaskVo task, SubtaskVo subtask, originalIndex) async {
     final result = await _subtaskRepository.delete(task, subtask);
 
     result.fold(

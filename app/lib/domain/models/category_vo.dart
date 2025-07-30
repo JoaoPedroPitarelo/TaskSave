@@ -1,4 +1,3 @@
-
 class CategoryVo {
   final int id;
   final String description;

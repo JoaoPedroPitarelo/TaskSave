@@ -3,6 +3,7 @@ import 'package:app/core/utils/translateFailureKey.dart';
 import 'package:app/core/events/category_events.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/presentation/common/error_snackbar.dart';
 import 'package:app/presentation/common/hex_to_color.dart';
 import 'package:app/presentation/screens/category_form/category_form_viewmodel.dart';
 import 'package:app/services/events/category_event_service.dart';
@@ -13,9 +14,9 @@ import 'package:provider/provider.dart';
 
 
 class CategoryFormScreen extends StatefulWidget {
-  CategoryVo? category;
+  final CategoryVo? category;
 
-  CategoryFormScreen({this.category ,super.key});
+  const CategoryFormScreen({this.category ,super.key});
 
   @override
   State<CategoryFormScreen> createState() => _CategoryFormScreenState();
@@ -28,6 +29,9 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
   Color _colorPicked = Colors.red;
+
+  late AppLocalizations appLocalizations;
+  bool _isInit = true;
 
   Future<void> _submitForm(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
@@ -62,45 +66,50 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
     setState(() {
       _colorPicked = Colors.red;
       _descriptionController.clear();
-      widget.category = null;
     });
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if(_isInit) {
+      _isInit = false;
+      appLocalizations = AppLocalizations.of(context)!;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
 
-      if (mounted) {
-        final categoryFormViewmodel = context.read<CategoryFormViewmodel>();
+        if (mounted) {
+          _creationSubscription = _categoryEventsService.onCategoryChanged.listen( (event) {
+            if (event is CategoryCreatedEvent && event.success) {
+              if (mounted) {
+                Navigator.of(context).pop();
+              }
+            }
 
-        _creationSubscription = _categoryEventsService.onCategoryChanged.listen( (event) {
-          if (event is CategoryCreatedEvent && event.success) {
-            Navigator.of(context).pop();
-          }
+            if (event is CategoryCreatedEvent && !event.success) {
+              _showSnackBarError(translateFailureKey(appLocalizations, event.failureKey!));
+            }
 
-          if (event is CategoryCreatedEvent && !event.success) {
-            _showSnackbarError(translateFailureKey(context, event.failureKey!));
-          }
+            if (event is CategoryUpdatingEvent && event.success) {
+              _clearFormForNewCategory();
+              if (mounted) {
+                Navigator.of(context).pop();
+              }
+            }
 
-          if (event is CategoryUpdatingEvent && event.success) {
-            _clearFormForNewCategory();
-            Navigator.of(context).pop();
-          }
+            if (event is CategoryUpdatingEvent && !event.success) {
+              _showSnackBarError(translateFailureKey(appLocalizations, event.failureKey!));
+            }
+          });
+        }
 
-          if (event is CategoryUpdatingEvent && !event.success) {
-            _showSnackbarError(translateFailureKey(context, event.failureKey!));
-          }
-        });
-      }
-
-      if (widget.category != null) {
-        _loadCategoryForUpdate();
-      } else {
-        _clearFormForNewCategory();
-      }
-    });
+        if (widget.category != null) {
+          _loadCategoryForUpdate();
+        } else {
+          _clearFormForNewCategory();
+        }
+      });
+    }
   }
 
   @override
@@ -110,18 +119,9 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
     _creationSubscription?.cancel();
   }
 
-  void _showSnackbarError(String message) {
+  void _showSnackBarError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.white),
-        ),
-        elevation: 2,
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 5),
-        showCloseIcon: false,
-      ),
+      showErrorSnackBar(message)
     );
   }
 
@@ -131,7 +131,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(135),
+        preferredSize: const Size.fromHeight(110),
         child: AppBar(
           backgroundColor: const Color.fromARGB(255, 12, 43, 170),
           elevation: 12,
@@ -154,7 +154,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.dashboard_customize_outlined,
+                        Icons.dashboard_customize_rounded,
                         color: Colors.white,
                         shadows: [Shadow(color: Colors.black54, blurRadius: 5, offset: Offset(-1, 2.1))],
                         size: 40
@@ -162,7 +162,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
                       Text(
                         widget.category != null
                             ? AppLocalizations.of(context)!.modifyCategory
-                            : AppLocalizations.of(context)!.taskCategory,
+                            : AppLocalizations.of(context)!.addCategory,
                         style: GoogleFonts.roboto(
                           color: Colors.white,
                           fontSize: 25,
@@ -189,63 +189,60 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
-                  child: Column(
-                    spacing: 20,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Form(
-                        key: _formKey,
-                        child: TextFormField(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      spacing: 20,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        TextFormField(
                           controller: _descriptionController,
                           decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.drive_file_rename_outline),
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.drive_file_rename_outline_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
-                            labelText: AppLocalizations.of(context)!.descriptionCategory,
-                            hintText: AppLocalizations.of(context)!.descriptionCategoryPlaceholder,
+                            labelText: AppLocalizations.of(context)!.labelTextDescriptionCategoryForm,
+                            hintText: AppLocalizations.of(context)!.hintTextDescriptionCategoryForm,
                             hintStyle: TextStyle(
                                 color: Colors.grey.shade600,
                                 fontSize: 14
                             )
                           ),
-                          keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return AppLocalizations.of(context)!.descriptionCategoryIsObrigatory;
                             }
                             return null;
-                          },
-                          autofillHints: [AutofillHints.email],
+                          }
                         ),
-                      ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text(
-                              AppLocalizations.of(context)!.color,
-                              style: GoogleFonts.roboto(
-                                fontSize: 24
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text(
+                                AppLocalizations.of(context)!.color,
+                                style: GoogleFonts.roboto(fontSize: 24, fontWeight: FontWeight.w500),
                               ),
-                            ),
-                          )
-                        ]
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-                        child: ColorPicker(
-                          pickerColor: _colorPicked,
-                          onColorChanged: (color) {
-                            setState(() {
-                              _colorPicked = color;
-                            });
-                          },
-                          labelTypes: const [],
-                          enableAlpha: false,
-                          portraitOnly: false,
-                          hexInputBar: true,
+                            )
+                          ]
                         ),
-                      )
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 0),
+                          child: ColorPicker(
+                            pickerColor: _colorPicked,
+                            onColorChanged: (color) {
+                              setState(() {
+                                _colorPicked = color;
+                              });
+                            },
+                            labelTypes: const [],
+                            enableAlpha: false,
+                            portraitOnly: false,
+                            hexInputBar: true,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -264,7 +261,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
           : Text(
             widget.category != null
                 ? AppLocalizations.of(context)!.modifyCategory
-                : AppLocalizations.of(context)!.taskCategory,
+                : AppLocalizations.of(context)!.addCategory,
             style: GoogleFonts.roboto(
                 color: Colors.white,
                 fontSize: 22,

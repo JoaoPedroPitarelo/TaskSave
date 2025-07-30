@@ -16,10 +16,11 @@ import "package:app/presentation/screens/home/task_viewmodel.dart";
 import "package:app/presentation/screens/home/widgets/widget_filter_mode.dart";
 import "package:app/presentation/screens/settings/settings_screen.dart";
   import "package:app/presentation/screens/home/widgets/category_item.dart";
+import "package:app/presentation/screens/task_form/task_form_screen.dart";
 import "package:app/services/events/category_event_service.dart";
 import "package:app/services/events/task_event_service.dart";
-import "package:app/services/notifications/notification_service.dart";
 import "package:flutter/material.dart";
+import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
 import 'package:app/presentation/screens/home/widgets/build_drawer_item.dart';
@@ -39,65 +40,84 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final searchController = TextEditingController();
 
+  late AppLocalizations _localizations;
+  bool _isInit = true;
+
   @override
-  initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      _isInit = false;
+      _localizations = AppLocalizations.of(context)!;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadCategories();
-      loadTasks();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        loadCategories();
+        loadTasks();
 
-      _categorySubscription = _categoryEventService.onCategoryChanged.listen( (event) {
-        if (event is CategoryDeletionEvent) {
-          _showUndoSnackBarCategory(event.category, event.originalIndex);
-        }
-
-        if (event is CategoriesChangedEvent) {
-          loadCategories();
-
-          if (event.isCreating) {
-            _showSuccessSnackBar(AppLocalizations.of(context)!.categoryCreated);
-            return;
+        _categorySubscription = _categoryEventService.onCategoryChanged.listen((event) {
+          if (event is CategoryPrepareDeletionEvent) {
+            _showUndoSnackBarCategory(event.category, event.originalIndex);
           }
 
-          if (!event.isCreating) {
-            _showSuccessSnackBar(AppLocalizations.of(context)!.categoryModified);
-            return;
+          if (event is CategoryDeletionEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(_localizations, event.failureKey!));
+              return;
+            }
+            loadCategories();
+            loadTasks();
           }
-        }
 
-        if (event is CategoryReorderEvent) {
-          loadCategories();
+          if (event is CategoriesChangedEvent) {
+            loadCategories();
 
-          if (!event.success) {
-            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
-            return;
+            if (event.isCreating) {
+              _showSuccessSnackBar(_localizations.categoryCreated);
+              return;
+            }
+
+            if (!event.isCreating) {
+              _showSuccessSnackBar(_localizations.categoryModified);
+              return;
+            }
           }
-        }
+
+          if (event is CategoryReorderEvent) {
+            loadCategories();
+
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(_localizations, event.failureKey!));
+              return;
+            }
+          }
+        });
+
+        _taskSubscription = _taskEventService.onTaskChanged.listen((event) {
+          if (event is GetTasksEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(
+                  translateFailureKey(_localizations, event.failureKey!));
+              return;
+            }
+
+            if (event.success) {
+              loadTasks();
+            }
+          }
+
+          if (event is TaskDeletionEvent) {
+            _showUndoSnackBarTask(event.task, event.originalIndex);
+          }
+
+          if (event is TaskUpdateEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(_localizations, event.failureKey!));
+              return;
+            }
+          }
+        });
       });
-
-      _taskSubscription = _taskEventService.onTaskChanged.listen( (event) {
-        if (event is GetTasksEvent) {
-
-          if (!event.success) {
-            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
-            return;
-          }
-        }
-
-        if (event is TaskDeletionEvent) {
-          _showUndoSnackBarTask(event.task, event.originalIndex);
-        }
-
-        if (event is TaskReorderEvent) {
-          if (!event.success) {
-            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
-            return;
-          }
-        }
-      });
-
-    });
+    }
   }
 
   void loadCategories() async {
@@ -106,7 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void loadTasks() async {
     await context.read<TaskViewmodel>().getTasks();
-    await context.read<TaskViewmodel>().scheduleNotifications(context.read<TaskViewmodel>().tasks, context);
+    if (mounted) {
+      await context.read<TaskViewmodel>().scheduleNotifications(context.read<TaskViewmodel>().tasks, context);
+    }
   }
 
   void _showUndoSnackBarCategory(CategoryVo category, int originalIndex) {
@@ -177,13 +199,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      showSuccessSnackbar(message)
+      showSuccessSnackBar(message)
     );
   }
   
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      showErrorSnackbar(message)
+      showErrorSnackBar(message)
     );
   }
 
@@ -223,21 +245,73 @@ class _HomeScreenState extends State<HomeScreen> {
               bottom: Radius.circular(20),
             )
           ),
+          actions: [
+            PopupMenuButton<String>(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              color: const Color.fromARGB(255, 12, 43, 170),
+              onSelected: (value) {
+                if (value == "export") {
+                  // TODO fazer uma tela de exportação de tarefas.
+                }
+                if (value == "about") {
+                  // TODO fazer um alertDialog ou uma tela própria para falar sobre esse aplicativo. Informções, como versão, autores, principíos e licensas.
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: "export",
+                  child: Row(
+                    spacing: 10,
+                    children: [
+                      const Icon(Icons.file_copy_rounded, size: 25),
+                      Text(
+                        AppLocalizations.of(context)!.exportToPdf,
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: "about",
+                  child: Row(
+                    spacing: 10,
+                    children: [
+                      const Icon(Icons.info_outline_rounded, size: 25),
+                      Text(
+                        AppLocalizations.of(context)!.about,
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ]
+            )
+          ],
           flexibleSpace: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 50),
+                    const SizedBox(height: 45),
                     Padding(
-                      padding: const EdgeInsets.only(left: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           WidgetFilterMode(
                             filterMode: taskViewmodel.filterMode,
-                            selectedCategory: categoryViewmodel.selectedCategory
+                            category: categoryViewmodel.selectedCategory
                           )
                         ],
                       ),
@@ -302,7 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return TaskWidget(
             key: ValueKey(task.id),
             task: task,
-            onDismissedCallback: () async => taskViewmodel.prepareTaskForDeletion(task),
+            onDismissedCallback: ()  => taskViewmodel.prepareTaskForDeletion(task),
           );
         },
         onReorder: (int oldIndex, int newIndex) {
@@ -480,45 +554,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     // Categorias
-                    TextButton(
-                      onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) =>  CategoryFormScreen(),
-                          )
-                        );
-                      },
-                      child: Padding(
-                      padding: const EdgeInsets.only(left: 5.0, bottom: 20.0),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.dashboard_customize_outlined,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.taskCategory,
-                                  style: theme.textTheme.bodySmall,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(right: 11),
-                            child: Icon(
-                              Icons.add_rounded,
-                              color: Colors.white,
-                              size: 28
-                            ),
-                          )
-                        ],
-                      ),
-                     )
-                    ),
                     ReorderableListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -586,18 +621,39 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: ()  async {
-          // TODO fazer a tela de formulário para adicionar novas tarefas
-           final notificationService = context.read<NotificationService>();
-           notificationService.showTestNotification("Lá ele", 'Tome, bora bill');
-        },
-        elevation: 3,
-        child: const Icon(
-          Icons.add_rounded,
-          size: 30,
-          color: Colors.white,
-        ),
+      floatingActionButton: SpeedDial(
+        backgroundColor: const Color.fromARGB(255, 12, 43, 170),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        icon: Icons.add_rounded,
+        activeIcon: Icons.close_rounded,
+        childrenButtonSize: Size(60, 60),
+        childMargin: EdgeInsets.all(20),
+        iconTheme: IconThemeData(size: 30),
+        foregroundColor: Colors.white,
+        spacing: 20,
+        elevation: 5,
+        children: [
+          SpeedDialChild(
+            backgroundColor: const Color.fromARGB(255, 12, 43, 170),
+            child: const Icon(Icons.dashboard_customize_rounded, color: Colors.white, size: 30),
+            label: AppLocalizations.of(context)!.addCategory,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CategoryFormScreen()
+              ));
+            }
+          ),
+          SpeedDialChild(
+            backgroundColor: const Color.fromARGB(255, 12, 43, 170),
+            child: const Icon(Icons.add_task_rounded, color: Colors.white, size: 30),
+            label: AppLocalizations.of(context)!.addTask,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TaskFormScreen()
+              ));
+            }
+          ),
+        ],
       ),
     );
   }

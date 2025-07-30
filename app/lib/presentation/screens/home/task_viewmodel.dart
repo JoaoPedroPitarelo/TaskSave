@@ -9,14 +9,15 @@ import 'package:app/domain/models/notifiable.dart';
 import 'package:app/domain/models/subtask_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
+import 'package:app/presentation/global_providers/app_preferences_provider.dart';
 import 'package:app/repositories/api/task_repository.dart';
 import 'package:app/services/events/task_event_service.dart';
 import 'package:app/services/notifications/notification_service.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:app/core/utils/date_utils.dart';
+import 'package:provider/provider.dart';
 import 'category_viewmodel.dart';
 
 class TaskViewmodel extends ChangeNotifier {
@@ -68,6 +69,9 @@ class TaskViewmodel extends ChangeNotifier {
     if (_filterMode == FilteringTaskModeEnum.category) {
       filterTasks(_filterMode);
     }
+    if (_categoryViewmodel.deletedSelectedCategory != null && _filterMode == FilteringTaskModeEnum.category) {
+      clearAllFiltersForTasks();
+    }
   }
 
   @override
@@ -95,7 +99,6 @@ class TaskViewmodel extends ChangeNotifier {
         _filteredTasks = _tasks;
         _calculateCountTasks();
         filterTasks(_filterMode);
-        _taskEventService.add(GetTasksEvent(success: true));
         _loading = false;
         notifyListeners();
       }
@@ -103,65 +106,78 @@ class TaskViewmodel extends ChangeNotifier {
   }
 
   Future<void> scheduleNotifications(List<dynamic> tasks, BuildContext context) async {
+    if (!context.mounted) return;
+    final locale = Provider.of<AppPreferencesProvider>(context, listen: false).appLanguage.toString(); // para a tradução de Datetime usado no DateFormat
+    final localizations = AppLocalizations.of(context)!; // para a tradução das frases da notificação
+
     for (final task in tasks) {
       if ((task.subtaskList as List).isNotEmpty) {
         for (final subtask in task.subtaskList) {
-          if (subtask.reminderType == null) continue;
+          if (!isTaskNotifiable(subtask)) {
+            continue;
+          }
 
-          if (await _isThisTaskScheduledForNotification(subtask, TaskType.ST)) continue;
+          if (await _isThisTaskScheduledForNotification(subtask, TaskType.st)) {
+            continue;
+          }
 
-          _scheduleSubtaskNotification(subtask, context);
+          _scheduleSubtaskNotification(subtask, localizations, locale);
         }
       }
 
-      if (task.reminderType == null) {
+
+      if (!isTaskNotifiable(task)) {
         continue;
       }
 
-      if (await _isThisTaskScheduledForNotification(task, TaskType.T)) {
+      if (await _isThisTaskScheduledForNotification(task, TaskType.t)) {
         continue;
       }
 
-      _scheduleTaskNotification(task, context);
+      _scheduleTaskNotification(task, localizations, locale);
     }
   }
 
-  Future<void> _scheduleTaskNotification(TaskVo task, BuildContext context) async {
+  bool isTaskNotifiable(Notifiable notifiable) {
+    return notifiable.reminderType != null && notifiable.deadline != null;
+  }
+
+  Future<void> _scheduleTaskNotification(TaskVo task, AppLocalizations localizations, String locale) async {
     final scheduledTimes = _calculateScheduledTimes(task);
 
     for (int i = 0; i < scheduledTimes.length; i++) {
       final scheduledTime = scheduledTimes[i];
       final notificationId = int.parse(task.id) * 1000 + i;
 
-      String dateFormated = DateFormat.yMMMd().format(task.deadline);
+      String dateFormated = DateFormat.yMMMd(locale).format(task.deadline!);
 
       _notificationService.scheduleNotification(
         notificationId,
-        "${AppLocalizations.of(context)!.task}: ${task.title}",
-        "${AppLocalizations.of(context)!.yourTask} $dateFormated ${AppLocalizations.of(context)!.expiredTask} ${AppLocalizations.of(context)!.clickToShowDetailsTask}",
-        scheduledTime,
-        '{"id": "${task.id}", "taskType": "${TaskType.T.name}"}'
+        "${localizations.task}: ${task.title}",
+        "${localizations.yourTask} $dateFormated ${localizations.expiredTask} ${localizations.clickToShowDetailsTask}",
+        DateTime.now().add(Duration(seconds: 15)),
+        '{"id": "${task.id}", "taskType": "${TaskType.t.name}"}'
       );
 
       print('Scheduled notification for task ${task.title} at $scheduledTime');
     }
   }
 
-  Future<void> _scheduleSubtaskNotification(SubtaskVo subtask, BuildContext context) async {
+  void _scheduleSubtaskNotification(SubtaskVo subtask, AppLocalizations localizations, String locale) {
     final scheduledTimes = _calculateScheduledTimes(subtask);
 
     for(int i = 0; i < scheduledTimes.length; i++) {
       final scheduledTime = scheduledTimes[i];
       final notificationId = int.parse(subtask.id) * 1000 + i;
 
-      String dateFormated = DateFormat.yMMMd().format(subtask.deadline);
+      String dateFormated = DateFormat.yMMMd(locale).format(subtask.deadline!);
 
       _notificationService.scheduleNotification(
         notificationId,
-        "${AppLocalizations.of(context)!.subtask}: ${subtask.title}",
-        "${AppLocalizations.of(context)!.yourSubtask} $dateFormated ${AppLocalizations.of(context)!.expiredTask} ${AppLocalizations.of(context)!.clickToShowDetailsTask}",
+        "${localizations.subtask}: ${subtask.title}",
+        "${localizations.yourSubtask} $dateFormated ${localizations.expiredTask} ${localizations.clickToShowDetailsTask}",
         scheduledTime,
-        '{"id": "${subtask.id}", "taskType": "${TaskType.ST.name}"}'
+        '{"id": "${subtask.id}", "taskType": "${TaskType.st.name}"}'
       );
 
       print('Scheduled notification for subtask ${subtask.title} at $scheduledTime');
@@ -173,6 +189,7 @@ class TaskViewmodel extends ChangeNotifier {
 
     for (final notification in pendingNotifications) {
       Map<String, dynamic> notificationPayload = jsonDecode(notification.payload!);
+      print(notificationPayload);
       TaskType notificationTaskType = TaskType.values.firstWhere((type) => type.name == notificationPayload['taskType']);
 
       if (notificationTaskType.name == taskType.name) {
@@ -191,34 +208,30 @@ class TaskViewmodel extends ChangeNotifier {
 
     switch (notifiable.reminderType) {
       case ReminderTypeNum.before_deadline:
-        final scheduledDay = deadline.subtract(const Duration(days: 1));
+        final scheduledDay = deadline!.subtract(const Duration(days: 1));
         final scheduledTime = DateTime(scheduledDay.year, scheduledDay.month, scheduledDay.day, 10, 0);
 
         if (scheduledTime.isAfter(now)) {
           scheduledTimes.add(scheduledTime);
         }
-
         break;
-      case ReminderTypeNum.dead_line_Day:
-        final scheduledTime = DateTime(deadline.year, deadline.month, deadline.day, 10, 0);
+      case ReminderTypeNum.deadline_day:
+        final scheduledTime = DateTime(deadline!.year, deadline.month, deadline.day, 10, 0);
 
         if (scheduledTime.isAfter(now)) {
           scheduledTimes.add(scheduledTime);
         }
-
         break;
       case ReminderTypeNum.until_deadline:
-        for (var day = now; day.isBefore(deadline.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
+        for (var day = now; day.isBefore(deadline!.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
           final scheduledTime = DateTime(day.year, day.month, day.day, 10, 0);
 
           if (scheduledTime.isAfter(now)) {
             scheduledTimes.add(scheduledTime);
           }
         }
-
         break;
       default:
-
         break;
     }
     return scheduledTimes;
@@ -255,6 +268,9 @@ class TaskViewmodel extends ChangeNotifier {
       (noContent) {
         _tasks.remove(task);
         _calculateCountTasks();
+        if (isTaskNotifiable(task)) {
+          _notificationService.cancelNotificationsByPayload('{"id": "${task.id}", "taskType": "${TaskType.t.name}"}');
+        }
         notifyListeners();
       }
     );
@@ -274,19 +290,19 @@ class TaskViewmodel extends ChangeNotifier {
     notifyListeners();
 
     final result = await _taskRepository.update(
-        id: item.id.toString(),
-        position: newIndex
+      id: item.id.toString(),
+      position: newIndex
     );
 
     result.fold(
       (failure) {
         _loading = false;
         _errorKey = _mapFailureToKey(failure);
-        _taskEventService.add(TaskReorderEvent(success: false, failureKey: _errorKey));
+        _taskEventService.add(TaskUpdateEvent(success: false, failureKey: _errorKey));
         notifyListeners();
       },
       (updatedTask) {
-        _taskEventService.add(TaskReorderEvent(success: true));
+        _taskEventService.add(TaskUpdateEvent(success: true));
         notifyListeners();
       }
     );

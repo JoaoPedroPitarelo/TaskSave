@@ -2,14 +2,13 @@ import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/models/task_vo.dart';
-import 'package:app/presentation/screens/welcome/welcome_screen3.dart';
-import 'package:dartz/dartz.dart';
+import 'package:app/presentation/screens/welcome/third_welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/common/task_widget.dart';
 
-class WelcomeScreen2 extends StatelessWidget {
-  const WelcomeScreen2({super.key});
+class SecondWelcomeScreen extends StatelessWidget {
+  const SecondWelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +121,7 @@ class WelcomeScreen2 extends StatelessWidget {
                       weight: 200.0
                     ),
                     onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => WelcomeScreen3())
+                        MaterialPageRoute(builder: (context) => ThirdWelcomeScreen())
                     )
                 ),
               ),

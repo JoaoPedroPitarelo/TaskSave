@@ -91,7 +91,7 @@ class AuthInterceptor extends Interceptor {
 
       await refreshResult.fold(
         (failure) async {
-          print('AuthInterceptor: Refresh Token falhou: ${failure}. Forçando logout.');
+          print('AuthInterceptor: Refresh Token falhou: $failure. Forçando logout.');
           return _forceLogout(err, handler);
         },
         (newTokens) async {
@@ -119,8 +119,7 @@ class AuthInterceptor extends Interceptor {
   }
 
   
-  Future<void> _proceedRequestWithNewToken(
-      RequestOptions originalRequest, String newAccessToken, ErrorInterceptorHandler handler) async {
+  Future<void> _proceedRequestWithNewToken(RequestOptions originalRequest, String newAccessToken, ErrorInterceptorHandler handler) async {
     originalRequest.headers['Authorization'] = 'Bearer $newAccessToken';
     try {
       final response = await _dio.fetch(originalRequest);

@@ -3,14 +3,16 @@ import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/models/subtask_vo.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:intl/intl.dart';
+import 'package:app/presentation/global_providers/app_preferences_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart' as intl;
 
 class SubtaskWidget extends StatefulWidget {
   final SubtaskVo subtask;
-  VoidCallback? rightDismissedCallback;
-  VoidCallback? leftDismissedCallback;
+  final VoidCallback? rightDismissedCallback;
+  final VoidCallback? leftDismissedCallback;
 
-  SubtaskWidget({
+  const SubtaskWidget({
     super.key,
     required this.subtask,
     this.rightDismissedCallback,
@@ -42,20 +44,18 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
   Widget build(BuildContext context) {
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
-
-    print(widget.subtask.reminderType);
+    final locale = Provider.of<AppPreferencesProvider>(context, listen: false).appLanguage.toString();
 
     return Dismissible(
       key: Key(widget.subtask.id),
       direction: DismissDirection.horizontal,
-      onDismissed: (direction) async {
+      onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
-          player.play(AssetSource("sounds/taskCompleted.mp3"));
-          widget.subtask.completed = true;
-
           if (widget.rightDismissedCallback != null) {
             widget.rightDismissedCallback!();
           }
+          player.play(AssetSource("sounds/taskCompleted.mp3"));
+          widget.subtask.completed = true;
         }
 
         if (direction == DismissDirection.endToStart) {
@@ -143,12 +143,14 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(Icons.date_range, size: 18),
-                                          SizedBox(width: 4),
-                                          Text(DateFormat('dd/MM/yyyy').format(widget.subtask.deadline), style: theme.textTheme.displaySmall),
+                                          if (widget.subtask.deadline != null) ...[
+                                            Icon(Icons.date_range_rounded, size: 18),
+                                            SizedBox(width: 4),
+                                            Text(intl.DateFormat.yMMMd(locale).format(widget.subtask.deadline!), style: theme.textTheme.displaySmall),
+                                          ],
                                           if (widget.subtask.reminderType != null) ...[
                                             SizedBox(width: 8),
-                                            Icon(Icons.alarm, size: 18),
+                                            Icon(Icons.alarm_rounded, size: 18),
                                           ],
                                         ],
                                       ),

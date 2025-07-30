@@ -1,4 +1,4 @@
-import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/attachment_vo.dart';
 import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/enums/reminder_type_num.dart';
@@ -9,13 +9,13 @@ class TaskVo extends Notifiable {
   final String title;
   final String? description;
   final PriorityEnum priority;
-  final CategoryVo category;
+  final CategoryVo? category;
   final List<SubtaskVo> subtaskList;
   List<AttachmentVo> attachmentList;
   bool completed;
 
   TaskVo({
-    required id,
+    required String id,
     required this.title,
     this.description,
     required deadline,
@@ -40,8 +40,8 @@ class TaskVo extends Notifiable {
     final TaskVo task = TaskVo(
       id: json['id'].toString(),
       title: json['title'], 
-      description: json['description'],
-      deadline: DateTime.parse(json['deadline']),
+      description: json['description'] ?? json['description'] ,
+      deadline: json['deadline'] != null ? DateTime.parse(json['deadline']) : null,
       priority: PriorityEnum.values.firstWhere((priority) => priority.name == json['priority'].toString().toLowerCase()),
       category: CategoryVo.fromJson(json['category']),
       subtaskList: subTasksList,

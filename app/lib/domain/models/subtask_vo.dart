@@ -9,7 +9,7 @@ class SubtaskVo extends Notifiable {
   bool completed;
 
   SubtaskVo({
-    required id,
+    required String id,
     required this.title,
     this.description,
     required deadline,
@@ -23,7 +23,7 @@ class SubtaskVo extends Notifiable {
       id: json['id'].toString(),
       title: json['title'],
       description: json['description'],
-      deadline: DateTime.parse(json['deadline']),
+      deadline: json['deadline'] != null ? DateTime.parse(json['deadline']) : null,
       priority: PriorityEnum.values.firstWhere((priority) => priority.name == json['priority'].toString().toLowerCase()),
       reminderType: json['reminderType'] != null
         ? ReminderTypeNum.values.firstWhere((reminderType) => reminderType.name == json['reminderType'].toString().toLowerCase())

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/domain/enums/file_type_enum.dart';
-import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/attachment_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -85,16 +85,15 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
                                        widget.attachment,
                                        AppLocalizations.of(context)!.download
                                      );
-                                     Navigator.of(context).pop();
+                                     if (context.mounted) {
+                                       Navigator.of(context).pop();
+                                     }
                                    }
                                    if (value == "delete") {
-                                     Navigator.pop(context);
-                                     showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return _DeleteAttachmentDialog(attachment: widget.attachment);
-                                        }
-                                      );
+                                     if (context.mounted) {
+                                       Navigator.pop(context);
+                                       showDialog(context: context, builder: (BuildContext context) => _DeleteAttachmentDialog(attachment: widget.attachment, key: widget.key));
+                                     }
                                    }
                                  },
                                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -152,16 +151,20 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
                     filePath: widget.attachment.localFilePath,
                     fitPolicy: FitPolicy.BOTH,
                     onRender: (pages) {
+                      // TODO colocar um errorSnackBar
                        print("SUCESSO: PDF renderizado com $pages páginas.");
                     },
                     onError: (error) {
+                      // TODO colocar um errorSnackBar
                       print("ERRO no PDFView: $error");
                     },
                     onPageError: (page, error) {
+                      // TODO colocar um errorSnackBar
                       print('ERRO na página $page: $error');
                     },
                     onViewCreated: (PDFViewController pdfViewController) {
-                        print('View do PDF criada com sucesso.');
+                      // TODO colocar um errorSnackBar
+                      print('View do PDF criada com sucesso.');
                     },
                   )
                    : _buildImage(widget.attachment.fileType),
@@ -282,7 +285,9 @@ class _DeleteAttachmentDialog extends StatelessWidget {
             TextButton(
               onPressed: () async {
                 await taskDetailsViewmodel.deleteAttachment(attachment);
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
               child: Row(
                 children: [

@@ -460,11 +460,11 @@ abstract class AppLocalizations {
   /// **'Atrasadas'**
   String get taskLate;
 
-  /// No description provided for @taskCategory.
+  /// No description provided for @addCategory.
   ///
   /// In pt, this message translates to:
   /// **'Adicionar categoria'**
-  String get taskCategory;
+  String get addCategory;
 
   /// No description provided for @categoryNotFound.
   ///
@@ -538,17 +538,17 @@ abstract class AppLocalizations {
   /// **'Desfazer'**
   String get undo;
 
-  /// No description provided for @descriptionCategory.
+  /// No description provided for @labelTextDescriptionCategoryForm.
   ///
   /// In pt, this message translates to:
   /// **'Descrição'**
-  String get descriptionCategory;
+  String get labelTextDescriptionCategoryForm;
 
-  /// No description provided for @descriptionCategoryPlaceholder.
+  /// No description provided for @hintTextDescriptionCategoryForm.
   ///
   /// In pt, this message translates to:
   /// **'Trabalho ou faculdade...'**
-  String get descriptionCategoryPlaceholder;
+  String get hintTextDescriptionCategoryForm;
 
   /// No description provided for @color.
   ///
@@ -747,6 +747,162 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Sua subTarefa com prazo para'**
   String get yourSubtask;
+
+  /// No description provided for @exportToPdf.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar tarefas (PDF)'**
+  String get exportToPdf;
+
+  /// No description provided for @about.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sobre'**
+  String get about;
+
+  /// No description provided for @modifyTask.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modificar Tarefa'**
+  String get modifyTask;
+
+  /// No description provided for @addTask.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar Tarefa'**
+  String get addTask;
+
+  /// No description provided for @labelTextTitleTaskForm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Título'**
+  String get labelTextTitleTaskForm;
+
+  /// No description provided for @hintTextTitleTaskForm.
+  ///
+  /// In pt, this message translates to:
+  /// **'caminhar com meu cachorro'**
+  String get hintTextTitleTaskForm;
+
+  /// No description provided for @taskTitleIsObrigatory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Título é um campo obrigatório!'**
+  String get taskTitleIsObrigatory;
+
+  /// No description provided for @labelTextDescriptionTaskForm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Descrição'**
+  String get labelTextDescriptionTaskForm;
+
+  /// No description provided for @hintTextDescriptionTaskForm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Caminhar com meu cachorro Tom hoje'**
+  String get hintTextDescriptionTaskForm;
+
+  /// No description provided for @high.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alto'**
+  String get high;
+
+  /// No description provided for @medium.
+  ///
+  /// In pt, this message translates to:
+  /// **'Médio'**
+  String get medium;
+
+  /// No description provided for @low.
+  ///
+  /// In pt, this message translates to:
+  /// **'Baixo'**
+  String get low;
+
+  /// No description provided for @neutral.
+  ///
+  /// In pt, this message translates to:
+  /// **'Neutro'**
+  String get neutral;
+
+  /// No description provided for @beforeDeadline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dia antes do prazo'**
+  String get beforeDeadline;
+
+  /// No description provided for @deadlineDay.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dia do prazo'**
+  String get deadlineDay;
+
+  /// No description provided for @untilDeadline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Até o prazo acabar'**
+  String get untilDeadline;
+
+  /// No description provided for @deadline.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prazo'**
+  String get deadline;
+
+  /// No description provided for @deadlineIsObrigatory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prazo é um campo obrigatório!'**
+  String get deadlineIsObrigatory;
+
+  /// No description provided for @invalidDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Data inválida!'**
+  String get invalidDate;
+
+  /// No description provided for @beforeDateIsNoteAllowed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prazo não pode ser no passado!'**
+  String get beforeDateIsNoteAllowed;
+
+  /// No description provided for @priority.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prioridade'**
+  String get priority;
+
+  /// No description provided for @priorityIsObrigatory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Prioridade é um campo obrigatório!'**
+  String get priorityIsObrigatory;
+
+  /// No description provided for @reminderType.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tipo de Notificação'**
+  String get reminderType;
+
+  /// No description provided for @withoutReminder.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem notificação'**
+  String get withoutReminder;
+
+  /// No description provided for @addSubTask.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar SubTarefa'**
+  String get addSubTask;
+
+  /// No description provided for @addAttachment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Adicionar anexo'**
+  String get addAttachment;
 }
 
 class _AppLocalizationsDelegate

@@ -32,6 +32,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscureTextPassword = true;
   bool _obscureTextConfirmedPassword = true;
 
+  late AppLocalizations appLocalizations;
+  bool _isInit = true;
+
   @override
   void dispose() {
     _passwordController.dispose();
@@ -42,24 +45,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _registerSubscription = _authEventService.onAuthChanged.listen((event) {
-        if (event is RegisterEvent) {
-          if (event.success){
-            ScaffoldMessenger.of(context).showSnackBar(
-                showSuccessSnackbar(AppLocalizations.of(context)!.registerSuccess)
-            );
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConfirmRegisterEmailScreen()));
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              showErrorSnackbar(translateFailureKey(context, event.failureKey!))
-            );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_isInit) {
+      _isInit = false;
+      appLocalizations = AppLocalizations.of(context)!;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _registerSubscription = _authEventService.onAuthChanged.listen((event) {
+          if (event is RegisterEvent) {
+            if (event.success){
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(showSuccessSnackBar(appLocalizations.registerSuccess));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConfirmRegisterEmailScreen()));
+              }
+            } else {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!)));
+              }
+            }
           }
-        }
+        });
       });
-    });
+    }
   }
 
   @override

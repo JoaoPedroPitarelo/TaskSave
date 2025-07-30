@@ -1,10 +1,7 @@
 import 'package:app/core/errors/failure_keys.dart';
-import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 
-String translateFailureKey(BuildContext context, FailureKey key) {
-  final l10n = AppLocalizations.of(context)!;
-
+String translateFailureKey(AppLocalizations l10n, FailureKey key) {
   return switch (key) {
     FailureKey.subtaskNotFound        => l10n.subTaskNotFound,
     FailureKey.attachmentError        => l10n.attachmentError,

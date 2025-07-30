@@ -1,4 +1,3 @@
-
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/subtask_failures.dart';
 import 'package:app/domain/enums/priority_enum.dart';

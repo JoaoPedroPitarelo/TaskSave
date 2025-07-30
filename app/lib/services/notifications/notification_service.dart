@@ -1,4 +1,5 @@
-import 'package:app/core/enums/task_type_enum.dart';
+import 'dart:convert';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_10y.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -13,7 +14,10 @@ class NotificationService {
     return _instance;
   }
 
-  Future<void> initNotificationPlugin({required Function(String? payload) onNotificationTap}) async {
+  Future<void> initNotificationPlugin({
+    required Function(String? payload) onNotificationTap,
+    required Function(NotificationResponse response) onBackgroundNotificationTap
+  }) async {
     tz.initializeTimeZones();
 
     const androidSettings = AndroidInitializationSettings('notification_icon');
@@ -28,9 +32,7 @@ class NotificationService {
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         onNotificationTap(response.payload);
       },
-      onDidReceiveBackgroundNotificationResponse: (NotificationResponse response) {
-        onNotificationTap(response.payload);
-      },
+      onDidReceiveBackgroundNotificationResponse: onBackgroundNotificationTap,
     );
 
     await _notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
@@ -66,6 +68,19 @@ class NotificationService {
   Future<void> cancelNotificationById(int id) async {
     await _notificationsPlugin.cancel(id);
     print('Notification with ID: $id canceled');
+  }
+
+  Future<void> cancelNotificationsByPayload(String payload) async {
+    final List<PendingNotificationRequest> pendingNotifications = await getPendingNotifications();
+    final payloadForCanceling = jsonDecode(payload);
+
+    for (final notification in pendingNotifications) {
+      final notificationPayload = jsonDecode(notification.payload!);
+      if (notificationPayload['id'] == payloadForCanceling['id']) {
+        _notificationsPlugin.cancel(notification.id);
+        print("Notification with ID: ${notification.id} canceled");
+      }
+    }
   }
 
   Future<void> cancelAllNotifications() async {

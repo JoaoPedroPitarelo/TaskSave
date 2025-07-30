@@ -21,7 +21,7 @@ class CategoryViewmodel extends ChangeNotifier {
   bool get loading => _loading;
 
   CategoryVo? selectedCategory;
-  CategoryVo? _deletedSelectedCategory;
+  CategoryVo? deletedSelectedCategory;
 
   CategoryViewmodel(
     this._categoryRepository,
@@ -57,25 +57,27 @@ class CategoryViewmodel extends ChangeNotifier {
 
     if (selectedCategory != null && selectedCategory!.id == category.id) {
       clearSelectedCategory();
-      _deletedSelectedCategory = category;
+      deletedSelectedCategory = category;
     }
 
-    _categoryEventsService.add(CategoryDeletionEvent(category, originalIndex));
+    _categoryEventsService.add(CategoryPrepareDeletionEvent(category, originalIndex));
     notifyListeners();
   }
 
-  Future<void> confirmDeletionCategory(category, originalIndex) async {
+  Future<void> confirmDeletionCategory(CategoryVo category, originalIndex) async {
     final result = await _categoryRepository.delete(category.id.toString());
 
     result.fold(
       (failure) {
         _errorKey = _mapFailureToKey(failure);
         _loading = false;
+        _categoryEventsService.add(CategoryDeletionEvent(success: false, failureKey: _errorKey));
         undoDeletionCategory(category, originalIndex);
         notifyListeners();
       },
       (noContent) {
         notifyListeners();
+        _categoryEventsService.add(CategoryDeletionEvent(success: true));
       }
     );
   }
@@ -84,9 +86,9 @@ class CategoryViewmodel extends ChangeNotifier {
     if (!_categories.contains(category)) {
       _categories.insert(originalIndex.clamp(0, _categories.length), category);
 
-      if (_deletedSelectedCategory != null && _deletedSelectedCategory!.id == category.id) {
+      if (deletedSelectedCategory != null && deletedSelectedCategory!.id == category.id) {
         selectedCategory = category;
-        _deletedSelectedCategory = null;
+        deletedSelectedCategory = null;
       }
 
       notifyListeners();

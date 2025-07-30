@@ -1,5 +1,5 @@
 import 'package:app/domain/enums/file_type_enum.dart';
-import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/attachment_vo.dart';
 import 'package:app/services/local_database/local_database_service.dart';
 import 'package:sqflite/sqflite.dart';
 

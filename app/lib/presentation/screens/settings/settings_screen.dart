@@ -19,7 +19,6 @@ class ConfigurationScreen extends StatefulWidget {
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
-
   @override
   Widget build(BuildContext context) {
     final preferencesProvider = context.watch<AppPreferencesProvider>();
@@ -34,13 +33,13 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
       'es': AppLocalizations.of(context)!.espanish
     };
 
-    Future<void> _launchURL(String url) async {
+    Future<void> launchURL(String url) async {
       final Uri uri = Uri.parse(url);
-      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
 
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Não foi possível abrir o link.')),
-        );
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Não foi possível abrir o link.')));
+        }
       }
     }
     
@@ -112,7 +111,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (context) => _logoutConfirmDialog()
+                            builder: (context) => _LogoutConfirmDialog(key: widget.key)
                           );
                         },
                         icon: Icon(
@@ -280,13 +279,13 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                           children: [
                             IconButton(
                                 onPressed: () {
-                                  _launchURL("https://github.com/JoaoPedroPitarelo/TaskSave");
+                                  launchURL("https://github.com/JoaoPedroPitarelo/TaskSave");
                                 },
                                 icon: FaIcon(FontAwesomeIcons.github, size: 35)
                             ),
                             IconButton(
                                 onPressed: () {
-                                  _launchURL("http://www.linkedin.com/in/joão-pedro-salmazo-pitarelo-b12b71264");
+                                  launchURL("http://www.linkedin.com/in/joão-pedro-salmazo-pitarelo-b12b71264");
                                 },
                                 icon: FaIcon(FontAwesomeIcons.linkedin, size: 35)
                             ),
@@ -325,7 +324,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                               ),
                             ),
                             Text("João Pedro Salmazo Pitarelo"),
-                            Text("Luiz Ricardo Begosso"),
+                            Text("Prof. Dr. Luiz Ricardo Begosso"),
                           ],
                         ),
                       ),
@@ -341,9 +340,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   }
 }
 
-class _logoutConfirmDialog extends StatelessWidget {
+class _LogoutConfirmDialog extends StatelessWidget {
 
-  const _logoutConfirmDialog({super.key});
+  const _LogoutConfirmDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

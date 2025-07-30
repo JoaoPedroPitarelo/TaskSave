@@ -7,11 +7,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 class WidgetFilterMode extends StatelessWidget {
   final FilteringTaskModeEnum filterMode;
-  CategoryVo? selectedCategory;
+  final CategoryVo? category;
 
-  WidgetFilterMode({
+  const WidgetFilterMode({
     required this.filterMode,
-    this.selectedCategory,
+    this.category,
     super.key
   });
 
@@ -28,8 +28,8 @@ class WidgetFilterMode extends StatelessWidget {
       case FilteringTaskModeEnum.overdue:
         return const Icon(Icons.warning_rounded, size: 30, color: Colors.white);
       case FilteringTaskModeEnum.category:
-        return selectedCategory!.description != "Default"
-            ? Icon(Icons.dashboard_customize_outlined, size: 30, color: hexToColor(selectedCategory!.color))
+        return category!.description != "Default"
+            ? Icon(Icons.dashboard_customize_rounded, size: 30, color: hexToColor(category!.color))
             : const Icon(Icons.close_rounded, size: 35, color: Colors.white);
     }
   }
@@ -50,8 +50,8 @@ class WidgetFilterMode extends StatelessWidget {
         case FilteringTaskModeEnum.overdue:
           return AppLocalizations.of(context)!.taskLate;
         case FilteringTaskModeEnum.category:
-          return selectedCategory!.description != "Default"
-            ? selectedCategory!.description
+          return category!.description != "Default"
+            ? category!.description
             : AppLocalizations.of(context)!.withoutCategory;
       }
     }

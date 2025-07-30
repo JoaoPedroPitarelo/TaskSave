@@ -194,7 +194,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get taskLate => 'Atrasadas';
 
   @override
-  String get taskCategory => 'Adicionar categoria';
+  String get addCategory => 'Adicionar categoria';
 
   @override
   String get categoryNotFound => 'Categoria não encontrada';
@@ -234,10 +234,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get undo => 'Desfazer';
 
   @override
-  String get descriptionCategory => 'Descrição';
+  String get labelTextDescriptionCategoryForm => 'Descrição';
 
   @override
-  String get descriptionCategoryPlaceholder => 'Trabalho ou faculdade...';
+  String get hintTextDescriptionCategoryForm => 'Trabalho ou faculdade...';
 
   @override
   String get color => 'Cor :';
@@ -338,4 +338,83 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get yourSubtask => 'Sua subTarefa com prazo para';
+
+  @override
+  String get exportToPdf => 'Exportar tarefas (PDF)';
+
+  @override
+  String get about => 'Sobre';
+
+  @override
+  String get modifyTask => 'Modificar Tarefa';
+
+  @override
+  String get addTask => 'Adicionar Tarefa';
+
+  @override
+  String get labelTextTitleTaskForm => 'Título';
+
+  @override
+  String get hintTextTitleTaskForm => 'caminhar com meu cachorro';
+
+  @override
+  String get taskTitleIsObrigatory => 'Título é um campo obrigatório!';
+
+  @override
+  String get labelTextDescriptionTaskForm => 'Descrição';
+
+  @override
+  String get hintTextDescriptionTaskForm =>
+      'Caminhar com meu cachorro Tom hoje';
+
+  @override
+  String get high => 'Alto';
+
+  @override
+  String get medium => 'Médio';
+
+  @override
+  String get low => 'Baixo';
+
+  @override
+  String get neutral => 'Neutro';
+
+  @override
+  String get beforeDeadline => 'Dia antes do prazo';
+
+  @override
+  String get deadlineDay => 'Dia do prazo';
+
+  @override
+  String get untilDeadline => 'Até o prazo acabar';
+
+  @override
+  String get deadline => 'Prazo';
+
+  @override
+  String get deadlineIsObrigatory => 'Prazo é um campo obrigatório!';
+
+  @override
+  String get invalidDate => 'Data inválida!';
+
+  @override
+  String get beforeDateIsNoteAllowed => 'Prazo não pode ser no passado!';
+
+  @override
+  String get priority => 'Prioridade';
+
+  @override
+  String get priorityIsObrigatory => 'Prioridade é um campo obrigatório!';
+
+  @override
+  String get reminderType => 'Tipo de Notificação';
+
+  @override
+  String get withoutReminder => 'Sem notificação';
+
+  @override
+  String get addSubTask => 'Adicionar SubTarefa';
+
+  @override
+  String get addAttachment => 'Adicionar anexo';
 }

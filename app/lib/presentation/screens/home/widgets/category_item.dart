@@ -2,7 +2,6 @@ import 'package:app/domain/models/category_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/presentation/screens/category_form/category_form_screen.dart';
 import 'package:app/presentation/screens/home/category_viewmodel.dart';
-import 'package:app/presentation/screens/home/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:app/presentation/common/hex_to_color.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,7 +29,7 @@ class CategoryItem extends StatelessWidget {
         if (!category.isDefault) {
           showDialog(
             context: context,
-            builder: (context) => _CategoryDetailsDialog(category: category)
+            builder: (context) => _CategoryDetailsDialog(category: category, key: key,)
           );
         }
       },
@@ -41,7 +40,7 @@ class CategoryItem extends StatelessWidget {
             Icon(
               category.isDefault
                 ? Icons.close_rounded
-                : Icons.dashboard_customize_outlined,
+                : Icons.dashboard_customize_rounded,
               color: hexToColor(category.color),
               size: 25,
             ),
@@ -118,7 +117,7 @@ class _CategoryDetailsDialog extends StatelessWidget {
               onPressed: () {
                 if (!category.isDefault) {
                   Navigator.of(context).pop();
-                    showDialog(context: context, builder: (context) => _DeleteCategoryDialog(category: category),
+                    showDialog(context: context, builder: (context) => _DeleteCategoryDialog(category: category, key: key,),
                   );
                 }
               },

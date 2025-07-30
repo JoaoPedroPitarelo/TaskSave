@@ -1,11 +1,11 @@
 import 'package:app/core/themes/app_global_colors.dart';
 
-import 'package:app/presentation/screens/welcome/final_welcomeScreen.dart';
+import 'package:app/presentation/screens/welcome/final_welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 
-class WelcomeScreen4 extends StatelessWidget {
-  const WelcomeScreen4({super.key});
+class FourthWelcomeScreen extends StatelessWidget {
+  const FourthWelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

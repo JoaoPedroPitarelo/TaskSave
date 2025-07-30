@@ -7,7 +7,6 @@ class UserVo {
     required this.login,
   });
 
-  // De Json para UserVo
   factory UserVo.fromJson(Map<String, dynamic> json) {
     return UserVo(
       id: json['id'], 
@@ -15,11 +14,10 @@ class UserVo {
     );
   }
 
-  // De UserVo para Json
   Map<String, dynamic> toJson() {
     return {
-      'id': this.id,
-      'sub': this.login
+      'id': id,
+      'sub': login
     };
   }
 }

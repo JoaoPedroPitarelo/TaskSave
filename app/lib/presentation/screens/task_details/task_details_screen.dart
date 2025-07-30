@@ -3,7 +3,7 @@ import 'package:app/core/events/task_events.dart';
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/core/utils/translateFailureKey.dart';
 import 'package:app/domain/enums/priority_enum.dart';
-import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/attachment_vo.dart';
 import 'package:app/domain/models/subtask_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 import 'package:app/l10n/app_localizations.dart';
@@ -11,13 +11,15 @@ import 'package:app/presentation/common/error_snackbar.dart';
 import 'package:app/presentation/common/hex_to_color.dart';
 import 'package:app/presentation/common/subtask_widget.dart';
 import 'package:app/presentation/common/sucess_snackbar.dart';
-import 'package:app/presentation/screens/home/home_viewmodel.dart';
+import 'package:app/presentation/global_providers/app_preferences_provider.dart';
 import 'package:app/presentation/screens/home/task_viewmodel.dart';
 import 'package:app/presentation/screens/task_details/attachment_widget.dart';
 import 'package:app/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:app/services/events/task_event_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
@@ -32,6 +34,9 @@ class TaskDetailsScreen extends StatefulWidget {
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   StreamSubscription? taskSubscription;
   final TaskEventService _taskEventService = TaskEventService();
+
+  late AppLocalizations appLocalizations;
+  bool _isInit = true;
 
   Color _getPriorityColor(BuildContext context, PriorityEnum priority) {
     final appColor = AppGlobalColors.of(context);
@@ -53,69 +58,72 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   }
 
   @override
-  void initState() {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.task.attachmentList.isNotEmpty) {
-        for (var attachment in widget.task.attachmentList) {
-          _downloadAttachment(attachment);
-        }
-      }
+    if (_isInit) {
+      _isInit = false;
+      appLocalizations = AppLocalizations.of(context)!;
 
-      taskSubscription = _taskEventService.onTaskChanged.listen((event) {
-        if (event is TaskDownloadAttachmentEvent) {
-          if (!event.success) {
-            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.task.attachmentList.isNotEmpty) {
+          for (var attachment in widget.task.attachmentList) {
+            _downloadAttachment(attachment);
           }
         }
 
-        if (event is TaskAttachmentSavedAsEvent) {
-          if (!event.success) {
-            _showErrorSnackBar(AppLocalizations.of(context)!.attachmentError);
-          } else {
-            _showSuccessSnackBar(AppLocalizations.of(context)!.attachmentSavedAs);
-          }
-        }
-
-        if (event is TaskAttachmentDeletedEvent) {
-          if (!event.success) {
-            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
+        taskSubscription = _taskEventService.onTaskChanged.listen((event) {
+          if (event is TaskDownloadAttachmentEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+            }
           }
 
-          if (event.success) {
-            _showErrorSnackBar(AppLocalizations.of(context)!.attachmentDeleted);
-            widget.task.attachmentList.remove(event.attachment);
-          }
-        }
-
-        if (event is SubtaskDeletionEvent) {
-          if (event.success == null) {
-            _showUndoSnackbarSubtask(event.task, event.subtask, event.originalIndex);
-            return;
+          if (event is TaskAttachmentSavedAsEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(appLocalizations.attachmentError);
+            } else {
+              _showSuccessSnackBar(appLocalizations.attachmentSavedAs);
+            }
           }
 
-          if (!event.success!) {
-            _showErrorSnackBar(translateFailureKey(context, event.failureKey!));
+          if (event is TaskAttachmentDeletedEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+            }
+
+            if (event.success) {
+              _showErrorSnackBar(appLocalizations.attachmentDeleted);
+              widget.task.attachmentList.remove(event.attachment);
+            }
           }
-        }
+
+          if (event is SubtaskDeletionEvent) {
+            if (event.success == null) {
+              _showUndoSnackbarSubtask(event.task, event.subtask, event.originalIndex);
+              return;
+            }
+
+            if (!event.success!) {
+              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+            }
+          }
+        });
       });
-    });
-
-    super.initState();
+    }
   }
 
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      showErrorSnackbar(message)
+      showErrorSnackBar(message)
     );
   }
 
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      showSuccessSnackbar(message)
+      showSuccessSnackBar(message)
     );
   }
-
 
   // TODO criar um método geral para isso aqui, com VoidCallbakck
   void _showUndoSnackbarSubtask(TaskVo task, SubtaskVo subtask, int originalIndex) {
@@ -187,6 +195,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     }
 
     final appColors = AppGlobalColors.of(context);
+    final locale = Provider.of<AppPreferencesProvider>(context, listen: false).appLanguage.toString();
 
     return Scaffold(
       appBar: PreferredSize(
@@ -201,61 +210,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 bottom: Radius.circular(20),
               )
           ),
-          actions: [
-            PopupMenuButton<String>(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              color: _getPriorityColor(context, widget.task.priority),
-              onSelected: (value) {
-                if (value == "edit") {
-                  // TODO quando estiver pronto a tela de edição
-                }
-                if (value == "delete") {
-                  final taskViewmodel = context.read<TaskViewmodel>();
-                  taskViewmodel.prepareTaskForDeletion(widget.task);
-
-                  Navigator.of(context).pop();
-                }
-              },
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: "edit",
-                  child: Row(
-                    spacing: 10,
-                    children: [
-                      const Icon(Icons.edit, size: 25),
-                      Text(
-                        AppLocalizations.of(context)!.edit,
-                        style: GoogleFonts.roboto(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                PopupMenuItem<String>(
-                  value: "delete",
-                  child: Row(
-                    spacing: 10,
-                    children: [
-                      const Icon(Icons.close_rounded, size: 25),
-                      Text(
-                        AppLocalizations.of(context)!.delete,
-                        style: GoogleFonts.roboto(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ]
-            )
-          ],
           flexibleSpace: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -290,17 +244,16 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               spacing: 20,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (widget.task.category.description != "Default")
                 Row(
                   spacing: 10,
                   children: [
                     Icon(
-                      Icons.dashboard_customize_outlined,
+                      widget.task.category!.isDefault ? Icons.close_rounded : Icons.dashboard_customize_rounded,
                       size: 35,
-                      color: hexToColor(widget.task.category.color)
+                      color: hexToColor(widget.task.category!.color)
                     ),
                     Text(
-                      widget.task.category.description,
+                      widget.task.category!.isDefault ? AppLocalizations.of(context)!.withoutCategory : widget.task.category!.description,
                       style: GoogleFonts.roboto(
                         fontWeight: FontWeight.w500,
                         fontSize: 23,
@@ -308,10 +261,29 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     )
                   ],
                 ),
+                if (widget.task.deadline != null) ... [
+                Row(
+                  spacing: 10,
+                  children: [
+                    Icon(
+                        Icons.calendar_month_rounded,
+                        size: 35
+                    ),
+                    Text(
+                      intl.DateFormat.yMMMd(locale).format(widget.task.deadline!),
+                      style: GoogleFonts.roboto(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 23,
+                      )
+                    )
+                  ],
+                ),
+                ],
 
                 // Description
                 if (widget.task.description != null)
                 Container(
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: appColors.welcomeScreenCardColor,
                     borderRadius: BorderRadius.circular(20),
@@ -336,7 +308,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   )
                 ),
                 Divider(),
-
                 // Attachments
                 if (widget.task.attachmentList.isNotEmpty) ...[
                   Row(
@@ -433,16 +404,53 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO criar método de criação de subtarefas
-        },
-        backgroundColor:  _getPriorityColor(context, widget.task.priority),
-        child: Icon(
-          Icons.add_rounded,
-          color: Colors.white,
-          size: 30,
-        ),
+      floatingActionButton: SpeedDial(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        icon: Icons.add_rounded,
+        activeIcon: Icons.close_rounded,
+        iconTheme: IconThemeData(size: 30),
+        backgroundColor: _getPriorityColor(context, widget.task.priority),
+        childrenButtonSize: Size(60, 60),
+        childMargin: EdgeInsets.all(20),
+        foregroundColor: Colors.white,
+        spacing: 20,
+        elevation: 8,
+        children: [
+          SpeedDialChild(
+            label: AppLocalizations.of(context)!.delete,
+            child:Icon(Icons.close_rounded, color: Colors.red),
+            backgroundColor: _getPriorityColor(context, widget.task.priority),
+            onTap: () {
+              final taskViewmodel = context.read<TaskViewmodel>();
+              taskViewmodel.prepareTaskForDeletion(widget.task);
+              Navigator.of(context).pop();
+            }
+          ),
+          SpeedDialChild(
+            label: AppLocalizations.of(context)!.addSubTask,
+            child:Icon(Icons.list_rounded),
+            backgroundColor: _getPriorityColor(context, widget.task.priority),
+            onTap: () {
+              // TODO quando estiver pontor a tela de criação de subtarefa
+            }
+          ),
+          SpeedDialChild(
+            label: AppLocalizations.of(context)!.addAttachment,
+            child:Icon(Icons.file_upload_rounded),
+            backgroundColor: _getPriorityColor(context, widget.task.priority),
+            onTap: () {
+              // TODO fazer tela ou alertDialog de adição de anexos
+            }
+          ),
+          SpeedDialChild(
+              label: AppLocalizations.of(context)!.edit,
+              child: Icon(Icons.edit_rounded),
+              backgroundColor: _getPriorityColor(context, widget.task.priority),
+              onTap: () {
+                // TODO quando estiver pronto a tela de edição
+              }
+          ),
+        ]
       )
     );
   }

@@ -1,5 +1,5 @@
 import 'package:app/core/errors/failure_keys.dart';
-import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/attachment_vo.dart';
 import 'package:app/domain/models/subtask_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 
@@ -12,6 +12,14 @@ class GetTasksEvent extends TaskDataEvent {
   GetTasksEvent({required this.success, this.failureKey});
 }
 
+class TaskCreationEvent extends TaskDataEvent {
+  bool success = false;
+  FailureKey? failureKey;
+  TaskVo? task;
+
+  TaskCreationEvent({required this.success, this.failureKey, this.task});
+}
+
 class TaskDeletionEvent extends TaskDataEvent {
   bool success = false;
   FailureKey? failureKey;
@@ -21,11 +29,11 @@ class TaskDeletionEvent extends TaskDataEvent {
   TaskDeletionEvent(this.task, this.originalIndex);
 }
 
-class TaskReorderEvent extends TaskDataEvent {
+class TaskUpdateEvent extends TaskDataEvent {
   final bool success;
   final FailureKey? failureKey;
 
-  TaskReorderEvent({required this.success, this.failureKey});
+  TaskUpdateEvent({required this.success, this.failureKey});
 }
 
 class TaskDownloadAttachmentEvent extends TaskDataEvent {

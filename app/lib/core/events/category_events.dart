@@ -23,11 +23,18 @@ class CategoryUpdatingEvent extends CategoryDataEvent {
   CategoryUpdatingEvent({required this.success, this.failureKey});
 }
 
-class CategoryDeletionEvent extends CategoryDataEvent {
+class CategoryPrepareDeletionEvent extends CategoryDataEvent {
   final CategoryVo category;
   final int originalIndex;
 
-  CategoryDeletionEvent(this.category, this.originalIndex);
+  CategoryPrepareDeletionEvent(this.category, this.originalIndex);
+}
+
+class CategoryDeletionEvent extends CategoryDataEvent {
+  final bool success;
+  final FailureKey? failureKey;
+
+  CategoryDeletionEvent({required this.success, this.failureKey});
 }
 
 class CategoryReorderEvent extends CategoryDataEvent {

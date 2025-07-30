@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/core/utils/translateFailureKey.dart';
 import 'package:app/core/events/auth_events.dart';
@@ -28,36 +27,40 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
+  late AppLocalizations appLocalizations;
+  bool _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      _isInit = false;
+      appLocalizations = AppLocalizations.of(context)!;
+
+      WidgetsBinding.instance.addPostFrameCallback( (_) {
+        _passwordRescueSubscription = _authEventService.onAuthChanged.listen( (event) {
+          if (event is PasswordRescueEvent) {
+            if (event.success) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(showSuccessSnackBar(appLocalizations.passwordRescueSuccess));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConfirmPasswordRescueEmailScreen()));
+              }
+            } else {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!)));
+              }
+            }
+          }
+        });
+      });
+    }
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordRescueSubscription?.cancel();
     super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback( (_) {
-      _passwordRescueSubscription = _authEventService.onAuthChanged.listen( (event) {
-        if (event is PasswordRescueEvent) {
-          if (event.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              showSuccessSnackbar(AppLocalizations.of(context)!.passwordRescueSuccess)
-            );
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ConfirmPasswordRescueEmailScreen()
-              )
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              showErrorSnackbar(translateFailureKey(context, event.failureKey!))
-            );
-          }
-        }
-      });
-    });
   }
 
   @override

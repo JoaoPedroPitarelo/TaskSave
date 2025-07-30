@@ -1,16 +1,17 @@
 import 'dart:io';
-
 import 'package:app/core/errors/attachment_failures.dart';
+import 'package:app/core/errors/category_failures.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/errors/task_failures.dart';
 import 'package:app/domain/enums/priority_enum.dart';
 import 'package:app/domain/enums/reminder_type_num.dart';
-import 'package:app/domain/models/attachmentVo.dart';
+import 'package:app/domain/models/attachment_vo.dart';
+import 'package:app/domain/models/category_vo.dart';
 import 'package:app/domain/models/task_vo.dart';
 import 'package:app/repositories/local/local_attachment_repository.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 
 class TaskRepository {
   final Dio _dio;
@@ -65,11 +66,11 @@ class TaskRepository {
     }
   }
 
-  Map<String, dynamic> _makePayloadForUpdate(
+  Map<String, dynamic> _makePayload(
       String? title,
       String? description,
       DateTime? deadline,
-      int? categoryId,
+      CategoryVo? category,
       PriorityEnum? priority,
       ReminderTypeNum? reminderType,
       int? position)
@@ -78,10 +79,10 @@ class TaskRepository {
 
     if (title != null) { payload['title'] = title; }
     if (description != null) { payload['description'] = description; }
-    if (deadline != null) { payload['deadline'] = deadline; }
-    if (categoryId != null) { payload['category_id'] = categoryId; }
-    if (priority != null) { payload['priority'] = priority.name; }
-    if (reminderType != null) { payload['reminder_type'] = reminderType.name; }
+    if (deadline != null) { payload['deadline'] = deadline.toIso8601String(); }
+    if (category != null) { payload['categoryId'] = category.id; }
+    if (priority != null) { payload['priority'] = priority.name.toUpperCase(); }
+    if (reminderType != null) { payload['reminderType'] = reminderType.name.toUpperCase(); }
     if (position != null) { payload['position'] = position; }
 
     return payload;
@@ -92,7 +93,7 @@ class TaskRepository {
     String? title,
     String? description,
     DateTime? deadline,
-    int? categoryId,
+    CategoryVo? category,
     PriorityEnum? priority,
     ReminderTypeNum? reminderType,
     int? position,
@@ -100,8 +101,16 @@ class TaskRepository {
     try {
       final response = await _dio.put(
         '/task/$id',
-        data: _makePayloadForUpdate(title, description, deadline, categoryId, priority, reminderType, position),
-      );
+        data: _makePayload(
+          title,
+          description,
+          deadline,
+          category,
+          priority,
+          reminderType,
+          position
+        ),
+    );
 
       return Right(response.data);
     } on DioException catch (e) {
@@ -111,7 +120,31 @@ class TaskRepository {
     }
   }
 
-  // TODO criar método de criação de tarefas
+  Future<Either<Failure, Map<String, dynamic>>> create(TaskVo   task) async {
+    try {
+      final response = await _dio.post(
+        '/task/create',
+        data: _makePayload(
+          task.title,
+          task.description,
+          task.deadline,
+          task.category,
+          task.priority,
+          task.reminderType,
+          null
+        )
+      );
+
+      return Right(response.data);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(CategoryNotFoundFailure());
+      }
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
+    } catch (e) {
+      return Left(UnexpectedFailure());
+    }
+  }
 
   Future<Either<Failure, String?>> deleteAttachment(AttachmentVo attachment) async {
 

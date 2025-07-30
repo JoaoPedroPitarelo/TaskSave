@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-SnackBar showSuccessSnackbar(String content) {
+SnackBar showSuccessSnackBar(String content) {
   return SnackBar(
     content: Text(
       content,

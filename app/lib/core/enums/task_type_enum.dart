@@ -1,4 +1,4 @@
 enum TaskType {
-  T, // Task
-  ST, // Subtask
+  t, // Task
+  st, // Subtask
 }

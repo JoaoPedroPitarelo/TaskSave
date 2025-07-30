@@ -1,11 +1,11 @@
 import 'package:app/core/themes/app_global_colors.dart';
-import 'package:app/presentation/screens/welcome/welcome_screen4.dart';
+import 'package:app/presentation/screens/welcome/fourth_welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class WelcomeScreen3 extends StatelessWidget {
-  const WelcomeScreen3({super.key});
+class ThirdWelcomeScreen extends StatelessWidget {
+  const ThirdWelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +275,7 @@ class WelcomeScreen3 extends StatelessWidget {
                       weight: 200.0,
                     ),
                   onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => WelcomeScreen4())
+                      MaterialPageRoute(builder: (context) => FourthWelcomeScreen())
                   )
                 ),
               ),

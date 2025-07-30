@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:app/core/themes/app_global_colors.dart';
 import 'package:app/core/utils/translateFailureKey.dart';
 import 'package:app/core/events/auth_events.dart';
@@ -31,7 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _obscureText = true;
 
-  Future<void> _handleLogin(BuildContext context) async {
+  late AppLocalizations appLocalizations;
+  bool _isInit = true;
+
+  Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -41,26 +43,30 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      _isInit = false;
+      appLocalizations = AppLocalizations.of(context)!;
 
-    WidgetsBinding.instance.addPostFrameCallback( (_) {
-      _loginSubscription = _authEventService.onAuthChanged.listen( (event) {
+      WidgetsBinding.instance.addPostFrameCallback( (_) {
+        _loginSubscription = _authEventService.onAuthChanged.listen( (event) {
 
-        if (event is LoginEvent) {
-          if (event.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              showSuccessSnackbar(AppLocalizations.of(context)!.loginSuccess)
-            );
-            Navigator.of(context).popUntil((screen) => screen.isFirst);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              showErrorSnackbar(translateFailureKey(context, event.failureKey!))
-            );
+          if (event is LoginEvent) {
+            if (event.success) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(showSuccessSnackBar(appLocalizations.loginSuccess));
+                Navigator.of(context).popUntil((screen) => screen.isFirst);
+              }
+            } else {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!)));
+              }
+            }
           }
-        }
+        });
       });
-    });
+    }
   }
 
   @override
@@ -187,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: loginViewModel.isLoading ? null : () => _handleLogin(context),
+                    onPressed: loginViewModel.isLoading ? null : () => _handleLogin(),
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
