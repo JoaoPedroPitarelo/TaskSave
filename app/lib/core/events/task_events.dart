@@ -59,6 +59,15 @@ class TaskAttachmentDeletedEvent extends TaskDataEvent {
   TaskAttachmentDeletedEvent({required this.success, this.attachment, this.failureKey});
 }
 
+class TaskAttachmentUploadEvent extends TaskDataEvent {
+  final bool success;
+  final AttachmentVo? attachment;
+  final FailureKey? failureKey;
+
+  TaskAttachmentUploadEvent({required this.success, this.attachment, this.failureKey});
+}
+
+
 class SubtaskDeletionEvent extends TaskDataEvent {
   final bool? success;
   final FailureKey? failureKey;

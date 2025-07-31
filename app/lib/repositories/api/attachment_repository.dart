@@ -53,11 +53,52 @@ class AttachmentRepository {
     }
   }
 
+  Future<Either<Failure, AttachmentVo>> uploadAttachment(File file, String taskId) async {
+    try {
+      final fileName = file.path.split(Platform.pathSeparator).last;
+
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(
+          file.path,
+          filename: fileName,
+        ),
+        'taskId': taskId,
+      });
+
+      final response = await _dio.post(
+        '/task/attachment/upload',
+        data: formData,
+        options: Options(
+          headers: {
+            Headers.contentTypeHeader: 'multipart/form-data',
+          },
+        ),
+      );
+
+      if (response.statusCode == 201) {
+        final newAttachment = AttachmentVo.fromJson(response.data["attachment"]);
+        await _localAttachmentRepository.insertAttachment(newAttachment);
+        return Right(newAttachment);
+      } else {
+        return Left(AttachmentServerFailure(statusCode: response.statusCode));
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionError || e.type == DioExceptionType.sendTimeout || e.type == DioExceptionType.receiveTimeout) {
+        return Left(AttachmentNetworkFailure());
+      }
+      if (e.type == DioExceptionType.badResponse) {
+        return Left(AttachmentServerFailure(statusCode: e.response?.statusCode));
+      }
+      return Left(UnexpectedFailure());
+    } catch (e) {
+      return Left(AttachmentStorageFailure());
+    }
+  }
+
   Future<List<AttachmentVo>?> getAttachments(String taskId) async {
     final attachments = await _localAttachmentRepository.getAttachments(taskId);
     return attachments;
   }
-
 
   Future<bool> _deleteLocalAttachment(AttachmentVo attachment) async {
     try {

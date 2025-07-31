@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:task_save/core/events/task_events.dart';
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/core/utils/translateFailureKey.dart';
@@ -115,6 +117,15 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             }
           }
 
+          if (event is TaskAttachmentUploadEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+            } else {
+              _initAttachments();
+              _showSuccessSnackBar("Anexo enviado com sucesso!");
+            }
+          }
+
           if (event is TaskAttachmentDeletedEvent) {
             if (!event.success) {
               _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
@@ -185,6 +196,96 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         taskDetailsViewmodel.confirmSubtaskDeletion(task, subtask, originalIndex);
       }
     });
+  }
+
+  Future<void> _showAddAttachmentDialog() async {
+    final taskDetailsViewModel = context.read<TaskDetailsViewmodel>();
+    File? selectedFile;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: const Color.fromARGB(255, 24, 24, 24),
+              title: Row(
+                children: [
+                  Icon(
+                    Icons.file_present_rounded,
+                    size: 40,
+                  ),
+                  SizedBox(width: 10),
+                  Text(AppLocalizations.of(context)!.addAttachment),
+                ],
+              ),
+              content: selectedFile == null
+                  ? Text(AppLocalizations.of(context)!.selectAFileToUpload)
+                  : Text("${AppLocalizations.of(context)!.file}: ${selectedFile!.path.split(Platform.pathSeparator).last}"),
+              actions: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      child: Row(
+                        children: [
+                          Icon(Icons.close_rounded, color: Colors.red, size: 30),
+                          Text(
+                            AppLocalizations.of(context)!.cancel,
+                            style: GoogleFonts.roboto(fontSize: 16, color: Colors.white)
+                          ),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    if (selectedFile == null)
+                      TextButton(
+                        child: Row(
+                          children: [
+                            Icon(Icons.file_upload_rounded, color: Colors.green, size: 30),
+                            Text(
+                              AppLocalizations.of(context)!.selectFile,
+                              style: GoogleFonts.roboto(fontSize: 16, color: Colors.white)
+                            ),
+                          ],
+                        ),
+                        onPressed: () async {
+                          FilePickerResult? result = await FilePicker.platform.pickFiles();
+                          if (result != null) {
+                            setState(() {
+                              selectedFile = File(result.files.single.path!);
+                            });
+                          }
+                        },
+                      )
+                    else
+                      TextButton(
+                        child: Row(
+                          children: [
+                            Icon(Icons.check_rounded, color: Colors.green, size: 30),
+                            SizedBox(width: 10),
+                            Text(AppLocalizations.of(context)!.confirm, style: GoogleFonts.roboto(fontSize: 16, color: Colors.white)),
+                          ],
+                        ),
+                        onPressed: () async {
+                          if (selectedFile != null) {
+                            await taskDetailsViewModel.uploadAttachment(selectedFile!, widget.task);
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          }
+                        },
+                      ),
+                  ],
+                )
+              ]
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -487,7 +588,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         children: [
           SpeedDialChild(
             label: AppLocalizations.of(context)!.delete,
-            child:Icon(Icons.close_rounded, color: Colors.red),
+            child:Icon(Icons.delete_outline_rounded, color: Colors.white),
             backgroundColor: _getPriorityColor(widget.task.priority),
             onTap: () {
               final taskViewmodel = context.read<TaskViewmodel>();
@@ -507,9 +608,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             label: AppLocalizations.of(context)!.addAttachment,
             child:Icon(Icons.file_upload_rounded),
             backgroundColor: _getPriorityColor(widget.task.priority),
-            onTap: () {
-              // TODO fazer tela ou alertDialog de adição de anexos
-            }
+            onTap: _showAddAttachmentDialog,
           ),
           SpeedDialChild(
               label: AppLocalizations.of(context)!.edit,

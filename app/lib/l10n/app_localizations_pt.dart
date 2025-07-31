@@ -423,4 +423,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get cancel => 'Cancelar';
+
+  @override
+  String get selectAFileToUpload => 'Selecione um arquivo para upload';
+
+  @override
+  String get file => 'Arquivo';
+
+  @override
+  String get selectFile => 'Selecionar';
 }

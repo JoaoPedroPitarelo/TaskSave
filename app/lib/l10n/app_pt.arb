@@ -136,5 +136,8 @@
     "addSubTask": "Adicionar SubTarefa",
     "addAttachment": "Adicionar anexo",
     "selectDate": "Selecione uma data",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "selectAFileToUpload": "Selecione um arquivo para upload",
+    "file": "Arquivo",
+    "selectFile": "Selecionar"
 }

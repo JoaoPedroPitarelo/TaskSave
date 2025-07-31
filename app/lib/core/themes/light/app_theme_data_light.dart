@@ -40,6 +40,12 @@ class AppThemeDataLight {
           ),
         },
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.white,
+          elevation: 10,
+        ),
+      ),
       extensions: <ThemeExtension<dynamic>>[
         AppGlobalColors(
           welcomeScreenCardColor: AppColorsLight.welcomeScreenCardColor,

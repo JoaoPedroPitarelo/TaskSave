@@ -135,5 +135,8 @@
   "addSubTask": "Añadir subtarea",
   "addAttachment": "Añadir archivo",
   "selectDate": "Seleccionar una fecha",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "selectAFileToUpload": "Selecciona un archivo para subir",
+  "file": "Archivo",
+  "selectFile": "Seleccionar"
 }

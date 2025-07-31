@@ -915,6 +915,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Cancelar'**
   String get cancel;
+
+  /// No description provided for @selectAFileToUpload.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um arquivo para upload'**
+  String get selectAFileToUpload;
+
+  /// No description provided for @file.
+  ///
+  /// In pt, this message translates to:
+  /// **'Arquivo'**
+  String get file;
+
+  /// No description provided for @selectFile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar'**
+  String get selectFile;
 }
 
 class _AppLocalizationsDelegate

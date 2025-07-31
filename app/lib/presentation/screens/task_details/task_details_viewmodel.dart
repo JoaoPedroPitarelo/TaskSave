@@ -164,6 +164,29 @@ class TaskDetailsViewmodel extends ChangeNotifier {
     });
   }
 
+  Future<void> uploadAttachment(File file, TaskVo task) async {
+    _loading = true;
+    _errorKey = null;
+    notifyListeners();
+
+    final result = await _attachmentRepository.uploadAttachment(file, task.id);
+
+    result.fold(
+      (failure) {
+        _loading = false;
+        _errorKey = mapFailureToKey(failure);
+        _taskEventService.add(TaskAttachmentUploadEvent(success: false, failureKey: _errorKey));
+        notifyListeners();
+      },
+      (attachment) {
+        _loading = false;
+        task.attachmentList.add(attachment);
+        _taskEventService.add(TaskAttachmentUploadEvent(success: true, attachment: attachment));
+        notifyListeners();
+      },
+    );
+  }
+
   void prepareSubtaskForDeletion(TaskVo task, SubtaskVo subtask) {
     final originalIndex = task.subtaskList.indexOf(subtask);
     if (originalIndex == -1) return;

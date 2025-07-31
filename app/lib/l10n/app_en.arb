@@ -135,5 +135,8 @@
   "addSubTask": "Add SubTask",
   "addAttachment": "Add Attachment",
   "selectDate": "Select a date",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "selectAFileToUpload": "Select a file to upload",
+  "file": "File",
+  "selectFile": "Select"
 }
