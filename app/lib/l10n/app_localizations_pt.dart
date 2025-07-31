@@ -368,16 +368,16 @@ class AppLocalizationsPt extends AppLocalizations {
       'Caminhar com meu cachorro Tom hoje';
 
   @override
-  String get high => 'Alto';
+  String get high => 'Alta';
 
   @override
-  String get medium => 'Médio';
+  String get medium => 'Média';
 
   @override
-  String get low => 'Baixo';
+  String get low => 'Baixa';
 
   @override
-  String get neutral => 'Neutro';
+  String get neutral => 'Neutra';
 
   @override
   String get beforeDeadline => 'Dia antes do prazo';
@@ -417,4 +417,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get addAttachment => 'Adicionar anexo';
+
+  @override
+  String get selectDate => 'Selecione uma data';
+
+  @override
+  String get cancel => 'Cancelar';
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:task_save/core/enums/task_type_enum.dart';
 import 'package:task_save/core/errors/failure.dart';
 import 'package:task_save/core/errors/failure_keys.dart';
 import 'package:task_save/core/events/task_events.dart';
@@ -12,11 +13,13 @@ import 'package:task_save/repositories/api/subtask_repository.dart';
 import 'package:task_save/services/events/task_event_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:task_save/services/notifications/notification_service.dart';
 
 class TaskDetailsViewmodel extends ChangeNotifier {
   final AttachmentRepository _attachmentRepository;
   final SubtaskRepository _subtaskRepository;
   final FailureKey Function(Failure) mapFailureToKey;
+  final NotificationService _notificationService;
   final TaskEventService _taskEventService = TaskEventService();
 
   FailureKey? _errorKey;
@@ -28,7 +31,7 @@ class TaskDetailsViewmodel extends ChangeNotifier {
   Map<String, DownloadStatus> _attachmentStatus = {};
   Map<String, DownloadStatus> get attachmentStatus => _attachmentStatus;
 
-  TaskDetailsViewmodel(this._attachmentRepository, this._subtaskRepository, this.mapFailureToKey);
+  TaskDetailsViewmodel(this._attachmentRepository, this._subtaskRepository, this._notificationService, this.mapFailureToKey);
 
   Future<void> initializeAttachmentsStatus(TaskVo task) async {
     if (task.attachmentList.isEmpty) return;
@@ -182,7 +185,7 @@ class TaskDetailsViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<void> confirmDeletionSubtask(TaskVo task, SubtaskVo subtask, originalIndex) async {
+  Future<void> confirmSubtaskDeletion(TaskVo task, SubtaskVo subtask, originalIndex) async {
     final result = await _subtaskRepository.delete(task, subtask);
 
     result.fold(
@@ -200,6 +203,7 @@ class TaskDetailsViewmodel extends ChangeNotifier {
         notifyListeners();
       },
       (noContent) {
+        _notificationService.cancelNotificationsByPayload('{"id": "${subtask.id}", "taskType": "${TaskType.st.name}"}');
         notifyListeners();
       }
     );

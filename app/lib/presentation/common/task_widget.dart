@@ -1,5 +1,6 @@
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
+import 'package:task_save/domain/enums/reminder_type_num.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/presentation/screens/task_details/task_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -154,7 +155,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                                             SizedBox(width: 4),
                                             Text(intl.DateFormat.yMMMd(locale).format(widget.task.deadline!), style: theme.textTheme.displaySmall),
                                           ],
-                                          if (widget.task.reminderType != null) ...[
+                                          if (widget.task.reminderType != null && widget.task.reminderType != ReminderTypeNum.without_notification) ...[
                                             SizedBox(width: 8),
                                             Icon(Icons.alarm, size: 18),
                                           ],

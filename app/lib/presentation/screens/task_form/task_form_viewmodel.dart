@@ -1,13 +1,18 @@
+import 'package:task_save/core/enums/task_type_enum.dart';
 import 'package:task_save/core/errors/failure.dart';
 import 'package:task_save/core/errors/failure_keys.dart';
 import 'package:task_save/core/events/task_events.dart';
+import 'package:task_save/domain/enums/reminder_type_num.dart';
+import 'package:task_save/domain/models/category_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/repositories/api/task_repository.dart';
 import 'package:task_save/services/events/task_event_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:task_save/services/notifications/notification_service.dart';
 
 class TaskFormViewmodel extends ChangeNotifier {
   final TaskRepository _taskRepository;
+  final NotificationService _notificationService;
   final _taskEventService = TaskEventService();
 
   bool _loading = false;
@@ -17,7 +22,7 @@ class TaskFormViewmodel extends ChangeNotifier {
   FailureKey? _errorKey;
   FailureKey? get errorKey => _errorKey;
 
-  TaskFormViewmodel(this._taskRepository, this._mapFailureToKey);
+  TaskFormViewmodel(this._taskRepository, this._notificationService, this._mapFailureToKey);
 
   Future<void> saveTask(TaskVo task) async {
     _loading = true;
@@ -64,12 +69,16 @@ class TaskFormViewmodel extends ChangeNotifier {
         _loading = false;
         notifyListeners();
       },
-      (task) {
-        _loading = false;
+      (modifiedTask) {
+        if (task.reminderType == ReminderTypeNum.without_notification) {
+          _notificationService.cancelNotificationsByPayload('{"id": "${task.id}", "taskType": "${TaskType.t.name}"}');
+        }
         _taskEventService.add(TaskUpdateEvent(success: true));
         _taskEventService.add(GetTasksEvent(success: true));
+        _loading = false;
         notifyListeners();
       }
     );
   }
+
 }

@@ -98,6 +98,8 @@ class TaskRepository {
     int? position,
   }) async {
     try {
+      print(_makePayload(title, description, deadline, category, priority, reminderType, position));
+
       final response = await _dio.put(
         '/task/$id',
         data: _makePayload(

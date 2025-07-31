@@ -45,7 +45,7 @@ public class SubtaskService {
         LocalDateTime lastModification = LocalDateTime.now();
 
         subtask.setTitle(modifiedSubtask.title() != null ? modifiedSubtask.title() : subtask.getTitle());
-        subtask.setDescription(modifiedSubtask.description() != null ? modifiedSubtask.description() : subtask.getDescription());
+        subtask.setDescription(modifiedSubtask.description() != null ? (modifiedSubtask.description().isEmpty() ? null : modifiedSubtask.description()) : subtask.getDescription());
         subtask.setLastModification(lastModification);
         subtask.setDeadline(modifiedSubtask.deadline() != null ? modifiedSubtask.deadline() : subtask.getDeadline());
         subtask.setPriority(modifiedSubtask.priority() != null ? modifiedSubtask.priority() : subtask.getPriority());

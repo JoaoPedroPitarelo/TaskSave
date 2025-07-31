@@ -3,6 +3,7 @@ import 'package:task_save/core/events/task_events.dart';
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/core/utils/translateFailureKey.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
+import 'package:task_save/domain/enums/reminder_type_num.dart';
 import 'package:task_save/domain/models/subtask_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/l10n/app_localizations.dart';
@@ -14,6 +15,7 @@ import 'package:task_save/presentation/global_providers/app_preferences_provider
 import 'package:task_save/presentation/screens/home/task_viewmodel.dart';
 import 'package:task_save/presentation/screens/task_details/attachment_widget.dart';
 import 'package:task_save/presentation/screens/task_details/task_details_viewmodel.dart';
+import 'package:task_save/presentation/screens/task_form/task_form_screen.dart';
 import 'package:task_save/services/events/task_event_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -37,7 +39,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   late AppLocalizations appLocalizations;
   bool _isInit = true;
 
-  Color _getPriorityColor(BuildContext context, PriorityEnum priority) {
+  Color _getPriorityColor(PriorityEnum priority) {
     final appColor = AppGlobalColors.of(context);
     switch (priority) {
       case PriorityEnum.neutral:
@@ -50,6 +52,33 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         return appColor.taskPriorityHighColor!;
     }
   }
+
+  String getTranslatedPriority(PriorityEnum priority) {
+    switch (priority) {
+      case PriorityEnum.low:
+        return AppLocalizations.of(context)!.low;
+      case PriorityEnum.medium:
+        return AppLocalizations.of(context)!.medium;
+      case PriorityEnum.high:
+        return AppLocalizations.of(context)!.high;
+      case PriorityEnum.neutral:
+        return AppLocalizations.of(context)!.neutral;
+    }
+  }
+
+  String getTranslatedReminderType(ReminderTypeNum reminderType) {
+    switch (reminderType) {
+      case ReminderTypeNum.before_deadline:
+        return AppLocalizations.of(context)!.beforeDeadline;
+      case ReminderTypeNum.deadline_day:
+        return AppLocalizations.of(context)!.deadlineDay;
+      case ReminderTypeNum.until_deadline:
+        return AppLocalizations.of(context)!.untilDeadline;
+      case ReminderTypeNum.without_notification:
+        return AppLocalizations.of(context)!.withoutReminder;
+    }
+  }
+
 
   Future<void> _initAttachments() async {
     final taskDetailsViewModel = context.read<TaskDetailsViewmodel>();
@@ -153,7 +182,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       ),
     ).closed.then((reason) {
       if (reason != SnackBarClosedReason.action) {
-        taskDetailsViewmodel.confirmDeletionSubtask(task, subtask, originalIndex);
+        taskDetailsViewmodel.confirmSubtaskDeletion(task, subtask, originalIndex);
       }
     });
   }
@@ -200,7 +229,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(preferredHeight(contentHeight)),
         child: AppBar(
-          backgroundColor: _getPriorityColor(context, widget.task.priority),
+          backgroundColor: _getPriorityColor(widget.task.priority),
           elevation: 12,
           shadowColor: Colors.black,
           iconTheme: const IconThemeData(color: Colors.white, size: 30),
@@ -247,9 +276,26 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   spacing: 10,
                   children: [
                     Icon(
+                      Icons.flag_rounded,
+                      color: _getPriorityColor(widget.task.priority),
+                      size: 35,
+                    ),
+                    Text(
+                        "${AppLocalizations.of(context)!.priority} ${getTranslatedPriority(widget.task.priority).toLowerCase()}",
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 23,
+                        )
+                    )
+                  ],
+                ),
+                Row(
+                  spacing: 10,
+                  children: [
+                    Icon(
                       widget.task.category!.isDefault ? Icons.close_rounded : Icons.dashboard_customize_rounded,
                       size: 35,
-                      color: hexToColor(widget.task.category!.color)
+                      color: widget.task.category!.isDefault ? Colors.red : hexToColor(widget.task.category!.color)
                     ),
                     Text(
                       widget.task.category!.isDefault ? AppLocalizations.of(context)!.withoutCategory : widget.task.category!.description,
@@ -278,7 +324,22 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   ],
                 ),
                 ],
-
+                Row(
+                  spacing: 10,
+                  children: [
+                    Icon(
+                      widget.task.reminderType == ReminderTypeNum.without_notification ? Icons.alarm_off_rounded : Icons.access_alarm_rounded,
+                      size: 35,
+                    ),
+                    Text(
+                      getTranslatedReminderType(widget.task.reminderType!),
+                      style: GoogleFonts.roboto(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 23,
+                      )
+                    )
+                  ],
+                ),
                 // Description
                 if (widget.task.description != null)
                 Container(
@@ -417,7 +478,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         icon: Icons.add_rounded,
         activeIcon: Icons.close_rounded,
         iconTheme: IconThemeData(size: 30),
-        backgroundColor: _getPriorityColor(context, widget.task.priority),
+        backgroundColor: _getPriorityColor(widget.task.priority),
         childrenButtonSize: Size(60, 60),
         childMargin: EdgeInsets.all(20),
         foregroundColor: Colors.white,
@@ -427,7 +488,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           SpeedDialChild(
             label: AppLocalizations.of(context)!.delete,
             child:Icon(Icons.close_rounded, color: Colors.red),
-            backgroundColor: _getPriorityColor(context, widget.task.priority),
+            backgroundColor: _getPriorityColor(widget.task.priority),
             onTap: () {
               final taskViewmodel = context.read<TaskViewmodel>();
               taskViewmodel.prepareTaskForDeletion(widget.task);
@@ -437,7 +498,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           SpeedDialChild(
             label: AppLocalizations.of(context)!.addSubTask,
             child:Icon(Icons.list_rounded),
-            backgroundColor: _getPriorityColor(context, widget.task.priority),
+            backgroundColor: _getPriorityColor(widget.task.priority),
             onTap: () {
               // TODO quando estiver pontor a tela de criação de subtarefa
             }
@@ -445,7 +506,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           SpeedDialChild(
             label: AppLocalizations.of(context)!.addAttachment,
             child:Icon(Icons.file_upload_rounded),
-            backgroundColor: _getPriorityColor(context, widget.task.priority),
+            backgroundColor: _getPriorityColor(widget.task.priority),
             onTap: () {
               // TODO fazer tela ou alertDialog de adição de anexos
             }
@@ -453,9 +514,12 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           SpeedDialChild(
               label: AppLocalizations.of(context)!.edit,
               child: Icon(Icons.edit_rounded),
-              backgroundColor: _getPriorityColor(context, widget.task.priority),
+              backgroundColor: _getPriorityColor(widget.task.priority),
               onTap: () {
-                // TODO quando estiver pronto a tela de edição
+                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TaskFormScreen(task: widget.task))
+                );
               }
           ),
         ]

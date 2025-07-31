@@ -74,6 +74,6 @@ public class Task {
         this.deadline = task.deadline();
         this.priority = task.priority();
         this.category = category;
-        this.reminderType = task.reminderType();
+        this.reminderType = task.reminderType() == null ? ReminderType.WITHOUT_NOTIFICATION : task.reminderType();
     }
 }

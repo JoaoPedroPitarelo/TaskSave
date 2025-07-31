@@ -9,7 +9,6 @@ import java.util.Date;
 public record UpdateTask(
         @OptionalNotBlank
         String title,
-        @OptionalNotBlank
         String description,
         Date deadline,
         Long categoryId,

@@ -118,10 +118,10 @@
     "taskTitleIsObrigatory": "Título é um campo obrigatório!",
     "labelTextDescriptionTaskForm": "Descrição",
     "hintTextDescriptionTaskForm": "Caminhar com meu cachorro Tom hoje",
-    "high": "Alto",
-    "medium": "Médio",
-    "low": "Baixo",
-    "neutral": "Neutro",
+    "high": "Alta",
+    "medium": "Média",
+    "low": "Baixa",
+    "neutral": "Neutra",
     "beforeDeadline": "Dia antes do prazo",
     "deadlineDay": "Dia do prazo",
     "untilDeadline": "Até o prazo acabar",
@@ -134,5 +134,7 @@
     "reminderType": "Tipo de Notificação",
     "withoutReminder": "Sem notificação",
     "addSubTask": "Adicionar SubTarefa",
-    "addAttachment": "Adicionar anexo"
+    "addAttachment": "Adicionar anexo",
+    "selectDate": "Selecione uma data",
+    "cancel": "Cancelar"
 }

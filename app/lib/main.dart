@@ -162,6 +162,7 @@ Future<void> main() async {
         create: (ctx) => TaskDetailsViewmodel(
           Provider.of<AttachmentRepository>(ctx, listen: false),
           SubtaskRepository(Provider.of<Dio>(ctx, listen: false)),
+          notificationService,
           mapFailureToKey
         )
       ),
@@ -172,6 +173,7 @@ Future<void> main() async {
             Provider.of<LocalAttachmentRepository>(ctx, listen: false),
             Provider.of<AttachmentRepository>(ctx, listen: false)
           ),
+          notificationService,
           mapFailureToKey
         )
       )

@@ -29,7 +29,6 @@ public class TaskService {
     @Autowired
     private SubtaskService subtaskService;
 
-
     public List<Task> getAll(Long userId) {
         return taskRepository.findByCompletedFalseAndUserIdOrderByPosition(userId);
     }
@@ -74,7 +73,7 @@ public class TaskService {
         }
 
         task.setTitle(modifiedTask.title() != null ? modifiedTask.title() : task.getTitle());
-        task.setDescription(modifiedTask.description() != null ? modifiedTask.description() : task.getDescription());
+        task.setDescription(modifiedTask.description() != null ? (modifiedTask.description().isEmpty() ? null : modifiedTask.description()) : task.getDescription());
         task.setDeadline(modifiedTask.deadline() != null ? modifiedTask.deadline() : task.getDeadline());
         task.setLastModification(lastModification);
         task.setCategory(category != null ? category : task.getCategory());

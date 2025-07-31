@@ -125,7 +125,6 @@ class TaskViewmodel extends ChangeNotifier {
         }
       }
 
-
       if (!isTaskNotifiable(task)) {
         continue;
       }
@@ -139,7 +138,7 @@ class TaskViewmodel extends ChangeNotifier {
   }
 
   bool isTaskNotifiable(Notifiable notifiable) {
-    return notifiable.reminderType != null && notifiable.deadline != null;
+    return notifiable.reminderType != null  && notifiable.reminderType != ReminderTypeNum.without_notification && notifiable.deadline != null;
   }
 
   Future<void> _scheduleTaskNotification(TaskVo task, AppLocalizations localizations, String locale) async {
@@ -155,7 +154,7 @@ class TaskViewmodel extends ChangeNotifier {
         notificationId,
         "${localizations.task}: ${task.title}",
         "${localizations.yourTask} $dateFormated ${localizations.expiredTask} ${localizations.clickToShowDetailsTask}",
-        DateTime.now().add(Duration(seconds: 15)),
+        scheduledTime,
         '{"id": "${task.id}", "taskType": "${TaskType.t.name}"}'
       );
 
@@ -268,9 +267,7 @@ class TaskViewmodel extends ChangeNotifier {
       (noContent) {
         _tasks.remove(task);
         _calculateCountTasks();
-        if (isTaskNotifiable(task)) {
-          _notificationService.cancelNotificationsByPayload('{"id": "${task.id}", "taskType": "${TaskType.t.name}"}');
-        }
+        _notificationService.cancelNotificationsByPayload('{"id": "${task.id}", "taskType": "${TaskType.t.name}"}');
         notifyListeners();
       }
     );

@@ -36,7 +36,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   DateTime? _dateSelected = DateTime.now();
   CategoryVo? _selectedCategory;
   PriorityEnum _selectedPriority = PriorityEnum.low;
-  ReminderTypeNum? _selectedReminderType;
+  ReminderTypeNum? _selectedReminderType = ReminderTypeNum.without_notification;
 
   late AppLocalizations appLocalizations;
   bool _isInit = true;
@@ -48,15 +48,22 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
 
     final taskFormViewmodel = context.read<TaskFormViewmodel>();
 
+
     if (widget.task != null) {
+      CategoryVo? defaultCategory;
+      if (_selectedCategory == null) {
+        final categoryViewmodel = context.read<CategoryViewmodel>();
+        defaultCategory = categoryViewmodel.categories.firstWhere((category) => category.isDefault);
+      }
+
       await taskFormViewmodel.updateTask(
         TaskVo(
-          id: "",
+          id: widget.task!.id,
           title: _titleController.text,
-          description: _descriptionController.text,
+          description: _descriptionController.text.trim() == "" ? "" : _descriptionController.text,
           deadline: _dateSelected,
           priority: _selectedPriority,
-          category: _selectedCategory!,
+          category: defaultCategory ?? _selectedCategory,
           reminderType: _selectedReminderType,
           subtaskList: [],
           attachmentList: [],
@@ -85,10 +92,10 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   void _loadTaskForUpdate() {
     setState(() {
       _titleController.text = widget.task!.title;
-      _descriptionController.text = widget.task!.description!;
+      _descriptionController.text = widget.task!.description == null ? "" : widget.task!.description!;
       _dateSelected = widget.task!.deadline;
       _selectedPriority = widget.task!.priority;
-      _selectedCategory = widget.task!.category;
+      _selectedCategory = widget.task!.category!.isDefault ? null : widget.task!.category;
       _selectedReminderType = widget.task!.reminderType ?? widget.task!.reminderType;
     });
   }
@@ -103,16 +110,15 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     });
   }
 
-  // TODO traduzir os textos
   Future<void> _selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _dateSelected ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
-      helpText: 'Selecione uma data',
-      cancelText: 'Cancelar',
-      confirmText: 'Confirmar',
+      helpText: AppLocalizations.of(context)!.selectDate,
+      cancelText: AppLocalizations.of(context)!.cancel,
+      confirmText: AppLocalizations.of(context)!.confirm,
     );
     if (picked != null && picked != _dateSelected) {
       setState(() {
@@ -125,6 +131,14 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       showErrorSnackBar(message)
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.task != null) {
+      _loadTaskForUpdate();
+    }
   }
 
   @override
@@ -158,12 +172,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               _showSnackBarError(translateFailureKey(appLocalizations, event.failureKey!));
             }
           });
-        }
-
-        if (widget.task != null) {
-          _loadTaskForUpdate();
-        } else {
-          _clearFormNewTask();
         }
       });
     }
@@ -216,6 +224,8 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
           return AppLocalizations.of(context)!.deadlineDay;
         case ReminderTypeNum.until_deadline:
           return AppLocalizations.of(context)!.untilDeadline;
+        case ReminderTypeNum.without_notification:
+          return AppLocalizations.of(context)!.withoutReminder;
       }
     }
 
@@ -416,9 +426,9 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                               child: Row(
                                 children: [
                                   Icon(
-                                    Icons.alarm_add_rounded,
+                                    reminderType == ReminderTypeNum.without_notification ?  Icons.alarm_off_rounded  : Icons.alarm_add_rounded,
                                     size: 24,
-                                    color: Colors.lightBlue,
+                                    color:  reminderType == ReminderTypeNum.without_notification ? Colors.red : Colors.lightBlue,
                                   ),
                                   SizedBox(width: 10),
                                   Text(
@@ -431,31 +441,10 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                                 ],
                               ),
                             )),
-                            DropdownMenuItem(
-                              value: null,
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.not_interested_rounded,
-                                    size: 24,
-                                    color: Colors.red,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    AppLocalizations.of(context)!.withoutReminder,
-                                    style: GoogleFonts.roboto(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ),
                           ],
                           onChanged: (value) {
                             setState(() {
-                              _selectedReminderType = value!;
+                              _selectedReminderType = value;
                             });
                           }
                         ),

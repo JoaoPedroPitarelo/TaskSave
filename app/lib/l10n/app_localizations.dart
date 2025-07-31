@@ -805,25 +805,25 @@ abstract class AppLocalizations {
   /// No description provided for @high.
   ///
   /// In pt, this message translates to:
-  /// **'Alto'**
+  /// **'Alta'**
   String get high;
 
   /// No description provided for @medium.
   ///
   /// In pt, this message translates to:
-  /// **'Médio'**
+  /// **'Média'**
   String get medium;
 
   /// No description provided for @low.
   ///
   /// In pt, this message translates to:
-  /// **'Baixo'**
+  /// **'Baixa'**
   String get low;
 
   /// No description provided for @neutral.
   ///
   /// In pt, this message translates to:
-  /// **'Neutro'**
+  /// **'Neutra'**
   String get neutral;
 
   /// No description provided for @beforeDeadline.
@@ -903,6 +903,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Adicionar anexo'**
   String get addAttachment;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione uma data'**
+  String get selectDate;
+
+  /// No description provided for @cancel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

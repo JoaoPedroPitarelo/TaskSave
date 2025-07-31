@@ -133,5 +133,7 @@
   "reminderType": "Tipo de recordatorio",
   "withoutReminder": "Sin recordatorio",
   "addSubTask": "Añadir subtarea",
-  "addAttachment": "Añadir archivo"
+  "addAttachment": "Añadir archivo",
+  "selectDate": "Seleccionar una fecha",
+  "cancel": "Cancelar"
 }

@@ -133,5 +133,7 @@
   "reminderType": "Reminder type",
   "withoutReminder": "Without reminder",
   "addSubTask": "Add SubTask",
-  "addAttachment": "Add Attachment"
+  "addAttachment": "Add Attachment",
+  "selectDate": "Select a date",
+  "cancel": "Cancel"
 }
