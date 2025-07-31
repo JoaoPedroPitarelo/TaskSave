@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:task_save/core/errors/attachment_failures.dart';
 import 'package:task_save/core/errors/category_failures.dart';
 import 'package:task_save/core/errors/failure.dart';
 import 'package:task_save/core/errors/task_failures.dart';
@@ -8,16 +6,17 @@ import 'package:task_save/domain/enums/reminder_type_num.dart';
 import 'package:task_save/domain/models/attachment_vo.dart';
 import 'package:task_save/domain/models/category_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
+import 'package:task_save/repositories/api/attachment_repository.dart';
 import 'package:task_save/repositories/local/local_attachment_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 
 class TaskRepository {
   final Dio _dio;
   final LocalAttachmentRepository _localAttachmentRepository;
+  final AttachmentRepository _attachmentRepository;
 
-  TaskRepository(this._dio, this._localAttachmentRepository);
+  TaskRepository(this._dio, this._localAttachmentRepository, this._attachmentRepository);
 
   Future<Either<Failure, Map<String, dynamic>>> getAll() async {
     try {
@@ -51,7 +50,7 @@ class TaskRepository {
 
       if (task.attachmentList.isNotEmpty) {
         for (final attachment in task.attachmentList) {
-          await deleteAttachment(attachment);
+          await _attachmentRepository.deleteAttachment(attachment);
         }
       }
 
@@ -140,85 +139,6 @@ class TaskRepository {
       if (e.response?.statusCode == 404) {
         return Left(CategoryNotFoundFailure());
       }
-      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
-    } catch (e) {
-      return Left(UnexpectedFailure());
-    }
-  }
-
-  Future<Either<Failure, String?>> deleteAttachment(AttachmentVo attachment) async {
-
-    if (!await _deleteLocalAttachment(attachment)) {
-      return Left(AttachmentFailure());
-    }
-
-    try {
-      final response = await _dio.delete(
-          '/task/${attachment.taskId}/attachment/${attachment.id}'
-      );
-
-      return Right(response.data);
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return Left(AttachmentFailure());
-      }
-      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
-    } catch (e) {
-      return Left(UnexpectedFailure());
-    }
-  }
-
-  Future<bool> _deleteLocalAttachment(AttachmentVo attachment) async {
-    try {
-      attachment.localFilePath = await _localAttachmentRepository.getFilePath(attachment.id);
-
-      // retorna true, por que realmente ele não existe no dispositivo
-      if (attachment.localFilePath == null) {
-        return true;
-      }
-
-      final File attachmentFile = File(attachment.localFilePath!);
-
-      // verifica se o arquivo existe realmente
-      final bool fileExists = await attachmentFile.exists();
-
-      if (fileExists) {
-        // Se existir deletamos do dispositivo
-        await attachmentFile.delete();
-      }
-
-      // deleta do banco de dados local (sqflite)
-      await _localAttachmentRepository.deleteAttachment(attachment.id);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /* Download attachment
-  * Este é um metdo que abaixa o anexo quando ele não estiver salvo localmente e retorna o caminho do arquivo baixado
-  * para posteriormente ser usado para mostrar o anexo na tela
-  * */
-  Future<Either<Failure, String>> downloadAttachment(AttachmentVo attachment) async {
-    if (await _localAttachmentRepository.isDownloaded(attachment.id)) {
-      attachment.localFilePath = await _localAttachmentRepository.getFilePath(attachment.id);
-      print('Attachment already downloaded: ${attachment.localFilePath}');
-      return Right(attachment.localFilePath!);
-    }
-
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      final filePath = '${directory.path}/${attachment.id}';
-
-      await _dio.download(
-        attachment.downloadLink!,
-        filePath,
-      );
-
-      await _localAttachmentRepository.setDownloaded(attachment, filePath);
-
-      return Right(filePath);
-    } on DioException catch (e) {
       return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
     } catch (e) {
       return Left(UnexpectedFailure());

@@ -51,6 +51,8 @@ class LocalAttachmentRepository {
   Future<void> insertAttachment(AttachmentVo attachment) async {
     final db = await database;
 
+    print(attachment.id);
+
     if (await isExists(attachment.id)) {
       return;
     }
@@ -117,4 +119,27 @@ class LocalAttachmentRepository {
         active: true)
       : null;
   }
+
+  Future<List<AttachmentVo>?> getAttachments(String taskId) async {
+    final db = await database;
+
+    final result = await db.query(
+      "attachment",
+      where: "task_id = ?",
+      whereArgs: [taskId],
+    );
+
+    return result.isNotEmpty
+      ? result.map((attach) => AttachmentVo(
+          id: attach['id'].toString(),
+          fileName: attach['file_name'].toString(),
+          fileType: FileTypeEnum.values[int.parse(attach['file_type'].toString())],
+          localFilePath: attach['local_file_path']?.toString(),
+          taskId: attach['task_id'].toString(),
+          isDownloaded: attach['is_downloaded'].toString() == '1' ? true : false,
+          active: true
+        )).toList()
+      : null;
+  }
 }
+

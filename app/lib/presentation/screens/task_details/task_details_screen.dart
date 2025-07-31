@@ -3,7 +3,6 @@ import 'package:task_save/core/events/task_events.dart';
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/core/utils/translateFailureKey.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
-import 'package:task_save/domain/models/attachment_vo.dart';
 import 'package:task_save/domain/models/subtask_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/l10n/app_localizations.dart';
@@ -52,9 +51,15 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     }
   }
 
-  Future<void> _downloadAttachment(AttachmentVo attachment) async {
+  Future<void> _initAttachments() async {
     final taskDetailsViewModel = context.read<TaskDetailsViewmodel>();
-    await taskDetailsViewModel.downloadAttachment(attachment);
+    await taskDetailsViewModel.initializeAttachmentsStatus(widget.task);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initAttachments();
   }
 
   @override
@@ -66,12 +71,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       appLocalizations = AppLocalizations.of(context)!;
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (widget.task.attachmentList.isNotEmpty) {
-          for (var attachment in widget.task.attachmentList) {
-            _downloadAttachment(attachment);
-          }
-        }
-
         taskSubscription = _taskEventService.onTaskChanged.listen((event) {
           if (event is TaskDownloadAttachmentEvent) {
             if (!event.success) {
@@ -326,10 +325,23 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: 200,
-                    child: !taskDetailsViewModel.isLoading
-                      ? ListView.builder(
+                  if (taskDetailsViewModel.isLoading) ... [
+                    SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+                          strokeAlign: 5,
+                          strokeWidth: 5,
+                        ),
+                      ),
+                    )
+                  ] else ... [
+                    SizedBox(
+                      height: 200,
+                      child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: widget.task.attachmentList.length,
                         itemBuilder: (context, i) {
@@ -337,18 +349,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                             padding: const EdgeInsets.only(right: 8.0),
                             child: AttachmentWidget(
                               attachment: widget.task.attachmentList[i],
+                              status: taskDetailsViewModel.attachmentStatus[widget.task.attachmentList[i].id]!,
                             ),
                           );
                         }
                       )
-                      : SizedBox(
-                          height: 200,
-                          width: 200,
-                          child: CircularProgressIndicator()
-                      )
-                  )
+                    )
+                  ]
                 ],
-
                 // SubTasks
                 if (widget.task.subtaskList.isNotEmpty) ... [
                   Row(

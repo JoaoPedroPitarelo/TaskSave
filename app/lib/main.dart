@@ -17,6 +17,7 @@ import 'package:task_save/presentation/screens/register/register_viewmodel.dart'
 import 'package:task_save/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:task_save/presentation/screens/task_form/task_form_viewmodel.dart';
 import 'package:task_save/presentation/screens/wrapper.dart';
+import 'package:task_save/repositories/api/attachment_repository.dart';
 import 'package:task_save/repositories/api/auth_repository.dart';
 import 'package:task_save/repositories/api/category_repository.dart';
 import 'package:task_save/repositories/api/subtask_repository.dart';
@@ -101,11 +102,18 @@ Future<void> main() async {
           mapFailureToKey
         )
       ),
+      Provider<AttachmentRepository>(
+        create: (context) => AttachmentRepository(
+            Provider.of<Dio>(context, listen: false),
+            Provider.of<LocalAttachmentRepository>(context, listen: false)
+        ),
+      ),
       ChangeNotifierProvider(
         create: (ctx) => TaskViewmodel(
           TaskRepository(
-              Provider.of<Dio>(ctx, listen: false),
-              Provider.of<LocalAttachmentRepository>(ctx, listen: false)
+            Provider.of<Dio>(ctx, listen: false),
+            Provider.of<LocalAttachmentRepository>(ctx, listen: false),
+            Provider.of<AttachmentRepository>(ctx, listen: false)
           ),
           notificationService,
           mapFailureToKey,
@@ -152,10 +160,7 @@ Future<void> main() async {
       ),
       ChangeNotifierProvider(
         create: (ctx) => TaskDetailsViewmodel(
-          TaskRepository(
-            Provider.of<Dio>(ctx, listen: false),
-            Provider.of<LocalAttachmentRepository>(ctx, listen: false)
-          ),
+          Provider.of<AttachmentRepository>(ctx, listen: false),
           SubtaskRepository(Provider.of<Dio>(ctx, listen: false)),
           mapFailureToKey
         )
@@ -164,7 +169,8 @@ Future<void> main() async {
         create: (ctx) => TaskFormViewmodel(
           TaskRepository(
             Provider.of<Dio>(ctx, listen: false),
-            Provider.of<LocalAttachmentRepository>(ctx, listen: false)
+            Provider.of<LocalAttachmentRepository>(ctx, listen: false),
+            Provider.of<AttachmentRepository>(ctx, listen: false)
           ),
           mapFailureToKey
         )

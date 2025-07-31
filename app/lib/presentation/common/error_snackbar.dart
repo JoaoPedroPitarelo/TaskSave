@@ -12,7 +12,7 @@ SnackBar showErrorSnackBar(String content) {
       ),
     ),
     elevation: 2,
-    duration: Duration(seconds: 5),
+    duration: Duration(seconds: 2),
     showCloseIcon: true,
     closeIconColor: Colors.white,
     backgroundColor: Colors.red,

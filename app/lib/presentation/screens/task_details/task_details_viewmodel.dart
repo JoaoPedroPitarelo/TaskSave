@@ -6,14 +6,15 @@ import 'package:task_save/core/events/task_events.dart';
 import 'package:task_save/domain/models/attachment_vo.dart';
 import 'package:task_save/domain/models/subtask_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
+import 'package:task_save/presentation/screens/task_details/download_status.dart';
+import 'package:task_save/repositories/api/attachment_repository.dart';
 import 'package:task_save/repositories/api/subtask_repository.dart';
-import 'package:task_save/repositories/api/task_repository.dart';
 import 'package:task_save/services/events/task_event_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 
 class TaskDetailsViewmodel extends ChangeNotifier {
-  final TaskRepository _taskRepository;
+  final AttachmentRepository _attachmentRepository;
   final SubtaskRepository _subtaskRepository;
   final FailureKey Function(Failure) mapFailureToKey;
   final TaskEventService _taskEventService = TaskEventService();
@@ -24,23 +25,80 @@ class TaskDetailsViewmodel extends ChangeNotifier {
   bool _loading = false;
   bool get isLoading => _loading;
 
-  TaskDetailsViewmodel(this._taskRepository, this._subtaskRepository, this.mapFailureToKey);
+  Map<String, DownloadStatus> _attachmentStatus = {};
+  Map<String, DownloadStatus> get attachmentStatus => _attachmentStatus;
+
+  TaskDetailsViewmodel(this._attachmentRepository, this._subtaskRepository, this.mapFailureToKey);
+
+  Future<void> initializeAttachmentsStatus(TaskVo task) async {
+    if (task.attachmentList.isEmpty) return;
+    _loading = true;
+
+    final downloadedAttachmentList = await _attachmentRepository.getAttachments(task.id);
+
+    if (downloadedAttachmentList == null) {
+      _initializeDownloadStatusNotDownloadedAttachments(task);
+      return;
+    }
+
+    _initializeDownloadStatusDownloadedAttachments(task, downloadedAttachmentList);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loading = false;
+      notifyListeners();
+    });
+  }
+
+  void _initializeDownloadStatusNotDownloadedAttachments(TaskVo task) {
+    _attachmentStatus = {
+      for (var attachment in task.attachmentList)
+        attachment.id: DownloadStatus()
+    };
+
+    notifyListeners();
+    _loading = false;
+  }
+
+  void _initializeDownloadStatusDownloadedAttachments(TaskVo task, List<AttachmentVo> downloadedAttachmentList) {
+    for (var attachment in task.attachmentList) {
+      for (var downloadedAttachment in downloadedAttachmentList) {
+        if (downloadedAttachment.id == attachment.id) {
+          attachment.isDownloaded = downloadedAttachment.isDownloaded;
+          attachment.localFilePath = downloadedAttachment.localFilePath;
+        }
+      }
+    }
+
+    _attachmentStatus = {
+      for (var attachment in task.attachmentList)
+        attachment.id: attachment.isDownloaded == true
+            ? DownloadStatus(state: DownloadState.completed, progress: 1.0)
+            : DownloadStatus()
+    };
+  }
 
   Future<void> downloadAttachment(AttachmentVo attachment) async {
-    _loading = true;
-    _errorKey = null;
+    if (_attachmentStatus[attachment.id]?.state == DownloadState.downloading) return;
+
+    _attachmentStatus[attachment.id] = DownloadStatus(state: DownloadState.downloading, progress: 0.0);
     notifyListeners();
 
-    final result = await _taskRepository.downloadAttachment(attachment);
+    final result = await _attachmentRepository.downloadAttachment(attachment, onReceiveProgress: (rec, total) {
+        final progress = total != -1 ? rec / total : -1.0;
+        _attachmentStatus[attachment.id] = DownloadStatus(state: DownloadState.downloading, progress: progress);
+        notifyListeners();
+      }
+    );
 
     result.fold(
       (failure) {
         _errorKey = mapFailureToKey(failure);
-        _loading = false;
+        _attachmentStatus[attachment.id] = DownloadStatus(state: DownloadState.failed);
         _taskEventService.add(TaskDownloadAttachmentEvent(success: false, failureKey: _errorKey));
         notifyListeners();
       },(filePath) {
-        _loading = false;
+        attachment.localFilePath = filePath;
+        _attachmentStatus[attachment.id] = DownloadStatus(state: DownloadState.completed, progress: 1.0);
         notifyListeners();
         _taskEventService.add(TaskDownloadAttachmentEvent(success: true, filePath: filePath));
       }
@@ -87,7 +145,7 @@ class TaskDetailsViewmodel extends ChangeNotifier {
     _errorKey = null;
     notifyListeners();
 
-    final result = await _taskRepository.deleteAttachment(attachment);
+    final result = await _attachmentRepository.deleteAttachment(attachment);
     
     result.fold(
     (failure) {

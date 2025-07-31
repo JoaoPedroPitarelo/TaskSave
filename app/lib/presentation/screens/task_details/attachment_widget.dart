@@ -4,6 +4,7 @@ import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/domain/enums/file_type_enum.dart';
 import 'package:task_save/domain/models/attachment_vo.dart';
 import 'package:task_save/l10n/app_localizations.dart';
+import 'package:task_save/presentation/screens/task_details/download_status.dart';
 import 'package:task_save/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -12,9 +13,11 @@ import 'package:provider/provider.dart';
 
 class AttachmentWidget extends StatefulWidget {
   final AttachmentVo attachment;
+  final DownloadStatus status;
 
   const AttachmentWidget({
     required this.attachment,
+    required this.status,
     super.key
   });
 
@@ -25,7 +28,7 @@ class AttachmentWidget extends StatefulWidget {
 class _AttachmentWidgetState extends State<AttachmentWidget> {
   Widget _buildImage(FileTypeEnum type) {
     if (type == FileTypeEnum.jpeg || type == FileTypeEnum.png || type == FileTypeEnum.jpg) {
-      return Image.file(File(widget.attachment.localFilePath!), fit: BoxFit.cover);
+      return Image.file(File(widget.attachment.localFilePath!), fit: BoxFit.contain);
     }
     return Icon(
       Icons.file_present_rounded,
@@ -34,166 +37,17 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final taskDetailsViewmodel = context.read<TaskDetailsViewmodel>();
     final appColors = AppGlobalColors.of(context);
 
     return GestureDetector(
-      onTap: () async {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(insetPadding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Padding(
-                   padding: EdgeInsets.all(12.0),
-                   child: Column(
-                     children: [
-                       Stack(
-                         alignment: AlignmentDirectional.center,
-                         children: [
-                           Row(
-                             mainAxisAlignment: MainAxisAlignment.center,
-                             crossAxisAlignment: CrossAxisAlignment.center,
-                             children: [
-                               Text(
-                                 widget.attachment.fileName.length > 22 ?
-                                 "${widget.attachment.fileName.substring(0, 22)}..."
-                                 : widget.attachment.fileName,
-                                 textAlign: TextAlign.center,
-                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                               ),
-                             ],
-                           ),
-                           Row(
-                             mainAxisAlignment: MainAxisAlignment.end,
-                             crossAxisAlignment: CrossAxisAlignment.center,
-                             children: [
-                               PopupMenuButton<String>(
-                                 shape: RoundedRectangleBorder(
-                                   borderRadius: BorderRadius.circular(20),
-                                 ),
-                                 onSelected: (value) async {
-                                   if (value == "saveAs") {
-                                     await taskDetailsViewmodel.saveAsAttachment(
-                                       widget.attachment,
-                                       AppLocalizations.of(context)!.download
-                                     );
-                                     if (context.mounted) {
-                                       Navigator.of(context).pop();
-                                     }
-                                   }
-                                   if (value == "delete") {
-                                     if (context.mounted) {
-                                       Navigator.pop(context);
-                                       showDialog(context: context, builder: (BuildContext context) => _DeleteAttachmentDialog(attachment: widget.attachment, key: widget.key));
-                                     }
-                                   }
-                                 },
-                                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                                   PopupMenuItem<String>(
-                                     value: "saveAs",
-                                     child: Row(
-                                       spacing: 10,
-                                       children: [
-                                         Icon(
-                                           Icons.download_rounded,
-                                           size: 25,
-                                           color: Colors.green
-                                         ),
-                                         Text(
-                                           AppLocalizations.of(context)!.download,
-                                           style: GoogleFonts.roboto(
-                                             fontWeight: FontWeight.w500,
-                                             fontSize: 15,
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                   ),
-                                   PopupMenuItem<String>(
-                                     value: "delete",
-                                     child: Row(
-                                       spacing: 10,
-                                       children: [
-                                         const Icon(
-                                           Icons.close_rounded,
-                                           size: 25,
-                                           color: Colors.red
-                                         ),
-                                         Text(
-                                           AppLocalizations.of(context)!.delete,
-                                           style: GoogleFonts.roboto(
-                                             fontWeight: FontWeight.w500,
-                                             fontSize: 15,
-                                           ),
-                                         ),
-                                       ],
-                                     ),
-                                   )
-                                 ]
-                               )
-                             ],
-                           )
-                         ],
-                       ),
-                     ],
-                   ),
-                ),
-                 Expanded(
-                 child: widget.attachment.fileType == FileTypeEnum.pdf ? PDFView(
-                    filePath: widget.attachment.localFilePath,
-                    fitPolicy: FitPolicy.BOTH,
-                    onRender: (pages) {
-                      // TODO colocar um errorSnackBar
-                       print("SUCESSO: PDF renderizado com $pages páginas.");
-                    },
-                    onError: (error) {
-                      // TODO colocar um errorSnackBar
-                      print("ERRO no PDFView: $error");
-                    },
-                    onPageError: (page, error) {
-                      // TODO colocar um errorSnackBar
-                      print('ERRO na página $page: $error');
-                    },
-                    onViewCreated: (PDFViewController pdfViewController) {
-                      // TODO colocar um errorSnackBar
-                      print('View do PDF criada com sucesso.');
-                    },
-                  )
-                   : _buildImage(widget.attachment.fileType),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            textDirection: TextDirection.ltr,
-                            size: 32,
-                          )
-                        )
-                      )
-                    ],
-                  ),
-                ),
-               ],
-               )
-             );
-          },
-        );
+      onTap: () {
+        if (widget.status.state == DownloadState.completed) {
+          _showAttachmentDialog(context, taskDetailsViewmodel);
+        } else if (widget.status.state == DownloadState.notDownloaded || widget.status.state == DownloadState.failed) {
+          taskDetailsViewmodel.downloadAttachment(widget.attachment);
+        }
       },
       child: Container(
         width: 150, height: 200,
@@ -207,9 +61,7 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
             SizedBox(
               height: 100,
               width: 75,
-              child: widget.attachment.localFilePath != null
-                ? _buildImage(widget.attachment.fileType)
-                : CircularProgressIndicator(),
+              child: _buildAttachmentPreview(),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -227,6 +79,190 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
           ]
         )
       ),
+    );
+  }
+
+  Widget _buildAttachmentPreview() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        if (widget.status.state == DownloadState.completed && widget.attachment.localFilePath != null)
+          _buildImage(widget.attachment.fileType)
+        else
+          Container(
+            width: 75, height: 100,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+
+        if (widget.status.state != DownloadState.completed)
+          Container(
+            width: 75, height: 100,
+            decoration: BoxDecoration(
+              color: Colors.black38,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+
+        if (widget.status.state == DownloadState.downloading)
+          CircularProgressIndicator(value: widget.status.progress > 0 ? widget.status.progress : null, color: Colors.white),
+
+        if (widget.status.state == DownloadState.notDownloaded)
+          Icon(Icons.download_for_offline_rounded, color: Colors.white, size: 40),
+
+        if (widget.status.state == DownloadState.failed)
+          Icon(Icons.error_outline, color: Colors.red, size: 40),
+      ],
+    );
+  }
+
+  void _showAttachmentDialog(BuildContext context, TaskDetailsViewmodel taskDetailsViewmodel) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(insetPadding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: AlignmentDirectional.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.attachment.fileName.length > 22 ?
+                              "${widget.attachment.fileName.substring(0, 22)}..."
+                              : widget.attachment.fileName,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            PopupMenuButton<String>(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              onSelected: (value) async {
+                                if (value == "saveAs") {
+                                  await taskDetailsViewmodel.saveAsAttachment(
+                                    widget.attachment,
+                                    AppLocalizations.of(context)!.download
+                                  );
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                }
+                                if (value == "delete") {
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                    showDialog(context: context, builder: (BuildContext context) => _DeleteAttachmentDialog(attachment: widget.attachment, key: widget.key));
+                                  }
+                                }
+                              },
+                              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                                PopupMenuItem<String>(
+                                  value: "saveAs",
+                                  child: Row(
+                                    spacing: 10,
+                                    children: [
+                                      Icon(
+                                        Icons.download_rounded,
+                                        size: 25,
+                                        color: Colors.green
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.download,
+                                        style: GoogleFonts.roboto(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem<String>(
+                                  value: "delete",
+                                  child: Row(
+                                    spacing: 10,
+                                    children: [
+                                      const Icon(
+                                        Icons.close_rounded,
+                                        size: 25,
+                                        color: Colors.red
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.delete,
+                                        style: GoogleFonts.roboto(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ]
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: widget.attachment.fileType == FileTypeEnum.pdf ? PDFView(
+                  filePath: widget.attachment.localFilePath,
+                  fitPolicy: FitPolicy.BOTH,
+                  onRender: (pages) {
+                    print("SUCESSO: PDF renderizado com $pages páginas.");
+                  },
+                  onError: (error) {
+                    print("ERRO no PDFView: $error");
+                  },
+                  onPageError: (page, error) {
+                    print('ERRO na página $page: $error');
+                  },
+                  onViewCreated: (PDFViewController pdfViewController) {
+                    print('View do PDF criada com sucesso.');
+                  },
+                )
+                : _buildImage(widget.attachment.fileType),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          textDirection: TextDirection.ltr,
+                          size: 32,
+                        )
+                      )
+                    )
+                  ],
+                ),
+              ),
+            ],
+          )
+        );
+      },
     );
   }
 }
