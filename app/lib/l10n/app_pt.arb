@@ -139,5 +139,6 @@
     "cancel": "Cancelar",
     "selectAFileToUpload": "Selecione um arquivo para upload",
     "file": "Arquivo",
-    "selectFile": "Selecionar"
+    "selectFile": "Selecionar",
+    "modifySubtask": "Modificar SubTarefa"
 }

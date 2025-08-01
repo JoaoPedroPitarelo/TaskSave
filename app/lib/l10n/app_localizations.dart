@@ -933,6 +933,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Selecionar'**
   String get selectFile;
+
+  /// No description provided for @modifySubtask.
+  ///
+  /// In pt, this message translates to:
+  /// **'Modificar SubTarefa'**
+  String get modifySubtask;
 }
 
 class _AppLocalizationsDelegate

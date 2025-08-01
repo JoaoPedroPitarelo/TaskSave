@@ -31,6 +31,9 @@ class TaskDetailsViewmodel extends ChangeNotifier {
   Map<String, DownloadStatus> _attachmentStatus = {};
   Map<String, DownloadStatus> get attachmentStatus => _attachmentStatus;
 
+  List<SubtaskVo> _subtaskList = [];
+  List<SubtaskVo> get subtaskList => _subtaskList;
+
   TaskDetailsViewmodel(this._attachmentRepository, this._subtaskRepository, this._notificationService, this.mapFailureToKey);
 
   Future<void> initializeAttachmentsStatus(TaskVo task) async {
@@ -50,6 +53,21 @@ class TaskDetailsViewmodel extends ChangeNotifier {
       _loading = false;
       notifyListeners();
     });
+  }
+
+  Future<void> initializeSubtaskList(List<SubtaskVo> subtaskList) async {
+    _loading = true;
+    _subtaskList = subtaskList;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loading = false;
+      notifyListeners();
+    });
+  }
+
+  void addSubtask(SubtaskVo subtask) {
+    _subtaskList.add(subtask);
+    notifyListeners();
   }
 
   void _initializeDownloadStatusNotDownloadedAttachments(TaskVo task) {

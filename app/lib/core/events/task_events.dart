@@ -67,7 +67,6 @@ class TaskAttachmentUploadEvent extends TaskDataEvent {
   TaskAttachmentUploadEvent({required this.success, this.attachment, this.failureKey});
 }
 
-
 class SubtaskDeletionEvent extends TaskDataEvent {
   final bool? success;
   final FailureKey? failureKey;
@@ -91,3 +90,10 @@ class SubtaskReorderEvent extends TaskDataEvent {
   SubtaskReorderEvent({required this.success, this.failureKey});
 }
 
+class SubtaskCreationEvent extends TaskDataEvent {
+  bool success = false;
+  FailureKey? failureKey;
+  SubtaskVo? subtask;
+
+  SubtaskCreationEvent({required this.success, this.failureKey, this.subtask});
+}

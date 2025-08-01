@@ -30,12 +30,12 @@ class AppThemeDataDark {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         elevation: 10.0,
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: Colors.white,
-          elevation: 10,
-        ),
-      ),
+      // textButtonTheme: TextButtonThemeData(
+      //   style: TextButton.styleFrom(
+      //     foregroundColor: Colors.white,
+      //     elevation: 10,
+      //   ),
+      // ),
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {
           TargetPlatform.android: SharedAxisPageTransitionsBuilder(

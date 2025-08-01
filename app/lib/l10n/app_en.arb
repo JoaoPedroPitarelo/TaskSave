@@ -138,5 +138,6 @@
   "cancel": "Cancel",
   "selectAFileToUpload": "Select a file to upload",
   "file": "File",
-  "selectFile": "Select"
+  "selectFile": "Select",
+  "modifySubtask": "Modify SubTask"
 }

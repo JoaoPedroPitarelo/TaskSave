@@ -432,4 +432,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get selectFile => 'Selecionar';
+
+  @override
+  String get modifySubtask => 'Modificar SubTarefa';
 }

@@ -1,32 +1,30 @@
 import 'dart:async';
 import 'package:task_save/core/events/task_events.dart';
-import 'package:task_save/core/utils/translateFailureKey.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
 import 'package:task_save/domain/enums/reminder_type_num.dart';
-import 'package:task_save/domain/models/category_vo.dart';
+import 'package:task_save/domain/models/subtask_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/l10n/app_localizations.dart';
 import 'package:task_save/presentation/common/error_snackbar.dart';
-import 'package:task_save/presentation/common/hex_to_color.dart';
 import 'package:task_save/presentation/global_providers/app_preferences_provider.dart';
-import 'package:task_save/presentation/screens/home/category_viewmodel.dart';
-import 'package:task_save/presentation/screens/task_form/task_form_viewmodel.dart';
+import 'package:task_save/presentation/screens/subtask_form/subtask_form_viewmodel.dart';
 import 'package:task_save/services/events/task_event_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class TaskFormScreen extends StatefulWidget {
-  final TaskVo? task;
+class SubtaskFormScreen extends StatefulWidget {
+  final SubtaskVo? subtask;
+  final TaskVo task;
 
-  const TaskFormScreen({this.task, super.key});
+  const SubtaskFormScreen({this.subtask, required this.task, super.key});
 
   @override
-  State<TaskFormScreen> createState() => _TaskFormScreenState();
+  State<SubtaskFormScreen> createState() => _SubtaskFormScreenState();
 }
 
-class _TaskFormScreenState extends State<TaskFormScreen> {
+class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
   StreamSubscription? _creationSubscription;
   final TaskEventService _taskEventsService = TaskEventService();
 
@@ -34,7 +32,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   DateTime? _dateSelected = DateTime.now();
-  CategoryVo? _selectedCategory;
   PriorityEnum _selectedPriority = PriorityEnum.low;
   ReminderTypeNum? _selectedReminderType = ReminderTypeNum.without_notification;
 
@@ -46,66 +43,53 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
       return;
     }
 
-    final taskFormViewmodel = context.read<TaskFormViewmodel>();
+    final subtaskFormViewmodel = context.read<SubtaskFormViewmodel>();
 
-    if (widget.task != null) {
-      CategoryVo? defaultCategory;
-      if (_selectedCategory == null) {
-        final categoryViewmodel = context.read<CategoryViewmodel>();
-        defaultCategory = categoryViewmodel.categories.firstWhere((category) => category.isDefault);
-      }
-
-      await taskFormViewmodel.updateTask(
-        TaskVo(
-          id: widget.task!.id,
+    if (widget.subtask != null) {
+      await subtaskFormViewmodel.updateSubtask(
+        SubtaskVo(
+          id: widget.subtask!.id,
           title: _titleController.text,
           description: _descriptionController.text.trim() == "" ? "" : _descriptionController.text,
           deadline: _dateSelected,
           priority: _selectedPriority,
-          category: defaultCategory ?? _selectedCategory,
           reminderType: _selectedReminderType,
-          subtaskList: [],
-          attachmentList: [],
           completed: false
         )
       );
       return;
     }
 
-    await taskFormViewmodel.saveTask(
-      TaskVo(
+    await subtaskFormViewmodel.saveSubtask(
+      SubtaskVo(
         id: "",
         title: _titleController.text,
         description: _descriptionController.text.trim() == "" ? null : _descriptionController.text,
         deadline: _dateSelected,
         priority: _selectedPriority,
-        category: _selectedCategory,
         reminderType: _selectedReminderType,
-        subtaskList: [],
-        attachmentList: [],
         completed: false
-      )
+      ),
+      widget.task
     );
   }
 
-  void _loadTaskForUpdate() {
+  void _loadSubtaskForUpdate() {
     setState(() {
-      _titleController.text = widget.task!.title;
-      _descriptionController.text = widget.task!.description == null ? "" : widget.task!.description!;
-      _dateSelected = widget.task!.deadline;
-      _selectedPriority = widget.task!.priority;
-      _selectedCategory = widget.task!.category!.isDefault ? null : widget.task!.category;
-      _selectedReminderType = widget.task!.reminderType ?? widget.task!.reminderType;
+      _titleController.text = widget.subtask!.title;
+      _descriptionController.text = widget.subtask!.description == null ? "" : widget.subtask!.description!;
+      _dateSelected = widget.subtask!.deadline;
+      _selectedPriority = widget.subtask!.priority;
+      _selectedReminderType = widget.subtask!.reminderType ?? widget.subtask!.reminderType;
     });
   }
 
-  void _clearFormNewTask() {
+  void _clearFormNewSubtask() {
     setState(() {
       _titleController.clear();
       _descriptionController.clear();
       _dateSelected = DateTime.now();
       _selectedPriority = PriorityEnum.low;
-      _selectedCategory = null;
     });
   }
 
@@ -135,8 +119,8 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.task != null) {
-      _loadTaskForUpdate();
+    if (widget.subtask != null) {
+      _loadSubtaskForUpdate();
     }
   }
 
@@ -150,25 +134,10 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _creationSubscription = _taskEventsService.onTaskChanged.listen((event) {
-            if (event is TaskCreationEvent && event.success) {
+            if (event is SubtaskCreationEvent && event.success) {
               if (mounted) {
                 Navigator.of(context).pop();
               }
-            }
-
-            if (event is TaskCreationEvent && !event.success) {
-              _showSnackBarError(translateFailureKey(appLocalizations, event.failureKey!));
-            }
-
-            if (event is TaskUpdateEvent && event.success) {
-              _clearFormNewTask();
-              if (mounted) {
-                Navigator.of(context).pop();
-              }
-            }
-
-            if (event is TaskUpdateEvent && !event.success) {
-              _showSnackBarError(translateFailureKey(appLocalizations, event.failureKey!));
             }
           });
         }
@@ -186,8 +155,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final taskFormViewmodel = context.watch<TaskFormViewmodel>();
-    final categoryViewmodel = context.read<CategoryViewmodel>();
+    final subtaskFormViewmodel = context.watch<SubtaskFormViewmodel>();
 
     String getTranslatedPriority(PriorityEnum priority) {
       switch (priority) {
@@ -255,15 +223,15 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.check_box_outlined,
+                        Icons.list_rounded,
                         color: Colors.white,
                         shadows: [Shadow(color: Colors.black54, blurRadius: 5, offset: Offset(-1, 2.1))],
                         size: 45
                       ),
                       Text(
-                        widget.task != null
-                          ? AppLocalizations.of(context)!.modifyTask
-                          : AppLocalizations.of(context)!.addTask,
+                        widget.subtask != null
+                          ? AppLocalizations.of(context)!.modifySubtask
+                          : AppLocalizations.of(context)!.addSubTask,
                         style: GoogleFonts.roboto(
                           color: Colors.white,
                           fontSize: 25,
@@ -447,69 +415,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                             });
                           }
                         ),
-                        DropdownButtonFormField<dynamic>(
-                          value: _selectedCategory,
-                          borderRadius: BorderRadius.circular(15),
-                          icon: Icon(Icons.dashboard_customize_rounded),
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: AppLocalizations.of(context)!.category,
-                          ),
-                          items: [
-                            ...categoryViewmodel.categories.map((category) {
-                              if (!category.isDefault) {
-                                return DropdownMenuItem(
-                                  value: category,
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.dashboard_customize_rounded,
-                                        size: 30,
-                                        color: hexToColor(category.color),
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        category.description,
-                                        style: GoogleFonts.roboto(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                              return DropdownMenuItem(
-                                value: null,
-                                alignment: Alignment.centerLeft,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.close_rounded,
-                                      size: 30,
-                                      color: Colors.red,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.withoutCategory,
-                                      style: GoogleFonts.roboto(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400
-                                      ),
-                                    ),
-                                  ]
-                                )
-                              );
-                             }
-                            ),
-                          ],
-                          onChanged: (value) {
-                           setState(() {
-                             _selectedCategory = value;
-                           });
-                          },
-                        ),
                       ],
                     ),
                   ),
@@ -523,11 +428,11 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
         onPressed: () async {
           await _submitForm(context);
         },
-        label: taskFormViewmodel.isLoading
+        label: subtaskFormViewmodel.isLoading
           ? CircularProgressIndicator(color: Colors.white)
-          : Text(widget.task != null
-              ? AppLocalizations.of(context)!.modifyTask
-              : AppLocalizations.of(context)!.addTask,
+          : Text(widget.subtask != null
+              ? AppLocalizations.of(context)!.modifySubtask
+              : AppLocalizations.of(context)!.addSubTask,
             style: GoogleFonts.roboto(
               color: Colors.white,
               fontSize: 22,

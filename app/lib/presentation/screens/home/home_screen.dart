@@ -95,8 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _taskSubscription = _taskEventService.onTaskChanged.listen((event) {
           if (event is GetTasksEvent) {
             if (!event.success) {
-              _showErrorSnackBar(
-                  translateFailureKey(_localizations, event.failureKey!));
+              _showErrorSnackBar(translateFailureKey(_localizations, event.failureKey!));
               return;
             }
 
@@ -113,6 +112,12 @@ class _HomeScreenState extends State<HomeScreen> {
             if (!event.success) {
               _showErrorSnackBar(translateFailureKey(_localizations, event.failureKey!));
               return;
+            }
+          }
+
+          if (event is SubtaskCreationEvent) {
+            if (event.success) {
+              loadTasks();
             }
           }
         });

@@ -29,7 +29,7 @@ class SubtaskRepository {
     }
   }
 
-  Map<String, dynamic> _makePayloadForUpdate(
+  Map<String, dynamic> _makePayload(
       String? title,
       String? description,
       DateTime? deadline,
@@ -41,9 +41,9 @@ class SubtaskRepository {
 
     if (title != null) { payload['title'] = title; }
     if (description != null) { payload['description'] = description; }
-    if (deadline != null) { payload['deadline'] = deadline; }
-    if (priority != null) { payload['priority'] = priority.name; }
-    if (reminderType != null) { payload['reminder_type'] = reminderType.name; }
+    if (deadline != null) { payload['deadline'] = deadline.toIso8601String(); }
+    if (priority != null) { payload['priority'] = priority.name.toUpperCase(); }
+    if (reminderType != null) { payload['reminderType'] = reminderType.name.toUpperCase(); }
     if (position != null) { payload['position'] = position; }
 
     return payload;
@@ -62,7 +62,7 @@ class SubtaskRepository {
     try {
       final response = await _dio.put(
         '/subtask/$id',
-        data: _makePayloadForUpdate(title, description, deadline, priority, reminderType, position)
+        data: _makePayload(title, description, deadline, priority, reminderType, position)
       );
 
       return Right(response.data);
@@ -76,5 +76,27 @@ class SubtaskRepository {
     }
   }
 
-  // TODO criar método de criação de subtarefas
+  Future<Either<Failure, Map<String, dynamic>>> create(SubtaskVo subtask, String parentTaskId) async {
+    try {
+      final response = await _dio.post(
+        '/subtask/create',
+        data:  { ..._makePayload(
+            subtask.title,
+            subtask.description,
+            subtask.deadline,
+            subtask.priority,
+            subtask.reminderType,
+            null
+          ),
+          "parentTaskId": parentTaskId,
+          }
+        );
+
+      return Right(response.data);
+    } on DioException catch (e) {
+      return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
+    } catch (e) {
+      return Left(UnexpectedFailure());
+    }
+  }
 }

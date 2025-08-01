@@ -15,6 +15,7 @@ import 'package:task_save/presentation/common/subtask_widget.dart';
 import 'package:task_save/presentation/common/sucess_snackbar.dart';
 import 'package:task_save/presentation/global_providers/app_preferences_provider.dart';
 import 'package:task_save/presentation/screens/home/task_viewmodel.dart';
+import 'package:task_save/presentation/screens/subtask_form/subtask_form_screen.dart';
 import 'package:task_save/presentation/screens/task_details/attachment_widget.dart';
 import 'package:task_save/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:task_save/presentation/screens/task_form/task_form_screen.dart';
@@ -40,6 +41,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
   late AppLocalizations appLocalizations;
   bool _isInit = true;
+
+  List<SubtaskVo>? _subtaskList = [];
 
   Color _getPriorityColor(PriorityEnum priority) {
     final appColor = AppGlobalColors.of(context);
@@ -87,10 +90,17 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     await taskDetailsViewModel.initializeAttachmentsStatus(widget.task);
   }
 
+  void _initSubtasks() {
+    final taskDetailsViewModel = context.read<TaskDetailsViewmodel>();
+    taskDetailsViewModel.initializeSubtaskList(widget.task.subtaskList);
+  }
+
   @override
   void initState() {
     super.initState();
+
     _initAttachments();
+    _initSubtasks();
   }
 
   @override
@@ -100,6 +110,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     if (_isInit) {
       _isInit = false;
       appLocalizations = AppLocalizations.of(context)!;
+
+      final taskDetailsViewmodel = context.read<TaskDetailsViewmodel>();
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         taskSubscription = _taskEventService.onTaskChanged.listen((event) {
@@ -145,6 +157,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
             if (!event.success!) {
               _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+            }
+          }
+
+          if(event is SubtaskCreationEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+            } else {
+              taskDetailsViewmodel.addSubtask(event.subtask!);
             }
           }
         });
@@ -520,7 +540,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   ]
                 ],
                 // SubTasks
-                if (widget.task.subtaskList.isNotEmpty) ... [
+                if (taskDetailsViewModel.subtaskList.isNotEmpty) ... [
                   Row(
                     spacing: 10,
                     children: [
@@ -553,7 +573,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, i) {
-                      SubtaskVo subtask = widget.task.subtaskList[i];
+                      SubtaskVo subtask = taskDetailsViewModel.subtaskList[i];
                       return SubtaskWidget(
                         key: ValueKey(subtask.id),
                         subtask: subtask,
@@ -601,7 +621,9 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             child:Icon(Icons.list_rounded),
             backgroundColor: _getPriorityColor(widget.task.priority),
             onTap: () {
-              // TODO quando estiver pontor a tela de criação de subtarefa
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SubtaskFormScreen(task: widget.task))
+              );
             }
           ),
           SpeedDialChild(
@@ -611,15 +633,14 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             onTap: _showAddAttachmentDialog,
           ),
           SpeedDialChild(
-              label: AppLocalizations.of(context)!.edit,
-              child: Icon(Icons.edit_rounded),
-              backgroundColor: _getPriorityColor(widget.task.priority),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => TaskFormScreen(task: widget.task))
-                );
-              }
+            label: AppLocalizations.of(context)!.edit,
+            child: Icon(Icons.edit_rounded),
+            backgroundColor: _getPriorityColor(widget.task.priority),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => TaskFormScreen(task: widget.task))
+              );
+            }
           ),
         ]
       )

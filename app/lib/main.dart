@@ -14,6 +14,7 @@ import 'package:task_save/presentation/screens/password_change/password_change_s
 import 'package:task_save/presentation/screens/password_change/password_change_viewmodel.dart';
 import 'package:task_save/presentation/screens/password_rescue/password_rescue_viewmodel.dart';
 import 'package:task_save/presentation/screens/register/register_viewmodel.dart';
+import 'package:task_save/presentation/screens/subtask_form/subtask_form_viewmodel.dart';
 import 'package:task_save/presentation/screens/task_details/task_details_viewmodel.dart';
 import 'package:task_save/presentation/screens/task_form/task_form_viewmodel.dart';
 import 'package:task_save/presentation/screens/wrapper.dart';
@@ -176,7 +177,16 @@ Future<void> main() async {
           notificationService,
           mapFailureToKey
         )
-      )
+      ),
+      ChangeNotifierProvider(
+        create: (ctx) => SubtaskFormViewmodel(
+          SubtaskRepository(
+            Provider.of<Dio>(ctx, listen: false),
+          ),
+          notificationService,
+          mapFailureToKey
+        )
+      ),
     ],
       child: const MyApp(),
     )
