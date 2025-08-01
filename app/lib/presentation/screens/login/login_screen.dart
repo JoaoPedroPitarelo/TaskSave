@@ -128,6 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                               prefixIcon: Icon(Icons.email_outlined),
                               fillColor: const Color.fromARGB(31, 187, 187, 187),
                               labelText: AppLocalizations.of(context)!.enterEmail,
@@ -147,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: _obscureText,
                             controller: _passwordController,
                             decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                               prefixIcon: Icon(Icons.password_outlined),
                               suffixIcon: IconButton(
                                 onPressed: () {

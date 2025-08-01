@@ -42,8 +42,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   late AppLocalizations appLocalizations;
   bool _isInit = true;
 
-  List<SubtaskVo>? _subtaskList = [];
-
   Color _getPriorityColor(PriorityEnum priority) {
     final appColor = AppGlobalColors.of(context);
     switch (priority) {
@@ -233,14 +231,15 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 children: [
                   Icon(
                     Icons.file_present_rounded,
+                    color: Colors.white,
                     size: 40,
                   ),
                   SizedBox(width: 10),
-                  Text(AppLocalizations.of(context)!.addAttachment),
+                  Text(AppLocalizations.of(context)!.addAttachment, style: GoogleFonts.roboto(fontSize: 25, color: Colors.white)),
                 ],
               ),
               content: selectedFile == null
-                  ? Text(AppLocalizations.of(context)!.selectAFileToUpload)
+                  ? Text(AppLocalizations.of(context)!.selectAFileToUpload, style: GoogleFonts.roboto(fontSize: 16, color: Colors.white))
                   : Text("${AppLocalizations.of(context)!.file}: ${selectedFile!.path.split(Platform.pathSeparator).last}"),
               actions: <Widget>[
                 Row(
@@ -272,8 +271,12 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           ],
                         ),
                         onPressed: () async {
-                          FilePickerResult? result = await FilePicker.platform.pickFiles();
-                          if (result != null) {
+                          FilePickerResult? result =
+                          await FilePicker.platform.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf', 'png', 'jpeg', 'jpg'],
+                      );
+                      if (result != null) {
                             setState(() {
                               selectedFile = File(result.files.single.path!);
                             });
@@ -618,7 +621,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           ),
           SpeedDialChild(
             label: AppLocalizations.of(context)!.addSubTask,
-            child:Icon(Icons.list_rounded),
+            child:Icon(Icons.list_rounded, color: Colors.white),
             backgroundColor: _getPriorityColor(widget.task.priority),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -628,13 +631,13 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           ),
           SpeedDialChild(
             label: AppLocalizations.of(context)!.addAttachment,
-            child:Icon(Icons.file_upload_rounded),
+            child:Icon(Icons.file_upload_rounded, color: Colors.white),
             backgroundColor: _getPriorityColor(widget.task.priority),
             onTap: _showAddAttachmentDialog,
           ),
           SpeedDialChild(
             label: AppLocalizations.of(context)!.edit,
-            child: Icon(Icons.edit_rounded),
+            child: Icon(Icons.edit_rounded, color: Colors.white),
             backgroundColor: _getPriorityColor(widget.task.priority),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(

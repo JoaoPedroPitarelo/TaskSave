@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:task_save/core/themes/app_global_colors.dart';
-import 'package:task_save/domain/enums/file_type_enum.dart';
+import 'package:task_save/core/enums/file_type_enum.dart';
 import 'package:task_save/domain/models/attachment_vo.dart';
 import 'package:task_save/l10n/app_localizations.dart';
 import 'package:task_save/presentation/screens/task_details/download_status.dart';

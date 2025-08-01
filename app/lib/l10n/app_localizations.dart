@@ -343,8 +343,14 @@ abstract class AppLocalizations {
   /// No description provided for @passwordAreNotTheSame.
   ///
   /// In pt, this message translates to:
-  /// **'As senha não são iguais!'**
+  /// **'As senhas não são iguais'**
   String get passwordAreNotTheSame;
+
+  /// No description provided for @invalidPasswordFormat.
+  ///
+  /// In pt, this message translates to:
+  /// **'A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, um número e um caractere especial (@\$!%*?&).'**
+  String get invalidPasswordFormat;
 
   /// No description provided for @invalidCredentials.
   ///

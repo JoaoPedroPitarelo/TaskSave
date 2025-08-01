@@ -133,7 +133,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get confirmEmail => 'Agora confirme seu E-mail!';
 
   @override
-  String get passwordAreNotTheSame => 'As senha não são iguais!';
+  String get passwordAreNotTheSame => 'As senhas não são iguais';
+
+  @override
+  String get invalidPasswordFormat =>
+      'A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, um número e um caractere especial (@\$!%*?&).';
 
   @override
   String get invalidCredentials => 'E-mail ou senha incorretos!';

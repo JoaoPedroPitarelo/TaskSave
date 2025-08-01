@@ -39,9 +39,9 @@
     "invalidToken": "Token expirado ou inválido, tente novamente...",
     "good": "Boa!",
     "loginSuccess": "Login realizado com sucesso!",
-
     "confirmEmail": "Agora confirme seu E-mail!",
-    "passwordAreNotTheSame": "As senha não são iguais!",
+    "passwordAreNotTheSame": "As senhas não são iguais",
+    "invalidPasswordFormat": "A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, um número e um caractere especial (@$!%*?&).",
     "invalidCredentials": "E-mail ou senha incorretos!",
     "invalidEmail": "E-mail inválido",
     "connectionServerError": "Erro de conexão com o servidor",

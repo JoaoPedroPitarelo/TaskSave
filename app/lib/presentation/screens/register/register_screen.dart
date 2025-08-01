@@ -84,8 +84,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height -
-                         MediaQuery.of(context).padding.top -
-                         MediaQuery.of(context).padding.bottom
+                MediaQuery.of(context).padding.top -
+                MediaQuery.of(context).padding.bottom
             ),
             child: IntrinsicHeight(
               child: Column(
@@ -108,23 +108,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   Image.asset(
-                      appColors.taskSaveLogo!,
-                      width: 250, height: 154,
-                      alignment: Alignment.topCenter
+                    appColors.taskSaveLogo!,
+                    width: 250, height: 154,
+                    alignment: Alignment.topCenter
                   ),
                   Column(
                     children: [
                       Text(
-                        AppLocalizations.of(context)!.register,
-                        style: theme.textTheme.displayLarge
+                          AppLocalizations.of(context)!.register,
+                          style: theme.textTheme.displayLarge
                       ),
-                     SizedBox(
-                       width: 350,
-                       child: Divider(
-                         thickness: 1.2,
-                         endIndent: 0.5,
-                       ),
-                     )
+                      SizedBox(
+                        width: 350,
+                        child: Divider(
+                          thickness: 1.2,
+                          endIndent: 0.5,
+                        ),
+                      )
                     ],
                   ),
                   Form(
@@ -137,6 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextFormField(
                             controller: _loginController,
                             decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                               prefixIcon: Icon(Icons.email_outlined),
                               fillColor: const Color.fromARGB(31, 187, 187, 187),
                               labelText: AppLocalizations.of(context)!.enterEmail,
@@ -160,6 +161,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscureTextPassword,
                             controller: _passwordController,
                             decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                               prefixIcon: Icon(Icons.password_outlined),
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -171,24 +173,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               fillColor: const Color.fromARGB(31, 187, 187, 187),
                               labelText: AppLocalizations.of(context)!.enterPassword,
+                              errorMaxLines: 4
                             ),
                             keyboardType: TextInputType.visiblePassword,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return AppLocalizations.of(context)!.passwordIsObrigatoryValue;
                               }
-                              if (value.length < 8) {
-                                return AppLocalizations.of(context)!.minimumLengthPassword;
+
+                              final passwordRegex = RegExp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
+
+                              if (!passwordRegex.hasMatch(value)) {
+                                return AppLocalizations.of(context)!.invalidPasswordFormat;
                               }
-                              if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                return AppLocalizations.of(context)!.minimumCapitalLetter;
-                              }
-                              if (!RegExp(r'[!@#$%^*(),.?":{}|<>]').hasMatch(value)) {
-                                return AppLocalizations.of(context)!.minimumEspecialCaractere;
-                              }
-                              if (!RegExp(r'\d').hasMatch(value)) {
-                                return AppLocalizations.of(context)!.minimumDigit;
-                              }
+
                               return null;
                             },
                             autofillHints: [AutofillHints.password],
@@ -197,6 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscureTextConfirmedPassword,
                             controller: _confirmPasswordController,
                             decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                               prefixIcon: Icon(Icons.password_outlined),
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -235,18 +234,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       registerViewmodel.createLogin(_loginController.text, _passwordController.text);
                     },
                     style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)
-                      ),
-                      minimumSize: Size(350, 50),
-                      backgroundColor: Color.fromARGB(255, 0, 101, 32)
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)
+                        ),
+                        minimumSize: Size(350, 50),
+                        backgroundColor: Color.fromARGB(255, 0, 101, 32)
                     ),
                     child: registerViewmodel.isLoading ? CircularProgressIndicator()
-                    : Text(
+                        : Text(
                       AppLocalizations.of(context)!.registerButton,
                       style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 25
+                          color: Colors.white,
+                          fontSize: 25
                       ),
                     ),
                   ),

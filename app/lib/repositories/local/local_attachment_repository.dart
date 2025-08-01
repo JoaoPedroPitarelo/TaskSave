@@ -1,4 +1,4 @@
-import 'package:task_save/domain/enums/file_type_enum.dart';
+import 'package:task_save/core/enums/file_type_enum.dart';
 import 'package:task_save/domain/models/attachment_vo.dart';
 import 'package:task_save/services/local_database/local_database_service.dart';
 import 'package:sqflite/sqflite.dart';

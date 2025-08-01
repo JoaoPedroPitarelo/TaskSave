@@ -1,4 +1,4 @@
-import 'package:task_save/domain/enums/file_type_enum.dart';
+import 'package:task_save/core/enums/file_type_enum.dart';
 
 class AttachmentVo {
   final String id;
