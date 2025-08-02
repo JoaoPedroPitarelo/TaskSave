@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:task_save/core/errors/failure_keys.dart';
 import 'package:task_save/domain/models/attachment_vo.dart';
 import 'package:task_save/domain/models/subtask_vo.dart';
@@ -104,5 +106,13 @@ class SubtaskUpdateEvent extends TaskDataEvent {
   SubtaskVo? subtask;
 
   SubtaskUpdateEvent({required this.success, this.failureKey, this.subtask});
+}
+
+class TaskExportPDFEvent extends TaskDataEvent {
+  bool success = false;
+  FailureKey? failureKey;
+  File? file;
+
+  TaskExportPDFEvent({required this.success, this.failureKey, this.file});
 }
 

@@ -109,7 +109,7 @@
   "yourTask": "Su tarea con fecha límite para",
   "clickToShowDetailsTask": "Haga clic para ver más detalles...",
   "yourSubtask": "Su subtarea con fecha límite para",
-  "exportToPdf": "Export tasks (PDF)",
+  "exportToPdf": "Export tasks",
   "about": "Sobre",
   "modifyTask": "Modificar Tarea",
   "addTask": "Añadir Tarea",
@@ -140,5 +140,10 @@
   "selectAFileToUpload": "Selecciona un archivo para subir",
   "file": "Archivo",
   "selectFile": "Seleccionar",
-  "modifySubtask": "Modificar subtarea"
+  "modifySubtask": "Modificar subtarea",
+  "moreLicenses": "Más licencias",
+  "allTheRightReserved": "Todos los derechos reservados",
+  "version": "Versión",
+  "and": "y",
+  "license": "Con licencia MIT"
 }

@@ -344,7 +344,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get yourSubtask => 'Sua subTarefa com prazo para';
 
   @override
-  String get exportToPdf => 'Exportar tarefas (PDF)';
+  String get exportToPdf => 'Exportar tarefas';
 
   @override
   String get about => 'Sobre';
@@ -439,4 +439,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get modifySubtask => 'Modificar SubTarefa';
+
+  @override
+  String get moreLicenses => 'Mais licenças';
+
+  @override
+  String get allTheRightReserved => 'Todos os direitos reservados';
+
+  @override
+  String get version => 'Versão';
+
+  @override
+  String get and => 'e';
+
+  @override
+  String get license => 'Licenciado sob a licença MIT';
 }

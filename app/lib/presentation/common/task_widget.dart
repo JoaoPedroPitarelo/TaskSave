@@ -87,14 +87,14 @@ class _TaskWidgetState extends State<TaskWidget> {
         alignment: Alignment.center,
         padding: EdgeInsets.all(20),
         child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(
-                Icons.edit,
-                color: Colors.blue,
-                size: 70,
-              ),
-            ]
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.edit_rounded,
+              color: Colors.blue,
+              size: 70,
+            ),
+          ]
         ),
       ),
       child: Stack(

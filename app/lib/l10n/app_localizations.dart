@@ -757,7 +757,7 @@ abstract class AppLocalizations {
   /// No description provided for @exportToPdf.
   ///
   /// In pt, this message translates to:
-  /// **'Exportar tarefas (PDF)'**
+  /// **'Exportar tarefas'**
   String get exportToPdf;
 
   /// No description provided for @about.
@@ -945,6 +945,36 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Modificar SubTarefa'**
   String get modifySubtask;
+
+  /// No description provided for @moreLicenses.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mais licenças'**
+  String get moreLicenses;
+
+  /// No description provided for @allTheRightReserved.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todos os direitos reservados'**
+  String get allTheRightReserved;
+
+  /// No description provided for @version.
+  ///
+  /// In pt, this message translates to:
+  /// **'Versão'**
+  String get version;
+
+  /// No description provided for @and.
+  ///
+  /// In pt, this message translates to:
+  /// **'e'**
+  String get and;
+
+  /// No description provided for @license.
+  ///
+  /// In pt, this message translates to:
+  /// **'Licenciado sob a licença MIT'**
+  String get license;
 }
 
 class _AppLocalizationsDelegate

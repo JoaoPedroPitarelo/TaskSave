@@ -13,6 +13,8 @@ import "package:task_save/presentation/common/task_widget.dart";
 import "package:task_save/presentation/screens/category_form/category_form_screen.dart";
 import "package:task_save/presentation/screens/home/category_viewmodel.dart";
 import "package:task_save/presentation/screens/home/task_viewmodel.dart";
+import "package:task_save/presentation/screens/home/widgets/show_custom_about_dialog.dart";
+import "package:task_save/presentation/screens/home/widgets/show_export_pdf.dart";
 import "package:task_save/presentation/screens/home/widgets/widget_filter_mode.dart";
 import "package:task_save/presentation/screens/settings/settings_screen.dart";
 import "package:task_save/presentation/screens/home/widgets/category_item.dart";
@@ -23,7 +25,9 @@ import "package:flutter/material.dart";
 import "package:flutter_speed_dial/flutter_speed_dial.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:provider/provider.dart";
-import 'package:task_save/presentation/screens/home/widgets/build_drawer_item.dart';
+import "dart:io";
+import "package:file_picker/file_picker.dart";
+import "package:task_save/presentation/screens/home/widgets/build_drawer_item.dart";
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -118,7 +122,16 @@ class _HomeScreenState extends State<HomeScreen> {
           if (event is SubtaskCreationEvent) {
             if (event.success) {
               loadTasks();
+              return;
             }
+          }
+
+          if (event is TaskExportPDFEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(_localizations, event.failureKey!));
+              return;
+            }
+            _savePdfFile(event.file!);
           }
         });
       });
@@ -209,9 +222,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   
   void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      showErrorSnackBar(message)
+    ScaffoldMessenger.of(context).showSnackBar(showErrorSnackBar(message));
+  }
+
+  Future<void> _savePdfFile(File file) async {
+    final pdfBytes = await file.readAsBytes();
+    final result = await FilePicker.platform.saveFile(
+      dialogTitle: _localizations.exportToPdf,
+      fileName: "task_save_export.pdf",
+      type: FileType.custom,
+      allowedExtensions: ["pdf"],
+      bytes: pdfBytes
     );
+
+    if (result != null) {
+      _showSuccessSnackBar("Exportado com sucesso!");
+    }
   }
 
   @override
@@ -258,10 +284,10 @@ class _HomeScreenState extends State<HomeScreen> {
               color: const Color.fromARGB(255, 12, 43, 170),
               onSelected: (value) {
                 if (value == "export") {
-                  // TODO fazer uma tela de exportação de tarefas.
+                  showExportTasksDialog(context);
                 }
                 if (value == "about") {
-                  // TODO fazer um alertDialog ou uma tela própria para falar sobre esse aplicativo. Informções, como versão, autores, principíos e licensas.
+                  showCustomAboutDialog(context);
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -643,24 +669,21 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           SpeedDialChild(
             backgroundColor: const Color.fromARGB(255, 12, 43, 170),
-            child: const Icon(Icons.dashboard_customize_rounded, color: Colors.white, size: 30),
+            child: const Icon(Icons.dashboard_customize_rounded,
+                color: Colors.white, size: 30),
             label: AppLocalizations.of(context)!.addCategory,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => CategoryFormScreen()
-              ));
-            }
-          ),
+                  builder: (context) => CategoryFormScreen()));
+            }),
           SpeedDialChild(
             backgroundColor: const Color.fromARGB(255, 12, 43, 170),
             child: const Icon(Icons.add_task_rounded, color: Colors.white, size: 30),
             label: AppLocalizations.of(context)!.addTask,
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => TaskFormScreen()
-              ));
-            }
-          ),
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => TaskFormScreen()));
+            }),
         ],
       ),
     );

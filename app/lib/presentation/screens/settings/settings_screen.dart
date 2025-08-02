@@ -283,10 +283,10 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                                 icon: FaIcon(FontAwesomeIcons.github, size: 35)
                             ),
                             IconButton(
-                                onPressed: () {
-                                  launchURL("http://www.linkedin.com/in/joão-pedro-salmazo-pitarelo-b12b71264");
-                                },
-                                icon: FaIcon(FontAwesomeIcons.linkedin, size: 35)
+                              onPressed: () {
+                                launchURL("http://www.linkedin.com/in/joão-pedro-salmazo-pitarelo-b12b71264");
+                              },
+                              icon: FaIcon(FontAwesomeIcons.linkedin, size: 35)
                             ),
                           ],
                         ),
@@ -298,7 +298,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "V 0.0",
+                              "V 1.0",
                               style: GoogleFonts.roboto(
                                 color: Colors.white,
                                 fontSize: 15,

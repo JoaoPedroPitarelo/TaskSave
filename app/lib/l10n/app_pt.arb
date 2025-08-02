@@ -109,7 +109,7 @@
     "yourTask": "Sua tarefa com prazo para",
     "clickToShowDetailsTask": "Clique para ver mais detalhes...",
     "yourSubtask": "Sua subTarefa com prazo para",
-    "exportToPdf": "Exportar tarefas (PDF)",
+    "exportToPdf": "Exportar tarefas",
     "about": "Sobre",
     "modifyTask": "Modificar Tarefa",
     "addTask": "Adicionar Tarefa",
@@ -140,5 +140,10 @@
     "selectAFileToUpload": "Selecione um arquivo para upload",
     "file": "Arquivo",
     "selectFile": "Selecionar",
-    "modifySubtask": "Modificar SubTarefa"
+    "modifySubtask": "Modificar SubTarefa",
+    "moreLicenses": "Mais licenças",
+    "allTheRightReserved": "Todos os direitos reservados",
+    "version": "Versão",
+    "and": "e",
+    "license": "Licenciado sob a licença MIT"
 }

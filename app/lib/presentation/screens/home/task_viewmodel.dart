@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:task_save/core/enums/filtering_task_mode_enum.dart';
 import 'package:task_save/core/enums/task_type_enum.dart';
 import 'package:task_save/core/errors/failure.dart';
@@ -259,15 +260,35 @@ class TaskViewmodel extends ChangeNotifier {
     result.fold(
       (failure) {
         _errorKey = _mapFailureToKey(failure);
-        _loading = false;
         undoDeletionTask(task, originalIndex);
-        // TODO lançar um evento de exclusão de tarefas (nesse caso success = false)
+        _loading = false;
         notifyListeners();
       },
       (noContent) {
         _tasks.remove(task);
         _calculateCountTasks();
         _notificationService.cancelNotificationsByPayload('{"id": "${task.id}", "taskType": "${TaskType.t.name}"}');
+        notifyListeners();
+      }
+    );
+  }
+
+  Future<void> exportToPDF(String? categoryId) async {
+    _loading = true;
+    notifyListeners();
+
+    final result = await _taskRepository.exportTasksToPDF(categoryId);
+
+    result.fold(
+      (failure) {
+        _errorKey = _mapFailureToKey(failure);
+        _taskEventService.add(TaskExportPDFEvent(success: false, failureKey: _errorKey));
+        _loading = false;
+        notifyListeners();
+      },
+      (file) {
+        _taskEventService.add(TaskExportPDFEvent(success: true, file: file));
+        _loading = false;
         notifyListeners();
       }
     );

@@ -109,7 +109,7 @@
   "yourTask": "Your task with deadline for",
   "clickToShowDetailsTask": "Click for show more details...",
   "yourSubtask": "Your subtask with deadline for",
-  "exportToPdf": "Exportar tareas (PDF)",
+  "exportToPdf": "Exportar tareas",
   "about": "About",
   "modifyTask": "Modify Task",
   "addTask": "Add Task",
@@ -140,5 +140,10 @@
   "selectAFileToUpload": "Select a file to upload",
   "file": "File",
   "selectFile": "Select",
-  "modifySubtask": "Modify SubTask"
+  "modifySubtask": "Modify SubTask",
+  "moreLicenses": "More licenses",
+  "allTheRightReserved": "All the rights reserved",
+  "version": "Version",
+  "and": "and",
+  "license": "Licensed under the MIT License"
 }

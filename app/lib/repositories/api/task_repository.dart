@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 import 'package:task_save/core/errors/category_failures.dart';
 import 'package:task_save/core/errors/failure.dart';
 import 'package:task_save/core/errors/task_failures.dart';
@@ -142,6 +146,31 @@ class TaskRepository {
         return Left(CategoryNotFoundFailure());
       }
       return Left(ServerFailure(message: "Unexpected Internal server error", statusCode: e.response?.statusCode ?? 500));
+    } catch (e) {
+      return Left(UnexpectedFailure());
+    }
+  }
+
+  Future<Either<Failure, File>> exportTasksToPDF(String? categoryId) async {
+    try {
+      final response = await _dio.get(
+        '/task/export/pdf${categoryId != null ? '?idCategory=$categoryId' : ''}',
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      final Uint8List bytes = Uint8List.fromList(response.data);
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/temp.pdf');
+      await file.writeAsBytes(bytes);
+
+      return Right(file);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return Left(CategoryNotFoundFailure());
+      }
+      return Left(ServerFailure(
+          message: "Unexpected Internal server error",
+          statusCode: e.response?.statusCode ?? 500));
     } catch (e) {
       return Left(UnexpectedFailure());
     }

@@ -89,7 +89,7 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Icon(
-              Icons.edit,
+              Icons.edit_rounded,
               color: Colors.blue,
               size: 70,
             ),
