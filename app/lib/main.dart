@@ -239,7 +239,7 @@ class _MyAppState extends State<MyApp> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final passwordRescueProvider = Provider.of<PasswordRescueProvider>(context, listen: false);
 
-      dio.options.baseUrl = 'http://10.0.0.9:8080';
+      dio.options.baseUrl = 'http://31.97.95.208:8080';
       dio.options.connectTimeout = const Duration(seconds: 20);
       dio.options.receiveTimeout = const Duration(seconds: 10);
 

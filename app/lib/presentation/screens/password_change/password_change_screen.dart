@@ -88,147 +88,144 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
             ),
             child: IntrinsicHeight(
               child: Column(
-                  spacing: 20,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 0, left: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                                Icons.arrow_back_outlined,
-                                size: 30
-                            ),
-                            onPressed: () => Navigator.pop(context),
+                spacing: 20,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 0, left: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.arrow_back_outlined,
+                            size: 30
                           ),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Image.asset(
+                    appColors.taskSaveLogo!,
+                    width: 250, height: 154,
+                    alignment: Alignment.topCenter
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.resetPassword,
+                        style: theme.textTheme.displayLarge
+                      ),
+                     SizedBox(
+                       width: 350,
+                       child: Divider(
+                         thickness: 1.2,
+                         endIndent: 0.5,
+                       ),
+                     )
+                    ],
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                      child: Column(
+                        spacing: 16,
+                        children: [
+                          TextFormField(
+                            obscureText: _obscureTextPassword,
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                              prefixIcon: Icon(Icons.password_outlined),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureTextPassword = !_obscureTextPassword;
+                                  });
+                                },
+                                icon: Icon(_obscureTextPassword ? Icons.visibility : Icons.visibility_off),
+                              ),
+                              fillColor: const Color.fromARGB(31, 187, 187, 187),
+                              labelText: AppLocalizations.of(context)!.newPassword,
+                            ),
+                            keyboardType: TextInputType.visiblePassword,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppLocalizations.of(context)!.passwordIsObrigatoryValue;
+                              }
+
+                              final passwordRegex = RegExp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
+
+                              if (!passwordRegex.hasMatch(value)) {
+                                return AppLocalizations.of(context)!.invalidPasswordFormat;
+                              }
+
+                              return null;
+                            },
+                            autofillHints: [AutofillHints.password],
+                          ),
+                          TextFormField(
+                            obscureText: _obscureTextConfirmedPassword,
+                            controller: _confirmPasswordController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                              prefixIcon: Icon(Icons.password_outlined),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureTextConfirmedPassword = !_obscureTextConfirmedPassword;
+                                  });
+                                },
+                                icon: Icon(_obscureTextConfirmedPassword ? Icons.visibility : Icons.visibility_off),
+                              ),
+                              fillColor: const Color.fromARGB(31, 187, 187, 187),
+                              labelText: AppLocalizations.of(context)!.confirmPassoword,
+                            ),
+                            keyboardType: TextInputType.visiblePassword,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return AppLocalizations.of(context)!.confirmPassoword;
+                              }
+
+                              if (value != _passwordController.text) {
+                                return AppLocalizations.of(context)!.passwordAreNotTheSame;
+                              }
+
+                              return null;
+                            },
+                            autofillHints: [AutofillHints.password],
+                          )
                         ],
                       ),
                     ),
-                    Image.asset(
-                        appColors.taskSaveLogo!,
-                        width: 250, height: 154,
-                        alignment: Alignment.topCenter
+                  ),
+                  ElevatedButton(
+                    onPressed: passwordRescueViewmodel.isLoading ? null : () {
+                      if (!_formKey.currentState!.validate()) {
+                        return;
+                      }
+                      passwordRescueViewmodel.resetPassword(widget.rescueToken, _passwordController.text);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
+                      ),
+                      minimumSize: Size(350, 50),
+                      backgroundColor: Color.fromARGB(255, 0, 101, 32)
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.resetPassword,
-                          style: theme.textTheme.displayLarge
-                        ),
-                       SizedBox(
-                         width: 350,
-                         child: Divider(
-                           thickness: 1.2,
-                           endIndent: 0.5,
-                         ),
-                       )
-                      ],
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-                        child: Column(
-                          spacing: 16,
-                          children: [
-                            TextFormField(
-                              obscureText: _obscureTextPassword,
-                              controller: _passwordController,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.password_outlined),
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscureTextPassword = !_obscureTextPassword;
-                                    });
-                                  },
-                                  icon: Icon(_obscureTextPassword ? Icons.visibility : Icons.visibility_off),
-                                ),
-                                fillColor: const Color.fromARGB(31, 187, 187, 187),
-                                labelText: AppLocalizations.of(context)!.newPassword,
-                              ),
-                              keyboardType: TextInputType.visiblePassword,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(context)!.passwordIsObrigatoryValue;
-                                }
-                                if (value.length < 8) {
-                                  return AppLocalizations.of(context)!.minimumLengthPassword;
-                                }
-                                if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                                  return AppLocalizations.of(context)!.minimumCapitalLetter;
-                                }
-                                if (!RegExp(r'[!@#$%^*(),.?":{}|<>]').hasMatch(value)) {
-                                  return AppLocalizations.of(context)!.minimumEspecialCaractere;
-                                }
-                                if (!RegExp(r'\d').hasMatch(value)) {
-                                  return AppLocalizations.of(context)!.minimumDigit;
-                                }
-                                return null;
-                              },
-                              autofillHints: [AutofillHints.password],
-                            ),
-                            TextFormField(
-                              obscureText: _obscureTextConfirmedPassword,
-                              controller: _confirmPasswordController,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.password_outlined),
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscureTextConfirmedPassword = !_obscureTextConfirmedPassword;
-                                    });
-                                  },
-                                  icon: Icon(_obscureTextConfirmedPassword ? Icons.visibility : Icons.visibility_off),
-                                ),
-                                fillColor: const Color.fromARGB(31, 187, 187, 187),
-                                labelText: AppLocalizations.of(context)!.confirmPassoword,
-                              ),
-                              keyboardType: TextInputType.visiblePassword,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(context)!.confirmPassoword;
-                                }
-
-                                if (value != _passwordController.text) {
-                                  return AppLocalizations.of(context)!.passwordAreNotTheSame;
-                                }
-
-                                return null;
-                              },
-                              autofillHints: [AutofillHints.password],
-                            )
-                          ],
-                        ),
+                    child: passwordRescueViewmodel.isLoading ? CircularProgressIndicator()
+                    : Text(
+                      AppLocalizations.of(context)!.confirm,
+                      style: GoogleFonts.roboto(
+                        color: Colors.white,
+                        fontSize: 25
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: passwordRescueViewmodel.isLoading ? null : () {
-                        if (!_formKey.currentState!.validate()) {
-                          return;
-                        }
-                        passwordRescueViewmodel.resetPassword(widget.rescueToken, _passwordController.text);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        minimumSize: Size(350, 50),
-                        backgroundColor: Color.fromARGB(255, 0, 101, 32)
-                      ),
-                      child: passwordRescueViewmodel.isLoading ? CircularProgressIndicator()
-                      : Text(
-                        AppLocalizations.of(context)!.confirm,
-                        style: GoogleFonts.roboto(
-                          color: Colors.white,
-                          fontSize: 25
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

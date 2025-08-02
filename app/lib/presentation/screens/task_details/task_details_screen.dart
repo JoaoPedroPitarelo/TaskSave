@@ -165,6 +165,15 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               taskDetailsViewmodel.addSubtask(event.subtask!);
             }
           }
+
+          if (event is SubtaskUpdateEvent) {
+            if (!event.success) {
+              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+            } else {
+              taskDetailsViewmodel.updateSubtask(event.subtask!);
+              _initSubtasks();
+            }
+          }
         });
       });
     }
@@ -543,7 +552,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   ]
                 ],
                 // SubTasks
-                if (taskDetailsViewModel.subtaskList.isNotEmpty) ... [
+                if (taskDetailsViewModel.subtaskList.isNotEmpty || !taskDetailsViewModel.isLoading) ... [
                   Row(
                     spacing: 10,
                     children: [
@@ -583,7 +592,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         rightDismissedCallback: () async {
                           taskDetailsViewModel.prepareSubtaskForDeletion(widget.task, subtask);
                         },
-                        leftDismissedCallback: () => {},
+                        leftDismissedCallback: () => {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SubtaskFormScreen(task: widget.task, subtask: subtask))
+                          )
+                        },
                       );
                     },
                     itemCount: widget.task.subtaskList.length,

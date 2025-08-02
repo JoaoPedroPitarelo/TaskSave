@@ -1,5 +1,6 @@
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
+import 'package:task_save/domain/enums/reminder_type_num.dart';
 import 'package:task_save/domain/models/subtask_vo.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -49,6 +50,15 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
     return Dismissible(
       key: Key(widget.subtask.id),
       direction: DismissDirection.horizontal,
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.endToStart) {
+          if (widget.leftDismissedCallback != null) {
+            widget.leftDismissedCallback!();
+          }
+          return false;
+        }
+        return true;
+      },
       onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
           if (widget.rightDismissedCallback != null) {
@@ -56,12 +66,6 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
           }
           player.play(AssetSource("sounds/taskCompleted.mp3"));
           widget.subtask.completed = true;
-        }
-
-        if (direction == DismissDirection.endToStart) {
-          if (widget.leftDismissedCallback != null) {
-            widget.leftDismissedCallback!();
-          }
         }
       },
       background: Container(
@@ -148,7 +152,7 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
                                             SizedBox(width: 4),
                                             Text(intl.DateFormat.yMMMd(locale).format(widget.subtask.deadline!), style: theme.textTheme.displaySmall),
                                           ],
-                                          if (widget.subtask.reminderType != null) ...[
+                                          if (widget.subtask.reminderType != null && widget.subtask.reminderType != ReminderTypeNum.without_notification) ...[
                                             SizedBox(width: 8),
                                             Icon(Icons.alarm_rounded, size: 18),
                                           ],

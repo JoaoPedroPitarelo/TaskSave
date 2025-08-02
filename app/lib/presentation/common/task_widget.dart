@@ -11,12 +11,14 @@ import 'package:intl/intl.dart' as intl;
 
 class TaskWidget extends StatefulWidget {
   final TaskVo task;
-  final VoidCallback? onDismissedCallback;
+  final VoidCallback? rightDismissedCallback;
+  final VoidCallback? leftDismissedCallback;
 
   const TaskWidget({
     super.key,
     required this.task,
-    this.onDismissedCallback
+    this.rightDismissedCallback,
+    this.leftDismissedCallback
   });
 
   @override
@@ -48,13 +50,24 @@ class _TaskWidgetState extends State<TaskWidget> {
     
     return Dismissible(
       key: Key(widget.task.id),
-      direction: DismissDirection.startToEnd,
-      onDismissed: (direction) {
-        if (widget.onDismissedCallback != null) {
-         widget.onDismissedCallback!();
+      direction: DismissDirection.horizontal,
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.endToStart) {
+          if (widget.leftDismissedCallback != null) {
+            widget.leftDismissedCallback!();
+          }
+          return false;
         }
-        player.play(AssetSource("sounds/taskCompleted.mp3"));
-        widget.task.completed = true;
+        return true;
+      },
+      onDismissed: (direction) {
+        if (direction == DismissDirection.startToEnd) {
+          if (widget.rightDismissedCallback != null) {
+            widget.rightDismissedCallback!();
+          }
+          player.play(AssetSource("sounds/taskCompleted.mp3"));
+          widget.task.completed = true;
+        }
       },
       background: Container(
         alignment: Alignment.center,
@@ -68,6 +81,20 @@ class _TaskWidgetState extends State<TaskWidget> {
               size: 80,
             ),
           ],
+        ),
+      ),
+      secondaryBackground: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(20),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(
+                Icons.edit,
+                color: Colors.blue,
+                size: 70,
+              ),
+            ]
         ),
       ),
       child: Stack(

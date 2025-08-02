@@ -70,6 +70,12 @@ class TaskDetailsViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateSubtask(SubtaskVo subtask) {
+    _subtaskList.removeWhere((element) => element.id == subtask.id);
+    _subtaskList.add(subtask);
+    notifyListeners();
+  }
+
   void _initializeDownloadStatusNotDownloadedAttachments(TaskVo task) {
     _attachmentStatus = {
       for (var attachment in task.attachmentList)

@@ -198,7 +198,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
                         TextFormField(
                           controller: _descriptionController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             prefixIcon: Icon(Icons.drive_file_rename_outline_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextDescriptionCategoryForm,

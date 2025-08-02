@@ -74,7 +74,7 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen> with SingleTick
                         position: -1),
                     completed: false,
                   ),
-                  onDismissedCallback: () => Navigator.of(context)
+                  rightDismissedCallback: () => Navigator.of(context)
                       .pushReplacement(MaterialPageRoute(
                           builder: (context) => LoginScreen())),
                 ),
@@ -107,7 +107,7 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen> with SingleTick
                       padding: const EdgeInsets.all(16),
                       child: IconButton(
                           icon: const Icon(
-                            Icons.arrow_back_ios_outlined,
+                            Icons.arrow_back_ios_rounded,
                             size: 40,
                             weight: 200.0,
                           ),

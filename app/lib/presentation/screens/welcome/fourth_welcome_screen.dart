@@ -60,7 +60,7 @@ class FourthWelcomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: IconButton(
                   icon: Icon(
-                    Icons.arrow_back_ios_outlined,
+                    Icons.arrow_back_ios_rounded,
                     size: 40,
                     weight: 200.0,
                   ),
@@ -71,7 +71,7 @@ class FourthWelcomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: IconButton(
                   icon: Icon(
-                    Icons.arrow_forward_ios_outlined,
+                    Icons.arrow_forward_ios_rounded,
                     size: 40, 
                     weight: 200.0
                   ),

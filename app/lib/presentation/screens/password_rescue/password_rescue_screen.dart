@@ -75,9 +75,9 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-                minHeight: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).padding.top -
-                    MediaQuery.of(context).padding.bottom
+              minHeight: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).padding.top -
+                MediaQuery.of(context).padding.bottom
             ),
             child: IntrinsicHeight(
               child: Column(
@@ -91,8 +91,8 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
                       children: [
                         IconButton(
                           icon: Icon(
-                              Icons.arrow_back_outlined,
-                              size: 30
+                            Icons.arrow_back_outlined,
+                            size: 30
                           ),
                           onPressed: () => Navigator.pop(context),
                         ),
@@ -100,15 +100,15 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
                     ),
                   ),
                   Image.asset(
-                      appColors.taskSaveLogo!,
-                      width: 250, height: 154,
-                      alignment: Alignment.topCenter
+                    appColors.taskSaveLogo!,
+                    width: 250, height: 154,
+                    alignment: Alignment.topCenter
                   ),
                   Column(
                     children: [
                       Text(
-                          AppLocalizations.of(context)!.passwordRescue,
-                          style: theme.textTheme.displayLarge
+                        AppLocalizations.of(context)!.passwordRescue,
+                        style: theme.textTheme.displayLarge
                       ),
                       SizedBox(
                         width: 350,
@@ -132,10 +132,11 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.email_outlined),
-                                fillColor: const Color.fromARGB(31, 187, 187, 187),
-                                labelText: AppLocalizations.of(context)!.enterEmail,
-                                hintText: AppLocalizations.of(context)!.enterEmailExample
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                              prefixIcon: Icon(Icons.email_outlined),
+                              fillColor: const Color.fromARGB(31, 187, 187, 187),
+                              labelText: AppLocalizations.of(context)!.enterEmail,
+                              hintText: AppLocalizations.of(context)!.enterEmailExample
                             ),
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
@@ -164,18 +165,19 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
                       passwordRescueViewModel.doPasswordRescue(_emailController.text);
                     },
                     style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        minimumSize: Size(350, 50),
-                        backgroundColor: Color.fromARGB(255, 0, 101, 32)
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
+                      ),
+                      minimumSize: Size(350, 50),
+                      backgroundColor: Color.fromARGB(255, 0, 101, 32)
                     ),
-                    child: passwordRescueViewModel.isLoading ? CircularProgressIndicator()
-                        : Text(
-                      AppLocalizations.of(context)!.sendRescueEmail,
-                      style: GoogleFonts.roboto(
-                          color: Colors.white,
-                          fontSize: 25
+                    child: passwordRescueViewModel.isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                        AppLocalizations.of(context)!.sendRescueEmail,
+                        style: GoogleFonts.roboto(
+                            color: Colors.white,
+                            fontSize: 25
                       ),
                     ),
                   ),

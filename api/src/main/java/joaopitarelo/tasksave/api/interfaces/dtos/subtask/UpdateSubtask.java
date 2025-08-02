@@ -9,7 +9,6 @@ import java.util.Date;
 public record UpdateSubtask(
         @OptionalNotBlank
         String title,
-        @OptionalNotBlank
         String description,
         Date deadline,
         Priority priority,

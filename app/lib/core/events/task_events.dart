@@ -97,3 +97,12 @@ class SubtaskCreationEvent extends TaskDataEvent {
 
   SubtaskCreationEvent({required this.success, this.failureKey, this.subtask});
 }
+
+class SubtaskUpdateEvent extends TaskDataEvent {
+  bool success = false;
+  FailureKey? failureKey;
+  SubtaskVo? subtask;
+
+  SubtaskUpdateEvent({required this.success, this.failureKey, this.subtask});
+}
+

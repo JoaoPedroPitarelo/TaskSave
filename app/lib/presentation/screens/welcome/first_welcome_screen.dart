@@ -38,14 +38,14 @@ class FirstWelcomeScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      size: 40,
-                      weight: 200.0,
-                    ),
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => SecondWelcomeScreen())
-                    )
+                  icon: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 40,
+                    weight: 200.0,
+                  ),
+                  onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => SecondWelcomeScreen())
+                  )
                 ),
               ),
             ],

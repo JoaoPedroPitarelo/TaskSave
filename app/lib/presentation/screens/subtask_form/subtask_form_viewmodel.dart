@@ -64,7 +64,7 @@ class SubtaskFormViewmodel extends ChangeNotifier {
     result.fold(
       (failure) {
         _errorKey = _mapFailureToKey(failure);
-        _taskEventService.add(TaskUpdateEvent(success: false, failureKey: _errorKey));
+        _taskEventService.add(SubtaskUpdateEvent(success: false, failureKey: _errorKey));
         _loading = false;
         notifyListeners();
       },
@@ -72,7 +72,7 @@ class SubtaskFormViewmodel extends ChangeNotifier {
         if (subtask.reminderType == ReminderTypeNum.without_notification) {
           _notificationService.cancelNotificationsByPayload('{"id": "${subtask.id}", "taskType": "${TaskType.st.name}"}');
         }
-        _taskEventService.add(TaskUpdateEvent(success: true));
+        _taskEventService.add(SubtaskUpdateEvent(success: true, subtask: SubtaskVo.fromJson(modifiedTask["subtask"])));
         _taskEventService.add(GetTasksEvent(success: true));
         _loading = false;
         notifyListeners();

@@ -299,7 +299,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                         TextFormField(
                           controller: _titleController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             prefixIcon: Icon(Icons.drive_file_rename_outline_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextTitleTaskForm,
@@ -320,7 +320,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                         TextFormField(
                           controller: _descriptionController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             prefixIcon: Icon(Icons.description_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextDescriptionTaskForm,
@@ -341,7 +341,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                                 style: BorderStyle.solid,
                                 color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                               ),
-                              borderRadius: BorderRadius.circular(5)
+                              borderRadius: BorderRadius.circular(15)
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -371,10 +371,9 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
 
                         DropdownButtonFormField<PriorityEnum>(
                           value: _selectedPriority,
-                          borderRadius: BorderRadius.circular(15),
                           icon: Icon(Icons.flag_rounded),
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             labelText: AppLocalizations.of(context)!.priority,
                           ),
                           items: PriorityEnum.values.map((priority) => DropdownMenuItem(
@@ -412,10 +411,9 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                         ),
                         DropdownButtonFormField<ReminderTypeNum>(
                           value: _selectedReminderType,
-                          borderRadius: BorderRadius.circular(15),
                           icon: Icon(Icons.notifications_active_rounded),
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             labelText: AppLocalizations.of(context)!.reminderType,
                           ),
                           items: [
@@ -449,10 +447,9 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                         ),
                         DropdownButtonFormField<dynamic>(
                           value: _selectedCategory,
-                          borderRadius: BorderRadius.circular(15),
                           icon: Icon(Icons.dashboard_customize_rounded),
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             labelText: AppLocalizations.of(context)!.category,
                           ),
                           items: [

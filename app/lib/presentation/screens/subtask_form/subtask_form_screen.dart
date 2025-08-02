@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:task_save/core/events/task_events.dart';
+import 'package:task_save/core/utils/translateFailureKey.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
 import 'package:task_save/domain/enums/reminder_type_num.dart';
 import 'package:task_save/domain/models/subtask_vo.dart';
@@ -54,7 +55,7 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
           deadline: _dateSelected,
           priority: _selectedPriority,
           reminderType: _selectedReminderType,
-          completed: false
+          completed: true
         )
       );
       return;
@@ -81,15 +82,6 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
       _dateSelected = widget.subtask!.deadline;
       _selectedPriority = widget.subtask!.priority;
       _selectedReminderType = widget.subtask!.reminderType ?? widget.subtask!.reminderType;
-    });
-  }
-
-  void _clearFormNewSubtask() {
-    setState(() {
-      _titleController.clear();
-      _descriptionController.clear();
-      _dateSelected = DateTime.now();
-      _selectedPriority = PriorityEnum.low;
     });
   }
 
@@ -134,9 +126,23 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _creationSubscription = _taskEventsService.onTaskChanged.listen((event) {
-            if (event is SubtaskCreationEvent && event.success) {
-              if (mounted) {
-                Navigator.of(context).pop();
+            if (event is SubtaskCreationEvent) {
+              if (event.success) {
+                if (mounted) {
+                  Navigator.of(context).pop();
+                }
+              } else {
+                _showSnackBarError(translateFailureKey(appLocalizations, event.failureKey!));
+              }
+            }
+
+            if (event is SubtaskUpdateEvent) {
+              if (event.success) {
+                if (mounted) {
+                  Navigator.of(context).pop();
+                }
+              } else {
+                _showSnackBarError(translateFailureKey(appLocalizations, event.failureKey!));
               }
             }
           });
@@ -267,7 +273,7 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
                         TextFormField(
                           controller: _titleController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             prefixIcon: Icon(Icons.drive_file_rename_outline_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextTitleTaskForm,
@@ -288,7 +294,7 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
                         TextFormField(
                           controller: _descriptionController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             prefixIcon: Icon(Icons.description_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextDescriptionTaskForm,
@@ -309,7 +315,7 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
                                 style: BorderStyle.solid,
                                 color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                               ),
-                              borderRadius: BorderRadius.circular(5)
+                              borderRadius: BorderRadius.circular(15)
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -336,13 +342,12 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
                             ),
                           ),
                         ),
-
                         DropdownButtonFormField<PriorityEnum>(
                           value: _selectedPriority,
                           borderRadius: BorderRadius.circular(15),
                           icon: Icon(Icons.flag_rounded),
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             labelText: AppLocalizations.of(context)!.priority,
                           ),
                           items: PriorityEnum.values.map((priority) => DropdownMenuItem(
@@ -383,7 +388,7 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
                           borderRadius: BorderRadius.circular(15),
                           icon: Icon(Icons.notifications_active_rounded),
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                             labelText: AppLocalizations.of(context)!.reminderType,
                           ),
                           items: [

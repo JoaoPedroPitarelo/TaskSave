@@ -381,7 +381,10 @@ class _HomeScreenState extends State<HomeScreen> {
           return TaskWidget(
             key: ValueKey(task.id),
             task: task,
-            onDismissedCallback: ()  => taskViewmodel.prepareTaskForDeletion(task),
+            rightDismissedCallback: ()  => taskViewmodel.prepareTaskForDeletion(task),
+            leftDismissedCallback: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => TaskFormScreen(task: task))
+            ),
           );
         },
         onReorder: (int oldIndex, int newIndex) {
