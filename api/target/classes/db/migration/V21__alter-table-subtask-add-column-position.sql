@@ -1,0 +1,2 @@
+ALTER TABLE subtask
+ADD COLUMN position INTEGER NOT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE subtask ADD COLUMN reminder_type TEXT;
