@@ -135,8 +135,7 @@ public class TaskController {
         try {
             attachment = attachmentService.saveAttachment(user.getId(), taskId, file);
         } catch (IOException exc) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("erro","during saving archive " + exc.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("erro","during saving archive " + exc.getMessage()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", e.getMessage()));
