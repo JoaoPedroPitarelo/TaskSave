@@ -124,7 +124,12 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
                             decoration: BoxDecoration(
                               color: appColors.taskCardColor,
                               borderRadius:
-                              BorderRadius.only(topRight: Radius.circular(20)),
+                              BorderRadius.only(
+                                topRight: Radius.circular(10), 
+                                bottomRight: widget.subtask.description != null && widget.subtask.description!.isNotEmpty
+                                    ? Radius.circular(0)
+                                    : Radius.circular(10)
+                              ),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
@@ -164,21 +169,23 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: appColors.taskFooterColor,
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(20),
+                          if (widget.subtask.description != null && widget.subtask.description != "") ... [
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: appColors.taskFooterColor,
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(10),
+                                ),
+                              ),
+                              padding: EdgeInsets.all(9),
+                              child: Text(
+                                formatDescription(widget.subtask.description),
+                                style: theme.textTheme.displaySmall,
+                                textAlign: TextAlign.start,
                               ),
                             ),
-                            padding: EdgeInsets.all(9),
-                            child: Text(
-                              widget.subtask.description ?? "",
-                              style: theme.textTheme.displaySmall,
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
+                          ]
                         ],
                       ),
                     ),
@@ -190,5 +197,24 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
         ],
       ),
     );
+  }
+
+  String formatDescription(String? description) {
+    if (description == null) {
+      return "";
+    }
+
+    if (description.length > 150) {
+      return "${description.substring(0, 150)}...";
+    }
+
+    return description;
+  }
+
+  String formatTitle(String title) {
+    if (title.length > 28) {
+      return "${title.substring(0, 28)}...";
+    }
+    return title;
   }
 }

@@ -42,26 +42,49 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
         }
       }
     }
-    
+
+    final theme = Theme.of(context);
+
+
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(90),
         child: AppBar(
           iconTheme: IconThemeData(color: Colors.white),
-          backgroundColor: const Color.fromARGB(255, 12, 43, 170),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(8),
             )
           ),
-          title: Text(
-            AppLocalizations.of(context)!.config,
-            style: GoogleFonts.sansitaSwashed(
-              color: Colors.white,
-              fontSize: 30
-            ),
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: 24),
+                  Row(
+                    spacing: 10,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.settings,
+                        color: Colors.white,
+                        size: 38
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.config,
+                        style: GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 28
+                        ),
+                       ),
+                    ]
+                  ),
+                ],
+              ),
+            )
           ),
-          centerTitle: true,
         ),
       ),
       body: Padding(
@@ -71,9 +94,12 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: appColors.welcomeScreenCardColor,
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
-                boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
+                border: BoxBorder.all(
+                  color: theme.brightness != Brightness.light ? Colors.white24 : Colors.black26
+                )
+                // boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
               ),
               child: Column(
                 children: [
@@ -126,9 +152,12 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: appColors.welcomeScreenCardColor,
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
-                boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
+                border: BoxBorder.all(
+                   color: theme.brightness != Brightness.light ? Colors.white24 : Colors.black26
+                )
+                // boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
               ),
               child: Column(
                 children: [
@@ -181,7 +210,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                             fontWeight: FontWeight.w400,
                           ),
                           alignment: Alignment.center,
-                          dropdownColor: const Color.fromARGB(255, 12, 43, 170),
+                          dropdownColor: theme.appBarTheme.backgroundColor,
                           borderRadius: BorderRadius.circular(8),
                           items: AppLocalizations.supportedLocales.map((Locale locale) {
                             return DropdownMenuItem<Locale>(
@@ -201,9 +230,12 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: appColors.welcomeScreenCardColor,
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
-                boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
+                border: BoxBorder.all(
+                  color: theme.brightness != Brightness.light ? Colors.white24 : Colors.black26
+                )
+                // boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -239,6 +271,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                           onChanged: (value) async {
                             await preferencesProvider.toggleTheme(isDark: value);
                           },
+                          inactiveTrackColor: theme.scaffoldBackgroundColor,
+                          activeColor: Colors.black,
+                          thumbColor: WidgetStatePropertyAll(theme.appBarTheme.backgroundColor),
                         )
                       ]
                     ),
@@ -249,9 +284,12 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: appColors.welcomeScreenCardColor,
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(8),
-                  boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
+                  border: BoxBorder.all(
+                    color: theme.brightness != Brightness.light ? Colors.white24 : Colors.black26
+                  )
+                  // boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
                 ),
                 child: Column(
                   children: [

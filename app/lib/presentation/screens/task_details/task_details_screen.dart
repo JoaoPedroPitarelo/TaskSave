@@ -9,17 +9,14 @@ import 'package:task_save/domain/enums/reminder_type_num.dart';
 import 'package:task_save/domain/models/subtask_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/l10n/app_localizations.dart';
-import 'package:task_save/presentation/common/animated_snackbar.dart';
 import 'package:task_save/presentation/common/error_snackbar.dart';
 import 'package:task_save/presentation/common/hex_to_color.dart';
 import 'package:task_save/presentation/common/subtask_widget.dart';
 import 'package:task_save/presentation/common/sucess_snackbar.dart';
 import 'package:task_save/presentation/global_providers/app_preferences_provider.dart';
-import 'package:task_save/presentation/screens/home/task_viewmodel.dart';
 import 'package:task_save/presentation/screens/subtask_form/subtask_form_screen.dart';
 import 'package:task_save/presentation/screens/task_details/attachment_widget.dart';
 import 'package:task_save/presentation/screens/task_details/task_details_viewmodel.dart';
-import 'package:task_save/presentation/screens/task_form/task_form_screen.dart';
 import 'package:task_save/services/events/task_event_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -353,12 +350,12 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         preferredSize: Size.fromHeight(preferredHeight(contentHeight)),
         child: AppBar(
           backgroundColor: _getPriorityColor(widget.task.priority),
-          elevation: 12,
-          shadowColor: Colors.black,
+          elevation: 8,
+          shadowColor: Colors.black.withAlpha(40),
           iconTheme: const IconThemeData(color: Colors.white, size: 30),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(20),
+                bottom: Radius.circular(8),
               )
           ),
           flexibleSpace: SafeArea(
@@ -469,13 +466,13 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: appColors.welcomeScreenCardColor,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withAlpha(30),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
+                        color: Colors.black.withAlpha(10),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: const Offset(-1, 4),
                       ),
                     ],
                   ),
@@ -542,7 +539,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   ]
                 ],
                 // SubTasks
-                if (taskDetailsViewModel.subtaskList.isNotEmpty || !taskDetailsViewModel.isLoading) ... [
+                if (taskDetailsViewModel.subtaskList.isNotEmpty && taskDetailsViewModel.subtaskList != [] && !taskDetailsViewModel.isLoading) ... [
                   Row(
                     spacing: 10,
                     children: [
@@ -566,7 +563,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.black12,
-                            borderRadius: BorderRadius.circular(15)
+                            borderRadius: BorderRadius.circular(8)
                           ),
                           child: child,
                         ),
@@ -601,7 +598,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         ),
       ),
       floatingActionButton: SpeedDial(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         icon: Icons.add_rounded,
         activeIcon: Icons.close_rounded,
         iconTheme: IconThemeData(size: 30),
@@ -610,19 +607,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         childMargin: EdgeInsets.all(20),
         foregroundColor: Colors.white,
         spacing: 20,
-        elevation: 8,
+        elevation: 2,
         children: [
           SpeedDialChild(
-            label: AppLocalizations.of(context)!.delete,
-            child:Icon(Icons.delete_outline_rounded, color: Colors.white),
-            backgroundColor: _getPriorityColor(widget.task.priority),
-            onTap: () {
-              final taskViewmodel = context.read<TaskViewmodel>();
-              taskViewmodel.prepareTaskForDeletion(widget.task);
-              Navigator.of(context).pop();
-            }
-          ),
-          SpeedDialChild(
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)) ,
             label: AppLocalizations.of(context)!.addSubTask,
             child:Icon(Icons.list_rounded, color: Colors.white),
             backgroundColor: _getPriorityColor(widget.task.priority),
@@ -633,6 +622,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             }
           ),
           SpeedDialChild(
+            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             label: AppLocalizations.of(context)!.addAttachment,
             child:Icon(Icons.file_upload_rounded, color: Colors.white),
             backgroundColor: _getPriorityColor(widget.task.priority),

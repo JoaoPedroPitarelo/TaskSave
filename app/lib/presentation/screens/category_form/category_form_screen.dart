@@ -128,18 +128,18 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
   @override
   Widget build(BuildContext context) {
     final categoryFormViewmodel = context.watch<CategoryFormViewmodel>();
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(110),
+        preferredSize: const Size.fromHeight(90),
         child: AppBar(
-          backgroundColor: const Color.fromARGB(255, 12, 43, 170),
-          elevation: 12,
-          shadowColor: Colors.black,
+          elevation: 3,
+          shadowColor: Colors.black54,
           iconTheme: IconThemeData(color: Colors.white, size: 30),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(20),
+              bottom: Radius.circular(8),
             )
           ),
           flexibleSpace: SafeArea(
@@ -148,7 +148,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 50),
+                  SizedBox(height: 24),
                   Row(
                     spacing: 10,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -156,7 +156,6 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
                       Icon(
                         Icons.dashboard_customize_rounded,
                         color: Colors.white,
-                        shadows: [Shadow(color: Colors.black54, blurRadius: 5, offset: Offset(-1, 2.1))],
                         size: 40
                       ),
                       Text(
@@ -198,7 +197,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
                         TextFormField(
                           controller: _descriptionController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             prefixIcon: Icon(Icons.drive_file_rename_outline_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextDescriptionCategoryForm,
@@ -229,6 +228,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 0),
                           child: ColorPicker(
+                            pickerAreaBorderRadius: BorderRadius.all(Radius.circular(10)),
                             pickerColor: _colorPicked,
                             onColorChanged: (color) {
                               setState(() {
@@ -254,10 +254,10 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
         onPressed: () async {
           await _submitForm(context);
         },
+        elevation: 3,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         label: categoryFormViewmodel.isLoading
-          ? CircularProgressIndicator(
-              color: Colors.white,
-            )
+          ? CircularProgressIndicator(color: Colors.white)
           : Text(
             widget.category != null
                 ? AppLocalizations.of(context)!.modifyCategory

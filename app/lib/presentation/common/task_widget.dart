@@ -1,7 +1,9 @@
+import 'package:sqflite/utils/utils.dart';
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
 import 'package:task_save/domain/enums/reminder_type_num.dart';
 import 'package:task_save/domain/models/task_vo.dart';
+import 'package:task_save/presentation/common/hex_to_color.dart';
 import 'package:task_save/presentation/screens/task_details/task_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -102,24 +104,28 @@ class _TaskWidgetState extends State<TaskWidget> {
           if (widget.task.subtaskList.isNotEmpty) ...[
             Positioned(
               bottom: 4,
-              left: 16,
-              right: 16,
+              left: 6,
+              right: 6,
               height: 12,
               child: Container(
                 decoration: BoxDecoration(
-                  color: appColors.taskCardColor,
+                  color: theme.brightness == Brightness.dark
+                    ? appColors.taskCardColor
+                    : Colors.grey.withAlpha(210) ,
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),
             Positioned(
               bottom: 0,
-              left: 24,
-              right: 24,
+              left: 12,
+              right: 12,
               height: 12,
               child: Container(
                 decoration: BoxDecoration(
-                  color: appColors.taskCardColor?.withAlpha(100),
+                  color: theme.brightness == Brightness.dark
+                    ? appColors.taskCardColor?.withAlpha(100)
+                    : Colors.grey.withAlpha(150),
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -130,18 +136,18 @@ class _TaskWidgetState extends State<TaskWidget> {
                 MaterialPageRoute(builder: (context) => TaskDetailsScreen(task: widget.task))
             ),
             child: Container(
-              margin: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+              margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
               child: IntrinsicHeight(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                      width: 30,
+                      width: 35,
                       decoration: BoxDecoration(
                         color: getPriorityColor(context, widget.task.priority),
                         borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            bottomLeft: Radius.circular(10)
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10),
                         )
                       ),
                     ),
@@ -154,7 +160,12 @@ class _TaskWidgetState extends State<TaskWidget> {
                             decoration: BoxDecoration(
                               color: appColors.taskCardColor,
                               borderRadius:
-                                  BorderRadius.only(topRight: Radius.circular(10)),
+                                BorderRadius.only(
+                                  topRight: Radius.circular(10),
+                                  bottomRight: widget.task.description != null && widget.task.description!.isNotEmpty
+                                    ? Radius.circular(0)
+                                    : Radius.circular(10)
+                                ),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
@@ -165,7 +176,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                                   SizedBox(height: 8),
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: appColors.taskFooterColor!.withAlpha(130),
+                                      color: appColors.taskFooterColor!,
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
                                         color: appColors.taskFooterColor!.withAlpha(50)
@@ -189,6 +200,14 @@ class _TaskWidgetState extends State<TaskWidget> {
                                           if (widget.task.attachmentList.isNotEmpty) ...[
                                             SizedBox(width: 8),
                                             Icon(Icons.file_present_outlined, size: 18),
+                                          ],
+                                          if (widget.task.category != null && !widget.task.category!.isDefault) ...[
+                                            SizedBox(width: 8),
+                                            Icon(
+                                              Icons.dashboard_rounded, 
+                                              color: hexToColor(widget.task.category!.color),
+                                              size: 18
+                                            ),
                                           ]
                                         ],
                                       ),
@@ -198,21 +217,23 @@ class _TaskWidgetState extends State<TaskWidget> {
                               ),
                             ),
                           ),
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: appColors.taskFooterColor,
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(10),
+                          if (widget.task.description != null && widget.task.description != "") ... [
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: appColors.taskFooterColor,
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(10),
+                                ),
+                              ),
+                              padding: EdgeInsets.all(9),
+                              child: Text(
+                                formatDescription(widget.task.description),
+                                style: theme.textTheme.displaySmall,
+                                textAlign: TextAlign.start,
                               ),
                             ),
-                            padding: EdgeInsets.all(9),
-                            child: Text(
-                              formatDescription(widget.task.description),
-                              style: theme.textTheme.displaySmall,
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
+                          ]
                         ],
                       ),
                     ),

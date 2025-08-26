@@ -9,6 +9,9 @@ class AppThemeDataDark {
     return ThemeData(
       scaffoldBackgroundColor: AppColorsDark.scaffoldBackgroundColor,
       colorScheme: ColorScheme.dark(brightness: Brightness.dark, primary: AppColorsDark.scaffoldPrimaryColor),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColorsDark.scaffoldAppBarColor
+      ),
       textTheme: TextTheme(
         displayLarge: AppTextStyles.displayLarge,
         displayMedium: AppTextStyles.displayMedium,

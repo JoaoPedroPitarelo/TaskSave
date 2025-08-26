@@ -8,8 +8,10 @@ class AppThemeDataLight {
   static ThemeData get lightTheme {
     return ThemeData(
       scaffoldBackgroundColor: AppColorsLight.scaffoldBackgroundColor,
-      colorScheme: ColorScheme.light(
-          brightness: Brightness.light, primary: AppColorsLight.scaffoldPrimaryColor),
+      colorScheme: ColorScheme.light(brightness: Brightness.light, primary: AppColorsLight.scaffoldPrimaryColor),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColorsLight.scaffoldAppBarColor
+      ),
       textTheme: TextTheme(
         displayLarge: AppTextStyles.displayLarge,
         displayMedium: AppTextStyles.displayMedium,

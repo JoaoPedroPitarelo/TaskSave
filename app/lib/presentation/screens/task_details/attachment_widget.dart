@@ -59,8 +59,16 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
       child: Container(
         width: 150, height: 200,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(8),
           color: appColors.welcomeScreenCardColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(15),
+              spreadRadius: 1,
+              blurRadius: 10,
+              offset: const Offset(-1, 4),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

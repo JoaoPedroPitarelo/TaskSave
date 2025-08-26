@@ -15,8 +15,8 @@ class AttachmentViewerScreen extends StatefulWidget {
   const AttachmentViewerScreen({
     required this.attachment,
     required this.taskDetailsViewmodel,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<AttachmentViewerScreen> createState() => _AttachmentViewerScreenState();
@@ -40,14 +40,25 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.attachment.fileName),
+        title: Text(
+          widget.attachment.fileName,
+          style: GoogleFonts.roboto(
+            color: Colors.white
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white, size: 30),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(8),
+        )),
         actions: [
           PopupMenuButton<String>(
+            color: theme.appBarTheme.backgroundColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(8),
             ),
             onSelected: (value) async {
               if (value == "saveAs") {
@@ -87,6 +98,7 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
                       appLocalizations.download,
                       style: GoogleFonts.roboto(
                         fontWeight: FontWeight.w500,
+                        color: Colors.white,
                         fontSize: 15,
                       ),
                     ),
@@ -106,6 +118,7 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
                     Text(
                       appLocalizations.delete,
                       style: GoogleFonts.roboto(
+                        color: Colors.white,
                         fontWeight: FontWeight.w500,
                         fontSize: 15,
                       ),
@@ -121,6 +134,7 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
         ? PDFView(
           filePath: widget.attachment.localFilePath,
           fitPolicy: FitPolicy.BOTH,
+          backgroundColor: Colors.transparent,
           swipeHorizontal: true,
           onRender: (pages) {
             setState(() {

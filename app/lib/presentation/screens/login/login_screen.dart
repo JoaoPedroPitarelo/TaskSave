@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                               prefixIcon: Icon(Icons.email_outlined),
                               fillColor: const Color.fromARGB(31, 187, 187, 187),
                               labelText: AppLocalizations.of(context)!.enterEmail,
@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: _obscureText,
                             controller: _passwordController,
                             decoration: InputDecoration(
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                               prefixIcon: Icon(Icons.password_outlined),
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -198,7 +198,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: loginViewModel.isLoading ? null : () => _handleLogin(),
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: Colors.white12, strokeAlign: 1, width: 1.2
+                        )
                       ),
                       minimumSize: Size(350, 50),
                       backgroundColor: const Color.fromARGB(200, 25, 56, 189),
@@ -217,7 +220,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterScreen())),
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: Colors.white12, strokeAlign: 1, width: 1.2
+                        )
                       ),
                       minimumSize: Size(350, 50),
                       backgroundColor: const Color.fromARGB(192, 2, 117, 33),

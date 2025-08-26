@@ -229,18 +229,19 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     }
 
     final locale = Provider.of<AppPreferencesProvider>(context, listen: false).appLanguage.toString();
-    
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(115),
+        preferredSize: const Size.fromHeight(90),
         child: AppBar(
-          backgroundColor: const Color.fromARGB(255, 12, 43, 170),
-          elevation: 12,
-          shadowColor: Colors.black,
+          backgroundColor: theme.appBarTheme.backgroundColor,
+          elevation: 2,
+          shadowColor: Colors.black54,
           iconTheme: IconThemeData(color: Colors.white, size: 30),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(20),
+              bottom: Radius.circular(8),
             )
           ),
           flexibleSpace: SafeArea(
@@ -249,7 +250,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 50),
+                  SizedBox(height: 24),
                   Row(
                     spacing: 10,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -257,7 +258,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                       Icon(
                         Icons.check_box_outlined,
                         color: Colors.white,
-                        shadows: [Shadow(color: Colors.black54, blurRadius: 5, offset: Offset(-1, 2.1))],
                         size: 45
                       ),
                       Text(
@@ -299,7 +299,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                         TextFormField(
                           controller: _titleController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             prefixIcon: Icon(Icons.drive_file_rename_outline_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextTitleTaskForm,
@@ -320,7 +320,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                         TextFormField(
                           controller: _descriptionController,
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             prefixIcon: Icon(Icons.description_rounded),
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextDescriptionTaskForm,
@@ -341,7 +341,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                                 style: BorderStyle.solid,
                                 color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                               ),
-                              borderRadius: BorderRadius.circular(15)
+                              borderRadius: BorderRadius.circular(8)
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -373,7 +373,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                           value: _selectedPriority,
                           icon: Icon(Icons.flag_rounded),
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             labelText: AppLocalizations.of(context)!.priority,
                           ),
                           items: PriorityEnum.values.map((priority) => DropdownMenuItem(
@@ -413,7 +413,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                           value: _selectedReminderType,
                           icon: Icon(Icons.notifications_active_rounded),
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             labelText: AppLocalizations.of(context)!.reminderType,
                           ),
                           items: [
@@ -449,7 +449,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                           value: _selectedCategory,
                           icon: Icon(Icons.dashboard_customize_rounded),
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             labelText: AppLocalizations.of(context)!.category,
                           ),
                           items: [
@@ -520,6 +520,9 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
         onPressed: () async {
           await _submitForm(context);
         },
+        elevation: 3,
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         label: taskFormViewmodel.isLoading
           ? CircularProgressIndicator(color: Colors.white)
           : Text(widget.task != null

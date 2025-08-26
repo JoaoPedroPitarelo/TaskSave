@@ -137,7 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextFormField(
                             controller: _loginController,
                             decoration: InputDecoration(
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                               prefixIcon: Icon(Icons.email_outlined),
                               fillColor: const Color.fromARGB(31, 187, 187, 187),
                               labelText: AppLocalizations.of(context)!.enterEmail,
@@ -161,7 +161,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscureTextPassword,
                             controller: _passwordController,
                             decoration: InputDecoration(
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                               prefixIcon: Icon(Icons.password_outlined),
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -195,7 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscureTextConfirmedPassword,
                             controller: _confirmPasswordController,
                             decoration: InputDecoration(
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                               prefixIcon: Icon(Icons.password_outlined),
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -235,7 +235,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: Colors.white12, strokeAlign: 1, width: 1.2
+                        )
                       ),
                       minimumSize: Size(350, 50),
                       backgroundColor: const Color.fromARGB(192, 2, 117, 33)
