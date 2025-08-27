@@ -29,7 +29,7 @@ class WidgetFilterMode extends StatelessWidget {
         return const Icon(Icons.warning_rounded, size: 30, color: Colors.white);
       case FilteringTaskModeEnum.category:
         return category!.description != "Default"
-            ? Icon(Icons.dashboard_customize_rounded, size: 30, color: hexToColor(category!.color))
+            ? Icon(Icons.dashboard_rounded, size: 30, color: hexToColor(category!.color))
             : const Icon(Icons.close_rounded, size: 35, color: Colors.white);
     }
   }

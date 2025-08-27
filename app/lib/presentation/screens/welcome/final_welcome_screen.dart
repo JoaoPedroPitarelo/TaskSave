@@ -14,7 +14,8 @@ class FinalWelcomeScreen extends StatefulWidget {
   State<FinalWelcomeScreen> createState() => _FinalWelcomeScreenState();
 }
 
-class _FinalWelcomeScreenState extends State<FinalWelcomeScreen> with SingleTickerProviderStateMixin {
+class _FinalWelcomeScreenState extends State<FinalWelcomeScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 2),
@@ -37,6 +38,7 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen> with SingleTick
   @override
   Widget build(BuildContext context) {
     final appColors = AppGlobalColors.of(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Column(
@@ -69,7 +71,9 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen> with SingleTick
                         id: 0,
                         description: "None",
                         isDefault: false,
-                        color: "None",
+                        color: theme.brightness != Brightness.dark
+                            ? "3B3B3B"
+                            : "#CCCCCC",
                         activate: true,
                         position: -1),
                     completed: false,
@@ -86,7 +90,8 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen> with SingleTick
                 child: SlideTransition(
                   position: _offsetAnimation,
                   child: FadeTransition(
-                    opacity: _controller.drive(CurveTween(curve: Curves.decelerate)),
+                    opacity:
+                        _controller.drive(CurveTween(curve: Curves.decelerate)),
                     child: const Icon(
                       Icons.double_arrow_outlined,
                       size: 80,

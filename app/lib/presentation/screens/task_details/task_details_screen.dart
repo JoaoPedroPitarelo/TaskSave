@@ -80,7 +80,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     }
   }
 
-
   Future<void> _initAttachments() async {
     final taskDetailsViewModel = context.read<TaskDetailsViewmodel>();
     await taskDetailsViewModel.initializeAttachmentsStatus(widget.task);
@@ -113,7 +112,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         taskSubscription = _taskEventService.onTaskChanged.listen((event) {
           if (event is TaskDownloadAttachmentEvent) {
             if (!event.success) {
-              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+              _showErrorSnackBar(
+                  translateFailureKey(appLocalizations, event.failureKey!));
             }
           }
 
@@ -127,7 +127,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
           if (event is TaskAttachmentUploadEvent) {
             if (!event.success) {
-              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+              _showErrorSnackBar(
+                  translateFailureKey(appLocalizations, event.failureKey!));
             } else {
               _initAttachments();
               _showSuccessSnackBar("Anexo enviado com sucesso!");
@@ -136,7 +137,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
           if (event is TaskAttachmentDeletedEvent) {
             if (!event.success) {
-              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+              _showErrorSnackBar(
+                  translateFailureKey(appLocalizations, event.failureKey!));
             }
 
             if (event.success) {
@@ -147,18 +149,21 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
           if (event is SubtaskDeletionEvent) {
             if (event.success == null) {
-              _showUndoSnackbarSubtask(event.task, event.subtask, event.originalIndex);
+              _showUndoSnackbarSubtask(
+                  event.task, event.subtask, event.originalIndex);
               return;
             }
 
             if (!event.success!) {
-              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+              _showErrorSnackBar(
+                  translateFailureKey(appLocalizations, event.failureKey!));
             }
           }
 
-          if(event is SubtaskCreationEvent) {
+          if (event is SubtaskCreationEvent) {
             if (!event.success) {
-              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+              _showErrorSnackBar(
+                  translateFailureKey(appLocalizations, event.failureKey!));
             } else {
               taskDetailsViewmodel.addSubtask(event.subtask!);
             }
@@ -166,7 +171,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
           if (event is SubtaskUpdateEvent) {
             if (!event.success) {
-              _showErrorSnackBar(translateFailureKey(appLocalizations, event.failureKey!));
+              _showErrorSnackBar(
+                  translateFailureKey(appLocalizations, event.failureKey!));
             } else {
               taskDetailsViewmodel.updateSubtask(event.subtask!);
               _initSubtasks();
@@ -178,36 +184,36 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   }
 
   void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      showErrorSnackBar(message)
-    );
+    ScaffoldMessenger.of(context).showSnackBar(showErrorSnackBar(message));
   }
 
   void _showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      showSuccessSnackBar(message)
-    );
+    ScaffoldMessenger.of(context).showSnackBar(showSuccessSnackBar(message));
   }
 
-  // TODO criar um método geral para isso aqui, com VoidCallbakck
-  void _showUndoSnackbarSubtask(TaskVo task, SubtaskVo subtask, int originalIndex) {
+  void _showUndoSnackbarSubtask(
+      TaskVo task, SubtaskVo subtask, int originalIndex) {
     final taskDetailsViewmodel = context.read<TaskDetailsViewmodel>();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      showErrorSnackBar(
-        "${AppLocalizations.of(context)!.subtask} ${subtask.title} ${AppLocalizations.of(context)!.deleted}",
-        action: SnackBarAction(
-          label: AppLocalizations.of(context)!.undo,
-          textColor: Colors.white,
-          onPressed: () {
-            taskDetailsViewmodel.undoDeletionSubtask(task, subtask, originalIndex);
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-      ),
-    ).closed.then((reason) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+          showErrorSnackBar(
+            "${AppLocalizations.of(context)!.subtask} ${subtask.title} ${AppLocalizations.of(context)!.deleted}",
+            action: SnackBarAction(
+              label: AppLocalizations.of(context)!.undo,
+              textColor: Colors.white,
+              onPressed: () {
+                taskDetailsViewmodel.undoDeletionSubtask(
+                    task, subtask, originalIndex);
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        )
+        .closed.then((reason) {
       if (reason != SnackBarClosedReason.action) {
-        taskDetailsViewmodel.confirmSubtaskDeletion(task, subtask, originalIndex);
+        taskDetailsViewmodel.confirmSubtaskDeletion(
+            task, subtask, originalIndex);
       }
     });
   }
@@ -222,85 +228,94 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              backgroundColor: const Color.fromARGB(255, 24, 24, 24),
-              title: Row(
-                children: [
-                  Icon(
-                    Icons.file_present_rounded,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                  SizedBox(width: 10),
-                  Text(AppLocalizations.of(context)!.addAttachment, style: GoogleFonts.roboto(fontSize: 25, color: Colors.white)),
-                ],
-              ),
-              content: selectedFile == null
-                  ? Text(AppLocalizations.of(context)!.selectAFileToUpload, style: GoogleFonts.roboto(fontSize: 16, color: Colors.white))
-                  : Text("${AppLocalizations.of(context)!.file}: ${selectedFile!.path.split(Platform.pathSeparator).last}", style: GoogleFonts.roboto(fontSize: 16, color: Colors.white)),
-              actions: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                title: Row(
                   children: [
-                    TextButton(
-                      child: Row(
-                        children: [
-                          Icon(Icons.close_rounded, color: Colors.red, size: 30),
-                          Text(
-                            AppLocalizations.of(context)!.cancel,
-                            style: GoogleFonts.roboto(fontSize: 16, color: Colors.white)
-                          ),
-                        ],
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                    Icon(
+                      Icons.file_present_rounded,
+                      color: Colors.white,
+                      size: 40,
                     ),
-                    if (selectedFile == null)
+                    SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.addAttachment,
+                        style: GoogleFonts.roboto(
+                            fontSize: 25, color: Colors.white)),
+                  ],
+                ),
+                content: selectedFile == null
+                    ? Text(AppLocalizations.of(context)!.selectAFileToUpload,
+                        style: GoogleFonts.roboto(
+                            fontSize: 16, color: Colors.white))
+                    : Text(
+                        "${AppLocalizations.of(context)!.file}: ${selectedFile!.path.split(Platform.pathSeparator).last}",
+                        style: GoogleFonts.roboto(
+                            fontSize: 16, color: Colors.white)),
+                actions: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
                       TextButton(
                         child: Row(
                           children: [
-                            Icon(Icons.file_upload_rounded, color: Colors.green, size: 30),
-                            Text(
-                              AppLocalizations.of(context)!.selectFile,
-                              style: GoogleFonts.roboto(fontSize: 16, color: Colors.white)
-                            ),
+                            Icon(Icons.close_rounded,
+                                color: Colors.red, size: 30),
+                            Text(AppLocalizations.of(context)!.cancel,
+                                style: GoogleFonts.roboto(
+                                    fontSize: 16, color: Colors.white)),
                           ],
                         ),
-                        onPressed: () async {
-                          FilePickerResult? result =
-                          await FilePicker.platform.pickFiles(
-                        type: FileType.custom,
-                        allowedExtensions: ['pdf', 'png', 'jpeg', 'jpg'],
-                      );
-                      if (result != null) {
-                            setState(() {
-                              selectedFile = File(result.files.single.path!);
-                            });
-                          }
-                        },
-                      )
-                    else
-                      TextButton(
-                        child: Row(
-                          children: [
-                            Icon(Icons.check_rounded, color: Colors.green, size: 30),
-                            SizedBox(width: 10),
-                            Text(AppLocalizations.of(context)!.confirm, style: GoogleFonts.roboto(fontSize: 16, color: Colors.white)),
-                          ],
-                        ),
-                        onPressed: () async {
-                          if (selectedFile != null) {
-                            await taskDetailsViewModel.uploadAttachment(selectedFile!, widget.task);
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-                          }
+                        onPressed: () {
+                          Navigator.of(context).pop();
                         },
                       ),
-                  ],
-                )
-              ]
-            );
+                      if (selectedFile == null)
+                        TextButton(
+                          child: Row(
+                            children: [
+                              Icon(Icons.file_upload_rounded,
+                                  color: Colors.green, size: 30),
+                              Text(AppLocalizations.of(context)!.selectFile,
+                                  style: GoogleFonts.roboto(
+                                      fontSize: 16, color: Colors.white)),
+                            ],
+                          ),
+                          onPressed: () async {
+                            FilePickerResult? result =
+                                await FilePicker.platform.pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['pdf', 'png', 'jpeg', 'jpg'],
+                            );
+                            if (result != null) {
+                              setState(() {
+                                selectedFile = File(result.files.single.path!);
+                              });
+                            }
+                          },
+                        )
+                      else
+                        TextButton(
+                          child: Row(
+                            children: [
+                              Icon(Icons.check_rounded,
+                                  color: Colors.green, size: 30),
+                              SizedBox(width: 10),
+                              Text(AppLocalizations.of(context)!.confirm,
+                                  style: GoogleFonts.roboto(
+                                      fontSize: 16, color: Colors.white)),
+                            ],
+                          ),
+                          onPressed: () async {
+                            if (selectedFile != null) {
+                              await taskDetailsViewModel.uploadAttachment(
+                                  selectedFile!, widget.task);
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
+                              }
+                            }
+                          },
+                        ),
+                    ],
+                  )
+                ]);
           },
         );
       },
@@ -343,23 +358,24 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     }
 
     final appColors = AppGlobalColors.of(context);
-    final locale = Provider.of<AppPreferencesProvider>(context, listen: false).appLanguage.toString();
+    final locale = Provider.of<AppPreferencesProvider>(context, listen: false)
+        .appLanguage
+        .toString();
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(preferredHeight(contentHeight)),
-        child: AppBar(
-          backgroundColor: _getPriorityColor(widget.task.priority),
-          elevation: 8,
-          shadowColor: Colors.black.withAlpha(40),
-          iconTheme: const IconThemeData(color: Colors.white, size: 30),
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(8),
-              )
-          ),
-          flexibleSpace: SafeArea(
-            child: Padding(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(preferredHeight(contentHeight)),
+          child: AppBar(
+            backgroundColor: _getPriorityColor(widget.task.priority),
+            elevation: 8,
+            shadowColor: Colors.black.withAlpha(40),
+            iconTheme: const IconThemeData(color: Colors.white, size: 30),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(8),
+            )),
+            flexibleSpace: SafeArea(
+                child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -380,257 +396,254 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   ),
                 ],
               ),
-            )
+            )),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-            child: Column(
-              spacing: 20,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  spacing: 10,
+        body: SingleChildScrollView(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+              child: Column(
+                  spacing: 20,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.flag_rounded,
-                      color: _getPriorityColor(widget.task.priority),
-                      size: 35,
-                    ),
-                    Text(
-                        "${AppLocalizations.of(context)!.priority} ${getTranslatedPriority(widget.task.priority).toLowerCase()}",
-                        style: GoogleFonts.roboto(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 23,
-                        )
-                    )
-                  ],
-                ),
-                Row(
-                  spacing: 10,
-                  children: [
-                    Icon(
-                      widget.task.category!.isDefault ? Icons.close_rounded : Icons.dashboard_customize_rounded,
-                      size: 35,
-                      color: widget.task.category!.isDefault ? Colors.red : hexToColor(widget.task.category!.color)
-                    ),
-                    Text(
-                      widget.task.category!.isDefault ? AppLocalizations.of(context)!.withoutCategory : widget.task.category!.description,
-                      style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 23,
-                      )
-                    )
-                  ],
-                ),
-                if (widget.task.deadline != null) ... [
-                Row(
-                  spacing: 10,
-                  children: [
-                    Icon(
-                        Icons.calendar_month_rounded,
-                        size: 35
-                    ),
-                    Text(
-                      intl.DateFormat.yMMMd(locale).format(widget.task.deadline!),
-                      style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 23,
-                      )
-                    )
-                  ],
-                ),
-                ],
-                Row(
-                  spacing: 10,
-                  children: [
-                    Icon(
-                      widget.task.reminderType == ReminderTypeNum.without_notification ? Icons.alarm_off_rounded : Icons.access_alarm_rounded,
-                      size: 35,
-                    ),
-                    Text(
-                      getTranslatedReminderType(widget.task.reminderType!),
-                      style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 23,
-                      )
-                    )
-                  ],
-                ),
-                // Description
-                if (widget.task.description != null)
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: appColors.welcomeScreenCardColor,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(10),
-                        spreadRadius: 1,
-                        blurRadius: 10,
-                        offset: const Offset(-1, 4),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(13.0),
-                    child: Text(
-                      widget.task.description!,
-                      style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 20,
-                      )
-                    ),
-                  )
-                ),
-                Divider(),
-                // Attachments
-                if (widget.task.attachmentList.isNotEmpty) ...[
-                  Row(
-                    spacing: 10,
-                    children: [
-                      Icon(
-                        Icons.file_present_rounded,
-                        size: 35
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.attachments,
-                        style: GoogleFonts.roboto(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 23,
-                        )
-                      )
-                    ],
-                  ),
-                  if (taskDetailsViewModel.isLoading) ... [
-                    SizedBox(
-                      width: 90,
-                      height: 90,
-                      child: Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: CircularProgressIndicator(
-                          color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-                          strokeAlign: 5,
-                          strokeWidth: 5,
+                    Row(
+                      spacing: 10,
+                      children: [
+                        Icon(
+                          Icons.flag_rounded,
+                          color: _getPriorityColor(widget.task.priority),
+                          size: 35,
                         ),
+                        Text(
+                            "${AppLocalizations.of(context)!.priority} ${getTranslatedPriority(widget.task.priority).toLowerCase()}",
+                            style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 23,
+                            ))
+                      ],
+                    ),
+                    Row(
+                      spacing: 10,
+                      children: [
+                        Icon(
+                            widget.task.category!.isDefault
+                                ? Icons.close_rounded
+                                : Icons.dashboard_rounded,
+                            size: 35,
+                            color: widget.task.category!.isDefault
+                                ? Colors.red
+                                : hexToColor(widget.task.category!.color)),
+                        Text(
+                            widget.task.category!.isDefault
+                                ? AppLocalizations.of(context)!.withoutCategory
+                                : widget.task.category!.description,
+                            style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 23,
+                            ))
+                      ],
+                    ),
+                    if (widget.task.deadline != null) ...[
+                      Row(
+                        spacing: 10,
+                        children: [
+                          Icon(Icons.calendar_month_rounded, size: 35),
+                          Text(
+                              intl.DateFormat.yMMMd(locale)
+                                  .format(widget.task.deadline!),
+                              style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 23,
+                              ))
+                        ],
                       ),
-                    )
-                  ] else ... [
-                    SizedBox(
-                      height: 200,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: widget.task.attachmentList.length,
-                        itemBuilder: (context, i) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: AttachmentWidget(
-                              attachment: widget.task.attachmentList[i],
-                              status: taskDetailsViewModel.attachmentStatus[widget.task.attachmentList[i].id]!,
-                            ),
-                          );
-                        }
-                      )
-                    )
-                  ]
-                ],
-                // SubTasks
-                if (taskDetailsViewModel.subtaskList.isNotEmpty && taskDetailsViewModel.subtaskList != [] && !taskDetailsViewModel.isLoading) ... [
-                  Row(
-                    spacing: 10,
-                    children: [
-                      Icon(
-                        Icons.list,
-                        size: 35
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.subtasks,
-                        style: GoogleFonts.roboto(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 23,
-                        )
-                      )
                     ],
-                  ),
-                  ReorderableListView.builder(
-                    proxyDecorator: (child, index, animation) {
-                      return Material(
-                        color: Colors.transparent,
-                        child: Container(
+                    Row(
+                      spacing: 10,
+                      children: [
+                        Icon(
+                          widget.task.reminderType ==
+                                  ReminderTypeNum.without_notification
+                              ? Icons.alarm_off_rounded
+                              : Icons.access_alarm_rounded,
+                          size: 35,
+                        ),
+                        Text(
+                            getTranslatedReminderType(
+                                widget.task.reminderType!),
+                            style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 23,
+                            ))
+                      ],
+                    ),
+                    // Description
+                    if (widget.task.description != null)
+                      Container(
+                          width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Colors.black12,
-                            borderRadius: BorderRadius.circular(8)
+                            color: appColors.welcomeScreenCardColor,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(10),
+                                spreadRadius: 1,
+                                blurRadius: 10,
+                                offset: const Offset(-1, 4),
+                              ),
+                            ],
                           ),
-                          child: child,
-                        ),
-                      );
-                    },
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, i) {
-                      SubtaskVo subtask = taskDetailsViewModel.subtaskList[i];
-                      return SubtaskWidget(
-                        key: ValueKey(subtask.id),
-                        subtask: subtask,
-                        rightDismissedCallback: () async {
-                          taskDetailsViewModel.prepareSubtaskForDeletion(widget.task, subtask);
-                        },
-                        leftDismissedCallback: () => {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => SubtaskFormScreen(task: widget.task, subtask: subtask))
-                          )
-                        },
-                      );
-                    },
-                    itemCount: widget.task.subtaskList.length,
-                    onReorder: (oldIndex, newIndex) {
-                      taskDetailsViewModel.reorderSubtask(widget.task, widget.task.subtaskList[oldIndex], oldIndex, newIndex);
-                    }
-                  )
-                ]
-              ]
+                          child: Padding(
+                            padding: const EdgeInsets.all(13.0),
+                            child: Text(widget.task.description!,
+                                style: GoogleFonts.roboto(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 20,
+                                )),
+                          )),
+                    Divider(),
+                    // Attachments
+                    if (widget.task.attachmentList.isNotEmpty) ...[
+                      Row(
+                        spacing: 10,
+                        children: [
+                          Icon(Icons.file_present_rounded, size: 35),
+                          Text(AppLocalizations.of(context)!.attachments,
+                              style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 23,
+                              ))
+                        ],
+                      ),
+                      if (taskDetailsViewModel.isLoading) ...[
+                        SizedBox(
+                          width: 90,
+                          height: 90,
+                          child: Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                              strokeAlign: 5,
+                              strokeWidth: 5,
+                            ),
+                          ),
+                        )
+                      ] else ...[
+                        SizedBox(
+                            height: 200,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: widget.task.attachmentList.length,
+                                itemBuilder: (context, i) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: AttachmentWidget(
+                                      attachment: widget.task.attachmentList[i],
+                                      status: taskDetailsViewModel
+                                              .attachmentStatus[
+                                          widget.task.attachmentList[i].id]!,
+                                    ),
+                                  );
+                                }))
+                      ]
+                    ],
+                    // SubTasks
+                    if (taskDetailsViewModel.subtaskList.isNotEmpty &&
+                        taskDetailsViewModel.subtaskList != [] &&
+                        !taskDetailsViewModel.isLoading) ...[
+                      Row(
+                        spacing: 10,
+                        children: [
+                          Icon(Icons.list, size: 35),
+                          Text(AppLocalizations.of(context)!.subtasks,
+                              style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 23,
+                              ))
+                        ],
+                      ),
+                      ReorderableListView.builder(
+                          proxyDecorator: (child, index, animation) {
+                            return Material(
+                              color: Colors.transparent,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.black12,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: child,
+                              ),
+                            );
+                          },
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, i) {
+                            SubtaskVo subtask =
+                                taskDetailsViewModel.subtaskList[i];
+                            return SubtaskWidget(
+                              key: ValueKey(subtask.id),
+                              subtask: subtask,
+                              rightDismissedCallback: () async {
+                                taskDetailsViewModel.prepareSubtaskForDeletion(
+                                    widget.task, subtask);
+                              },
+                              leftDismissedCallback: () => {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => SubtaskFormScreen(
+                                        task: widget.task, subtask: subtask)))
+                              },
+                            );
+                          },
+                          itemCount: widget.task.subtaskList.length,
+                          onReorder: (oldIndex, newIndex) {
+                            taskDetailsViewModel.reorderSubtask(
+                                widget.task,
+                                widget.task.subtaskList[oldIndex],
+                                oldIndex,
+                                newIndex);
+                          })
+                    ]
+                  ]),
             ),
           ),
         ),
-      ),
-      floatingActionButton: SpeedDial(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        icon: Icons.add_rounded,
-        activeIcon: Icons.close_rounded,
-        iconTheme: IconThemeData(size: 30),
-        backgroundColor: _getPriorityColor(widget.task.priority),
-        childrenButtonSize: Size(60, 60),
-        childMargin: EdgeInsets.all(20),
-        foregroundColor: Colors.white,
-        spacing: 20,
-        elevation: 2,
-        children: [
-          SpeedDialChild(
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)) ,
-            label: AppLocalizations.of(context)!.addSubTask,
-            child:Icon(Icons.list_rounded, color: Colors.white),
+        floatingActionButton: SpeedDial(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            icon: Icons.add_rounded,
+            activeIcon: Icons.close_rounded,
+            iconTheme: IconThemeData(size: 30),
             backgroundColor: _getPriorityColor(widget.task.priority),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SubtaskFormScreen(task: widget.task))
-              );
-            }
-          ),
-          SpeedDialChild(
+            childrenButtonSize: Size(60, 60),
+            childMargin: EdgeInsets.all(20),
+            foregroundColor: Colors.white,
+            spacing: 20,
             elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            label: AppLocalizations.of(context)!.addAttachment,
-            child:Icon(Icons.file_upload_rounded, color: Colors.white),
-            backgroundColor: _getPriorityColor(widget.task.priority),
-            onTap: _showAddAttachmentDialog,
-          ),
-        ]
-      )
-    );
+            children: [
+              SpeedDialChild(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  label: AppLocalizations.of(context)!.addSubTask,
+                  child: Icon(Icons.list_rounded, color: Colors.white),
+                  backgroundColor: _getPriorityColor(widget.task.priority),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            SubtaskFormScreen(task: widget.task)));
+                  }),
+              SpeedDialChild(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                label: AppLocalizations.of(context)!.addAttachment,
+                child: Icon(Icons.file_upload_rounded, color: Colors.white),
+                backgroundColor: _getPriorityColor(widget.task.priority),
+                onTap: _showAddAttachmentDialog,
+              ),
+            ]));
   }
 }

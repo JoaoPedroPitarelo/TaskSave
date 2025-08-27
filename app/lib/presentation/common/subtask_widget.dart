@@ -75,8 +75,8 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(
-              Icons.check_circle_outline_rounded,
-              color: const Color.fromARGB(255, 0, 255, 8),
+              Icons.check_box_outlined,
+              color: const Color.fromARGB(255, 51, 176, 38),
               size: 80,
             ),
           ],
@@ -88,9 +88,9 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Icon(
+           Icon(
               Icons.edit_rounded,
-              color: Colors.blue,
+              color: const Color.fromARGB(255, 39, 135, 212),
               size: 70,
             ),
           ]

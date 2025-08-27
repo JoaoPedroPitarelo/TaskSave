@@ -23,7 +23,6 @@ void showCustomAboutDialog(BuildContext context) {
     context: context,
     builder: (context) {
       return AlertDialog(
-        backgroundColor: const Color.fromARGB(255, 24, 24, 24),
         title: Column(
           children: [
             SizedBox(

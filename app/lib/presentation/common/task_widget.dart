@@ -1,4 +1,3 @@
-import 'package:sqflite/utils/utils.dart';
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
 import 'package:task_save/domain/enums/reminder_type_num.dart';
@@ -73,13 +72,13 @@ class _TaskWidgetState extends State<TaskWidget> {
       },
       background: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.all(30),
+        padding: EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(
-              Icons.check_circle_outline_rounded,
-              color: const Color.fromARGB(255, 0, 255, 8),
+              Icons.check_box_outlined,
+              color: const Color.fromARGB(255, 51, 176, 38),
               size: 80,
             ),
           ],
@@ -93,7 +92,7 @@ class _TaskWidgetState extends State<TaskWidget> {
           children: [
             Icon(
               Icons.edit_rounded,
-              color: Colors.blue,
+              color: const Color.fromARGB(255, 39, 135, 212),
               size: 70,
             ),
           ]

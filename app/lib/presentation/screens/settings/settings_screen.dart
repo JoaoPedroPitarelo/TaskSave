@@ -388,7 +388,6 @@ class _LogoutConfirmDialog extends StatelessWidget {
     final homeViewmodel = Provider.of<HomeViewmodel>(context, listen: false);
 
     return AlertDialog(
-      backgroundColor: const Color.fromARGB(255, 24, 24, 24),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

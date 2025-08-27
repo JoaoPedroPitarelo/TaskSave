@@ -12,6 +12,33 @@ class AppThemeDataDark {
       appBarTheme: AppBarTheme(
         backgroundColor: AppColorsDark.scaffoldAppBarColor
       ),
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: AppColorsDark.taskCardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        elevation: 2,
+        dayOverlayColor: WidgetStateProperty.all(Colors.transparent),
+        dayShape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8), // raio da célula selecionada
+          ),
+        ),
+        confirmButtonStyle: ButtonStyle(
+          foregroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 105, 223, 79)),
+          textStyle: WidgetStatePropertyAll(TextStyle(fontWeight: FontWeight.bold))
+        ),
+        cancelButtonStyle: ButtonStyle(
+          foregroundColor: WidgetStatePropertyAll(const Color.fromARGB(255, 207, 56, 56)),
+          textStyle: WidgetStatePropertyAll(TextStyle(fontWeight: FontWeight.bold))
+        )
+      ),
+      dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), 
+        ),
+        backgroundColor: const Color.fromARGB(255, 57, 57, 57),
+      ),
       textTheme: TextTheme(
         displayLarge: AppTextStyles.displayLarge,
         displayMedium: AppTextStyles.displayMedium,

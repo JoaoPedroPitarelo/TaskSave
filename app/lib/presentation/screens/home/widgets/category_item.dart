@@ -34,13 +34,13 @@ class CategoryItem extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.only(left: 8.0, bottom: 20.0, right: 22),
+        padding: const EdgeInsets.only(left: 8.0, bottom: 20.0, right: 12),
         child: Row(
           children: [
             Icon(
               category.isDefault
                 ? Icons.close_rounded
-                : Icons.dashboard_customize_rounded,
+                : Icons.dashboard_rounded,
               color: hexToColor(category.color),
               size: 25,
             ),
@@ -58,7 +58,7 @@ class CategoryItem extends StatelessWidget {
                 index: index,
                 child: const Icon(
                   Icons.drag_handle_rounded,
-                  size: 25,
+                  size: 28,
                   color: Colors.white,
                 ),
               ),
@@ -76,14 +76,12 @@ class _CategoryDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color.fromARGB(255, 24, 24, 24),
       title: Row(
         children: [
           Icon(
-            Icons.dashboard_customize_outlined,
+            Icons.dashboard_rounded,
             color: hexToColor(category.color),
             size: 30,
-            shadows: const [Shadow(blurRadius: 5, offset: Offset(-1, 2.5))],
           ),
           const SizedBox(width: 14),
           Text(
@@ -153,7 +151,6 @@ class _DeleteCategoryDialog extends StatelessWidget {
     final categoryViewmodel = Provider.of<CategoryViewmodel>(context, listen: false);
 
     return AlertDialog(
-      backgroundColor: const Color.fromARGB(255, 24, 24, 24),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

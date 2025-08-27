@@ -17,7 +17,6 @@ void showExportTasksDialog(BuildContext context) {
       return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            backgroundColor: const Color.fromARGB(255, 24, 24, 24),
             title: Row(
               children: [
                 const Icon(Icons.picture_as_pdf_rounded, size: 35, color: Colors.white),
@@ -46,7 +45,7 @@ void showExportTasksDialog(BuildContext context) {
                     },
                     fillColor: WidgetStatePropertyAll(Colors.white),
                     activeColor: Color.fromARGB(255, 12, 43, 170),
-                    secondary: Icon(Icons.dashboard_customize_rounded, color: hexToColor(category.color)),
+                    secondary: Icon(Icons.dashboard_rounded, color: hexToColor(category.color)),
                   );
                 },
               ),

@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:task_save/core/enums/filtering_task_mode_enum.dart';
 import 'package:task_save/core/enums/task_type_enum.dart';
 import 'package:task_save/core/errors/failure.dart';
 import 'package:task_save/core/errors/failure_keys.dart';
 import 'package:task_save/core/events/task_events.dart';
 import 'package:task_save/domain/enums/reminder_type_num.dart';
+import 'package:task_save/domain/models/category_vo.dart';
 import 'package:task_save/domain/models/notifiable.dart';
 import 'package:task_save/domain/models/subtask_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
@@ -277,7 +277,9 @@ class TaskViewmodel extends ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    final result = await _taskRepository.exportTasksToPDF(categoryId);
+    final CategoryVo category = _categoryViewmodel.categories.firstWhere((element) => element.id == int.parse(categoryId!),);
+  
+    final result = await _taskRepository.exportTasksToPDF(category.isDefault ? null : categoryId);
 
     result.fold(
       (failure) {

@@ -13,7 +13,7 @@ class SecondWelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     final appColors = AppGlobalColors.of(context);
 
     return Scaffold(
@@ -33,18 +33,16 @@ class SecondWelcomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(18)),
-                  color: appColors.welcomeScreenCardColor
-                ),
+                    borderRadius: BorderRadius.all(Radius.circular(18)),
+                    color: appColors.welcomeScreenCardColor),
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 10, left: 80, right: 80),
-                      child: Text(
-                        AppLocalizations.of(context)!.addYourTask,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.displayMedium
-                      ),
+                      padding:
+                          const EdgeInsets.only(top: 10, left: 80, right: 80),
+                      child: Text(AppLocalizations.of(context)!.addYourTask,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.displayMedium),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
@@ -52,47 +50,72 @@ class SecondWelcomeScreen extends StatelessWidget {
                         children: [
                           TaskWidget(
                             task: TaskVo(
-                              id: "0",
-                              title: AppLocalizations.of(context)!.makeCakeTitle,
-                              description: AppLocalizations.of(context)!.makeCakeDescription,
-                              deadline: DateTime(2025, 10, 10),
-                              priority: PriorityEnum.neutral,
-                              category: CategoryVo(id: 0, description: '', color: '', isDefault: false, activate: true, position: -1),
-                              subtaskList: [],
-                              attachmentList: [],
-                              completed: false
-                            ),
+                                id: "0",
+                                title:
+                                    AppLocalizations.of(context)!.makeCakeTitle,
+                                description: AppLocalizations.of(context)!
+                                    .makeCakeDescription,
+                                deadline: DateTime(2025, 10, 10),
+                                priority: PriorityEnum.neutral,
+                                category: CategoryVo(
+                                    id: 0,
+                                    description: '',
+                                    color: theme.brightness != Brightness.dark
+                                        ? "3B3B3B"
+                                        : "#CCCCCC",
+                                    isDefault: false,
+                                    activate: true,
+                                    position: -1),
+                                subtaskList: [],
+                                attachmentList: [],
+                                completed: false),
                           ),
                           TaskWidget(
                             task: TaskVo(
-                              id: "00",
-                              title: AppLocalizations.of(context)!.walkWithMyDogTitle,
-                              description: AppLocalizations.of(context)!.walkWithMyDogDescription,
-                              deadline: DateTime(2025, 10, 06),
-                              priority: PriorityEnum.low,
-                              category: CategoryVo(id: 0, description: '', color: '', isDefault: false, activate: true, position: -1),
-                              attachmentList: [],
-                              subtaskList: [],
-                              completed: false
-                            ),
+                                id: "00",
+                                title: AppLocalizations.of(context)!
+                                    .walkWithMyDogTitle,
+                                description: AppLocalizations.of(context)!
+                                    .walkWithMyDogDescription,
+                                deadline: DateTime(2025, 10, 06),
+                                priority: PriorityEnum.low,
+                                category: CategoryVo(
+                                    id: 0,
+                                    description: '',
+                                    color: theme.brightness != Brightness.dark
+                                        ? "3B3B3B"
+                                        : "#CCCCCC",
+                                    isDefault: false,
+                                    activate: true,
+                                    position: -1),
+                                attachmentList: [],
+                                subtaskList: [],
+                                completed: false),
                           ),
                           TaskWidget(
-                            task: TaskVo(
-                              id: "000",
-                              title: AppLocalizations.of(context)!.finishMathWorkTile,
-                              description: AppLocalizations.of(context)!.finishMathWorkDescription,
-                              deadline: DateTime(2025, 05, 02),
-                              priority: PriorityEnum.high,
-                              category: CategoryVo(id: 0, description: '', color: '', isDefault: false, activate: true, position: -1),
-                              subtaskList: [],
-                              attachmentList: [],
-                              completed: false
-                            )
-                          )
+                              task: TaskVo(
+                                  id: "000",
+                                  title: AppLocalizations.of(context)!
+                                      .finishMathWorkTile,
+                                  description: AppLocalizations.of(context)!
+                                      .finishMathWorkDescription,
+                                  deadline: DateTime(2025, 05, 02),
+                                  priority: PriorityEnum.high,
+                                  category: CategoryVo(
+                                      id: 0,
+                                      description: '',
+                                      color: theme.brightness != Brightness.dark
+                                          ? "3B3B3B"
+                                          : "#CCCCCC",
+                                      isDefault: false,
+                                      activate: true,
+                                      position: -1),
+                                  subtaskList: [],
+                                  attachmentList: [],
+                                  completed: false))
                         ],
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -109,21 +132,16 @@ class SecondWelcomeScreen extends StatelessWidget {
                       size: 40,
                       weight: 200.0,
                     ),
-                    onPressed: () => Navigator.of(context).pop()
-                ),
+                    onPressed: () => Navigator.of(context).pop()),
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 40,
-                      weight: 200.0
-                    ),
+                    icon: Icon(Icons.arrow_forward_ios_rounded,
+                        size: 40, weight: 200.0),
                     onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => ThirdWelcomeScreen())
-                    )
-                ),
+                        MaterialPageRoute(
+                            builder: (context) => ThirdWelcomeScreen()))),
               ),
             ],
           )

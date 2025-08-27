@@ -474,6 +474,9 @@ class _HomeScreenState extends State<HomeScreen> {
       // Menu lateral
       drawer: Drawer(
         backgroundColor: theme.appBarTheme.backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10)
+        ),
         child: Padding(
           padding: const EdgeInsets.only(top: 45),
           child: Column(
@@ -605,8 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         index: i,
                         onTap: () {
                           categoryViewmodel.selectCategory(category);
-                          taskViewmodel
-                              .filterTasks(FilteringTaskModeEnum.category);
+                          taskViewmodel.filterTasks(FilteringTaskModeEnum.category);
                           Navigator.of(context).pop();
                         },
                       );
