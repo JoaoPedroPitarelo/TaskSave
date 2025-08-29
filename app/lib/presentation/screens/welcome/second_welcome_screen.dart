@@ -33,20 +33,23 @@ class SecondWelcomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(18)),
-                    color: appColors.welcomeScreenCardColor),
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  color: appColors.welcomeScreenCardColor,
+                ),
                 child: Column(
                   children: [
                     Padding(
-                      padding:
-                          const EdgeInsets.only(top: 10, left: 80, right: 80),
-                      child: Text(AppLocalizations.of(context)!.addYourTask,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.displayMedium),
+                      padding: const EdgeInsets.only(top: 10, left: 80, right: 80),
+                      child: Text(
+                        AppLocalizations.of(context)!.addYourTask,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.displayMedium
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           TaskWidget(
                             task: TaskVo(

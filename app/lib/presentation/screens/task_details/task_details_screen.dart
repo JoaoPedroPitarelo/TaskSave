@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:task_save/core/events/task_events.dart';
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/core/utils/translateFailureKey.dart';
@@ -600,10 +601,12 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           itemCount: widget.task.subtaskList.length,
                           onReorder: (oldIndex, newIndex) {
                             taskDetailsViewModel.reorderSubtask(
-                                widget.task,
-                                widget.task.subtaskList[oldIndex],
-                                oldIndex,
-                                newIndex);
+                              widget.task,
+                              widget.task.subtaskList[oldIndex],
+                              oldIndex,
+                              newIndex
+                            );
+                            HapticFeedback.mediumImpact();
                           })
                     ]
                   ]),

@@ -413,6 +413,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                           value: _selectedReminderType,
                           icon: Icon(Icons.notifications_active_rounded),
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(10),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             labelText: AppLocalizations.of(context)!.reminderType,
                           ),

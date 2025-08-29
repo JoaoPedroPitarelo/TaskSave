@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Widget buildDrawerItem({
   required BuildContext context,
@@ -39,6 +40,9 @@ Widget buildDrawerItem({
         ],
       ],
     ),
-    onTap: onTap,
+    onTap: () {
+      onTap();
+      HapticFeedback.mediumImpact();
+    },
   );
 }

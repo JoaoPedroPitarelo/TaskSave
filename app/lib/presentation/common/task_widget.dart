@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/domain/enums/priority_enum.dart';
 import 'package:task_save/domain/enums/reminder_type_num.dart';
@@ -41,6 +42,13 @@ class _TaskWidgetState extends State<TaskWidget> {
       case PriorityEnum.high:
         return appColor.taskPriorityHighColor!;
       }
+  }
+
+  bool isThisTaskOverdue(DateTime date) {
+    if (DateTime.now().isAfter(date)) {
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -132,7 +140,7 @@ class _TaskWidgetState extends State<TaskWidget> {
           ],
           GestureDetector(
             onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => TaskDetailsScreen(task: widget.task))
+              MaterialPageRoute(builder: (context) => TaskDetailsScreen(task: widget.task))
             ),
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
@@ -171,7 +179,26 @@ class _TaskWidgetState extends State<TaskWidget> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(formatTitle(widget.task.title), style: theme.textTheme.labelMedium),
+                                  Stack(
+                                    children: [
+                                       if (isThisTaskOverdue(widget.task.deadline!)) ... [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: const Color.fromARGB(255, 192, 65, 65),
+                                                borderRadius: BorderRadius.circular(20)
+                                              ),
+                                              width: 10,
+                                              height: 10,
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                      Text(formatTitle(widget.task.title), style: theme.textTheme.labelMedium)
+                                    ]
+                                  ),
                                   SizedBox(height: 8),
                                   Container(
                                     decoration: BoxDecoration(

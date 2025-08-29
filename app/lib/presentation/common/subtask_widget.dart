@@ -41,6 +41,14 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
     }
   }
 
+
+  bool isThisSubTaskOverdue(DateTime date) {
+    if (DateTime.now().isAfter(date)) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final appColors = AppGlobalColors.of(context);
@@ -136,7 +144,29 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(widget.subtask.title, style: theme.textTheme.labelMedium),
+                                   Stack(
+                                    children: [
+                                       if (isThisSubTaskOverdue(widget.subtask.deadline!)) ... [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: const Color.fromARGB(255, 192, 65, 65),
+                                                borderRadius: BorderRadius.circular(20)
+                                              ),
+                                              width: 10,
+                                              height: 10,
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                      Text(
+                                        formatTitle(widget.subtask.title), 
+                                        style: theme.textTheme.labelMedium
+                                      )
+                                    ]
+                                  ),
                                   SizedBox(height: 8),
                                   Container(
                                     decoration: BoxDecoration(
