@@ -85,7 +85,7 @@ void showExportTasksDialog(BuildContext context) {
                           style: GoogleFonts.roboto(
                             fontSize: 16,
                             color: Colors.white,
-                           )
+                          )
                         ),
                       ],
                     ),

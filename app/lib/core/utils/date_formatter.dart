@@ -27,8 +27,8 @@ class DateFormatter extends TextInputFormatter {
     }
 
     return TextEditingValue(
-        text: formatted,
-        selection: TextSelection.collapsed(offset: formatted.length)
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length)
     );
   }
 }

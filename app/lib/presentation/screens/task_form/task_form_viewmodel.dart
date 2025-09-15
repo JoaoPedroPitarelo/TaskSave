@@ -3,7 +3,6 @@ import 'package:task_save/core/errors/failure.dart';
 import 'package:task_save/core/errors/failure_keys.dart';
 import 'package:task_save/core/events/task_events.dart';
 import 'package:task_save/domain/enums/reminder_type_num.dart';
-import 'package:task_save/domain/models/category_vo.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/repositories/api/task_repository.dart';
 import 'package:task_save/services/events/task_event_service.dart';
@@ -80,5 +79,4 @@ class TaskFormViewmodel extends ChangeNotifier {
       }
     );
   }
-
 }

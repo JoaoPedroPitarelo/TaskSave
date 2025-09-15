@@ -1,4 +1,3 @@
-
 extension DateUtils on DateTime {
 
   bool get isToday {

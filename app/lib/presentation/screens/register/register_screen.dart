@@ -83,7 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height -
+              minHeight: 
+                MediaQuery.of(context).size.height -
                 MediaQuery.of(context).padding.top -
                 MediaQuery.of(context).padding.bottom
             ),
@@ -98,10 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         IconButton(
-                          icon: Icon(
-                              Icons.arrow_back_outlined,
-                              size: 30
-                          ),
+                          icon: Icon(Icons.arrow_back_outlined, size: 30),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -114,10 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   Column(
                     children: [
-                      Text(
-                          AppLocalizations.of(context)!.register,
-                          style: theme.textTheme.displayLarge
-                      ),
+                      Text(AppLocalizations.of(context)!.register, style: theme.textTheme.displayLarge),
                       SizedBox(
                         width: 350,
                         child: Divider(
@@ -227,29 +222,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: registerViewmodel.isLoading ? null : () {
-                      if (!_formKey.currentState!.validate()) {
-                        return;
-                      }
+                    onPressed: registerViewmodel.isLoading 
+                      ? null 
+                      : () {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
                       registerViewmodel.createLogin(_loginController.text, _passwordController.text);
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                          color: Colors.white12, strokeAlign: 1, width: 1.2
-                        )
+                        side: BorderSide(color: Colors.white12, strokeAlign: 1, width: 1.2)
                       ),
                       minimumSize: Size(350, 50),
                       backgroundColor: const Color.fromARGB(192, 2, 117, 33)
                     ),
-                    child: registerViewmodel.isLoading ? CircularProgressIndicator()
-                        : Text(
-                      AppLocalizations.of(context)!.registerButton,
-                      style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 25
-                      ),
+                    child: registerViewmodel.isLoading 
+                      ? CircularProgressIndicator()
+                      : Text(
+                          AppLocalizations.of(context)!.confirm,
+                          style: GoogleFonts.roboto(
+                            color: Colors.white,
+                            fontSize: 25
+                          ),
                     ),
                   ),
                 ],

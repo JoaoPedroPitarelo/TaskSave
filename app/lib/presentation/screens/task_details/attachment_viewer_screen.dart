@@ -52,14 +52,13 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
         ),
         iconTheme: const IconThemeData(color: Colors.white, size: 30),
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(8),
-        )),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(8),
+          )
+        ),
         actions: [
           PopupMenuButton<String>(
             color: theme.appBarTheme.backgroundColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             onSelected: (value) async {
               if (value == "saveAs") {
                 await widget.taskDetailsViewmodel.saveAsAttachment(
@@ -70,6 +69,7 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
                   Navigator.of(context).pop();
                 }
               }
+
               if (value == "delete") {
                 if (context.mounted) {
                   Navigator.pop(context);
@@ -89,11 +89,7 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
                 child: Row(
                   spacing: 10,
                   children: [
-                    Icon(
-                      Icons.download_rounded,
-                      size: 25,
-                      color: Colors.green,
-                    ),
+                    const Icon(Icons.download_rounded, size: 25, color: Colors.green),
                     Text(
                       appLocalizations.download,
                       style: GoogleFonts.roboto(
@@ -110,11 +106,7 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
                 child: Row(
                   spacing: 10,
                   children: [
-                    const Icon(
-                      Icons.close_rounded,
-                      size: 25,
-                      color: Colors.red,
-                    ),
+                    const Icon(Icons.close_rounded, size: 25, color: Colors.red),
                     Text(
                       appLocalizations.delete,
                       style: GoogleFonts.roboto(
@@ -159,12 +151,12 @@ class _AttachmentViewerScreenState extends State<AttachmentViewerScreen> {
           },
         )
         : InteractiveViewer(
-          panEnabled: true,
-          boundaryMargin: const EdgeInsets.all(80),
-          minScale: 0.5,
-          maxScale: 4,
-          child: Center(child: _buildImage(widget.attachment.fileType)
-        ),
+            panEnabled: true,
+            boundaryMargin: const EdgeInsets.all(80),
+            minScale: 0.5,
+            maxScale: 4,
+            child: Center(child: _buildImage(widget.attachment.fileType)
+          ),
       )
     );
   }

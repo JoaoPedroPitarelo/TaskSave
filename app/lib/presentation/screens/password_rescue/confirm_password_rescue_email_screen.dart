@@ -28,9 +28,9 @@ class ConfirmPasswordRescueEmailScreen extends StatelessWidget {
               ),
             ),
             Image.asset(
-                appColors.taskSaveLogo!,
-                width: 250,
-                alignment: Alignment.center
+              appColors.taskSaveLogo!,
+              width: 250,
+              alignment: Alignment.center
             ),
             Expanded(
               child: Column(
@@ -39,11 +39,7 @@ class ConfirmPasswordRescueEmailScreen extends StatelessWidget {
                   Icon(
                     Icons.mark_email_unread_outlined,
                     shadows: [
-                      Shadow(
-                          color: Colors.black,
-                          blurRadius: 0.8,
-                          offset: Offset(0, 1.3)
-                      )
+                      Shadow(color: Colors.black, blurRadius: 0.8, offset: Offset(0, 1.3))
                     ],
                     color: Color.fromARGB(255, 61, 64, 254),
                     size: 180,
@@ -59,9 +55,7 @@ class ConfirmPasswordRescueEmailScreen extends StatelessWidget {
                   ),
                   SizedBox(
                     width: 350,
-                    child: Divider(
-                      thickness: 1.2,
-                    ),
+                    child: Divider(thickness: 1.2),
                   )
                 ],
               ),

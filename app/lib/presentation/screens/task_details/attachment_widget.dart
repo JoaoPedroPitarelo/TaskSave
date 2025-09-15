@@ -29,10 +29,7 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
     if (type == FileTypeEnum.jpeg || type == FileTypeEnum.png || type == FileTypeEnum.jpg) {
       return Image.file(File(widget.attachment.localFilePath!), fit: BoxFit.contain);
     }
-    return Icon(
-      Icons.file_present_rounded,
-      size: 80,
-    );
+    return Icon(Icons.file_present_rounded, size: 80);
   }
 
   @override
@@ -57,7 +54,8 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
         }
       },
       child: Container(
-        width: 150, height: 200,
+        width: 150, 
+        height: 200,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: appColors.welcomeScreenCardColor,
@@ -73,11 +71,7 @@ class _AttachmentWidgetState extends State<AttachmentWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(
-              height: 100,
-              width: 75,
-              child: _buildAttachmentPreview(),
-            ),
+            SizedBox(height: 100, width: 75, child: _buildAttachmentPreview()),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(

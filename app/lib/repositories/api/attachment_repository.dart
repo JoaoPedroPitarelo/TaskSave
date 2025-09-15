@@ -14,7 +14,7 @@ class AttachmentRepository {
   AttachmentRepository(this._dio ,this._localAttachmentRepository);
 
   /* Download attachment
-  * Este é um metdo que abaixa o anexo quando ele não estiver salvo localmente e retorna o caminho do arquivo baixado
+  * Este é um metodo que abaixa o anexo quando ele não estiver salvo localmente e retorna o caminho do arquivo baixado
   * para posteriormente ser usado para mostrar o anexo na tela
   * */
   Future<Either<Failure, String>> downloadAttachment(AttachmentVo attachment, {Function(int, int)? onReceiveProgress}) async {
@@ -130,7 +130,7 @@ class AttachmentRepository {
 
     try {
       final response = await _dio.delete(
-          '/task/${attachment.taskId}/attachment/${attachment.id}'
+        '/task/${attachment.taskId}/attachment/${attachment.id}'
       );
 
       return Right(response.data);

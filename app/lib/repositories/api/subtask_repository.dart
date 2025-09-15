@@ -30,12 +30,12 @@ class SubtaskRepository {
   }
 
   Map<String, dynamic> _makePayload(
-      String? title,
-      String? description,
-      DateTime? deadline,
-      PriorityEnum? priority,
-      ReminderTypeNum? reminderType,
-      int? position)
+    String? title,
+    String? description,
+    DateTime? deadline,
+    PriorityEnum? priority,
+    ReminderTypeNum? reminderType,
+    int? position)
   {
     final payload = <String, dynamic>{};
 
@@ -81,16 +81,16 @@ class SubtaskRepository {
       final response = await _dio.post(
         '/subtask/create',
         data:  { ..._makePayload(
-            subtask.title,
-            subtask.description,
-            subtask.deadline,
-            subtask.priority,
-            subtask.reminderType,
-            null
-          ),
-          "parentTaskId": parentTaskId,
-          }
-        );
+          subtask.title,
+          subtask.description,
+          subtask.deadline,
+          subtask.priority,
+          subtask.reminderType,
+          null
+        ),
+        "parentTaskId": parentTaskId,
+        }
+      );
 
       return Right(response.data);
     } on DioException catch (e) {

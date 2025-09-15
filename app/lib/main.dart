@@ -34,7 +34,6 @@ import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
-
 import 'package:task_save/core/enums/task_type_enum.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/presentation/screens/task_details/task_details_screen.dart';
@@ -239,7 +238,7 @@ class _MyAppState extends State<MyApp> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final passwordRescueProvider = Provider.of<PasswordRescueProvider>(context, listen: false);
 
-      dio.options.baseUrl = 'http://31.97.95.208:8080';
+      dio.options.baseUrl = '';
       dio.options.connectTimeout = const Duration(seconds: 20);
       dio.options.receiveTimeout = const Duration(seconds: 10);
 
@@ -342,7 +341,6 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate
       ],
       supportedLocales: [
-        // TODO ao final do projeto adicionar as demais linguagens
         Locale('en', 'US'),
         Locale('pt', 'BR'),
         Locale('es')

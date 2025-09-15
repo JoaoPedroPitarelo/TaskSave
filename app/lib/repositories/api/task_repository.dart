@@ -70,13 +70,13 @@ class TaskRepository {
   }
 
   Map<String, dynamic> _makePayload(
-      String? title,
-      String? description,
-      DateTime? deadline,
-      CategoryVo? category,
-      PriorityEnum? priority,
-      ReminderTypeNum? reminderType,
-      int? position)
+    String? title,
+    String? description,
+    DateTime? deadline,
+    CategoryVo? category,
+    PriorityEnum? priority,
+    ReminderTypeNum? reminderType,
+    int? position)
   {
     final payload = <String, dynamic>{};
 
@@ -102,8 +102,6 @@ class TaskRepository {
     int? position,
   }) async {
     try {
-      print(_makePayload(title, description, deadline, category, priority, reminderType, position));
-
       final response = await _dio.put(
         '/task/$id',
         data: _makePayload(
@@ -170,7 +168,9 @@ class TaskRepository {
       }
       return Left(ServerFailure(
           message: "Unexpected Internal server error",
-          statusCode: e.response?.statusCode ?? 500));
+          statusCode: e.response?.statusCode ?? 500
+        )
+      );
     } catch (e) {
       return Left(UnexpectedFailure());
     }

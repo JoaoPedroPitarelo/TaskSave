@@ -41,7 +41,6 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
     }
   }
 
-
   bool isThisSubTaskOverdue(DateTime date) {
     if (DateTime.now().isAfter(date)) {
       return true;
@@ -135,8 +134,8 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
                               BorderRadius.only(
                                 topRight: Radius.circular(10), 
                                 bottomRight: widget.subtask.description != null && widget.subtask.description!.isNotEmpty
-                                    ? Radius.circular(0)
-                                    : Radius.circular(10)
+                                  ? Radius.circular(0)
+                                  : Radius.circular(10)
                               ),
                             ),
                             child: Padding(
@@ -173,7 +172,7 @@ class _SubtaskWidgetState extends State<SubtaskWidget> {
                                       color: appColors.taskFooterColor!.withAlpha(130),
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(
-                                          color: appColors.taskFooterColor!.withAlpha(50)
+                                        color: appColors.taskFooterColor!.withAlpha(50)
                                       )
                                     ),
                                     height: 28,

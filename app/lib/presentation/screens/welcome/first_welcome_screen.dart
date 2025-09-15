@@ -36,7 +36,7 @@ class FirstWelcomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: IconButton(
                   icon: Icon(
                     Icons.arrow_forward_ios_rounded,

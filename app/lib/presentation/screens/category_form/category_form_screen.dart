@@ -138,9 +138,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
           shadowColor: Colors.black54,
           iconTheme: IconThemeData(color: Colors.white, size: 30),
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(8),
-            )
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(8))
           ),
           flexibleSpace: SafeArea(
             child: Padding(
@@ -153,15 +151,11 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
                     spacing: 10,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.dashboard_customize_rounded,
-                        color: Colors.white,
-                        size: 40
-                      ),
+                      Icon(Icons.dashboard_customize_rounded, color: Colors.white, size: 40),
                       Text(
                         widget.category != null
-                            ? AppLocalizations.of(context)!.modifyCategory
-                            : AppLocalizations.of(context)!.addCategory,
+                          ? AppLocalizations.of(context)!.modifyCategory
+                          : AppLocalizations.of(context)!.addCategory,
                         style: GoogleFonts.roboto(
                           color: Colors.white,
                           fontSize: 25,
@@ -202,10 +196,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
                             fillColor: const Color.fromARGB(31, 175, 175, 175),
                             labelText: AppLocalizations.of(context)!.labelTextDescriptionCategoryForm,
                             hintText: AppLocalizations.of(context)!.hintTextDescriptionCategoryForm,
-                            hintStyle: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 14
-                            )
+                            hintStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14)
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -260,19 +251,15 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
           ? CircularProgressIndicator(color: Colors.white)
           : Text(
             widget.category != null
-                ? AppLocalizations.of(context)!.modifyCategory
-                : AppLocalizations.of(context)!.addCategory,
+              ? AppLocalizations.of(context)!.modifyCategory
+              : AppLocalizations.of(context)!.addCategory,
             style: GoogleFonts.roboto(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w400
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w400
             ),
         ),
-        icon: Icon(
-            Icons.add_rounded,
-            color: Colors.white,
-            size: 35
-        ),
+        icon: Icon(Icons.add_rounded, color: Colors.white, size: 35),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

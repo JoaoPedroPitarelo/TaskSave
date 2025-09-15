@@ -255,11 +255,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                     spacing: 10,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.check_box_outlined,
-                        color: Colors.white,
-                        size: 45
-                      ),
+                      Icon(Icons.check_box_outlined, color: Colors.white, size: 45),
                       Text(
                         widget.task != null
                           ? AppLocalizations.of(context)!.modifyTask
@@ -282,7 +278,8 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
         child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height -
+              minHeight: 
+                MediaQuery.of(context).size.height -
                 MediaQuery.of(context).padding.top -
                 MediaQuery.of(context).padding.bottom
             ),
@@ -368,7 +365,6 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                             ),
                           ),
                         ),
-
                         DropdownButtonFormField<PriorityEnum>(
                           value: _selectedPriority,
                           icon: Icon(Icons.flag_rounded),
@@ -381,11 +377,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: [
-                                Icon(
-                                Icons.flag_rounded,
-                                  size: 30,
-                                  color: getPriorityColor(priority),
-                                ),
+                                Icon(Icons.flag_rounded, size: 30, color: getPriorityColor(priority)),
                                 SizedBox(width: 10),
                                 Text(
                                   getTranslatedPriority(priority),
@@ -432,8 +424,8 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                                   Text(
                                     getTranslatedReminderType(reminderType),
                                     style: GoogleFonts.roboto(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400
                                     ),
                                   ),
                                 ],
@@ -461,11 +453,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                                   alignment: Alignment.centerLeft,
                                   child: Row(
                                     children: [
-                                      Icon(
-                                        Icons.dashboard_customize_rounded,
-                                        size: 30,
-                                        color: hexToColor(category.color),
-                                      ),
+                                      Icon(Icons.dashboard_customize_rounded, size: 30, color: hexToColor(category.color)),
                                       SizedBox(width: 10),
                                       Text(
                                         category.description,
@@ -483,11 +471,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
                                 alignment: Alignment.centerLeft,
                                 child: Row(
                                   children: [
-                                    Icon(
-                                      Icons.close_rounded,
-                                      size: 30,
-                                      color: Colors.red,
-                                    ),
+                                    Icon(Icons.close_rounded, size: 30, color: Colors.red),
                                     SizedBox(width: 10),
                                     Text(
                                       AppLocalizations.of(context)!.withoutCategory,
@@ -527,19 +511,15 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
         label: taskFormViewmodel.isLoading
           ? CircularProgressIndicator(color: Colors.white)
           : Text(widget.task != null
-              ? AppLocalizations.of(context)!.modifyTask
-              : AppLocalizations.of(context)!.addTask,
+            ? AppLocalizations.of(context)!.modifyTask
+            : AppLocalizations.of(context)!.addTask,
             style: GoogleFonts.roboto(
               color: Colors.white,
               fontSize: 22,
               fontWeight: FontWeight.w400
             ),
         ),
-        icon: Icon(
-          Icons.add_rounded,
-          color: Colors.white,
-          size: 35
-        ),
+        icon: Icon(Icons.add_rounded, color: Colors.white, size: 35),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

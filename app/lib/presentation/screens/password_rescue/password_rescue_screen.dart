@@ -75,7 +75,8 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height -
+              minHeight: 
+                MediaQuery.of(context).size.height -
                 MediaQuery.of(context).padding.top -
                 MediaQuery.of(context).padding.bottom
             ),
@@ -90,10 +91,7 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_outlined,
-                            size: 30
-                          ),
+                          icon: Icon(Icons.arrow_back_outlined, size: 30),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -106,20 +104,12 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
                   ),
                   Column(
                     children: [
-                      Text(
-                        AppLocalizations.of(context)!.passwordRescue,
-                        style: theme.textTheme.displayLarge
-                      ),
+                      Text(AppLocalizations.of(context)!.passwordRescue, style: theme.textTheme.displayLarge),
                       SizedBox(
                         width: 350,
-                        child: Divider(
-                          thickness: 1.2,
-                          endIndent: 0.5,
-                        ),
+                        child: Divider(thickness: 1.2, endIndent: 0.5),
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.08,
-                      )
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.08)
                     ],
                   ),
                   Form(
@@ -161,15 +151,12 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
                       if (!_formKey.currentState!.validate()) {
                         return;
                       }
-
                       passwordRescueViewModel.doPasswordRescue(_emailController.text);
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                          color: Colors.white12, strokeAlign: 1, width: 1.2
-                        )
+                        side: BorderSide(color: Colors.white12, strokeAlign: 1, width: 1.2)
                       ),
                       minimumSize: Size(350, 50),
                       backgroundColor: const Color.fromARGB(192, 2, 117, 33),
@@ -179,8 +166,8 @@ class _PasswordRescueScreenState extends State<PasswordRescueScreen> {
                       : Text(
                         AppLocalizations.of(context)!.sendRescueEmail,
                         style: GoogleFonts.roboto(
-                            color: Colors.white,
-                            fontSize: 25
+                          color: Colors.white,
+                          fontSize: 25
                       ),
                     ),
                   ),

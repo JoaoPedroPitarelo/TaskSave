@@ -8,9 +8,9 @@ SnackBar showErrorSnackBar(String content, {SnackBarAction? action}) {
       content: Text(
         content,
         style: GoogleFonts.roboto(
-            color: const Color.fromARGB(255, 245, 175, 175),
-            fontSize: 15,
-            fontWeight: FontWeight.w500
+          color: const Color.fromARGB(255, 245, 175, 175),
+          fontSize: 15,
+          fontWeight: FontWeight.w500
         ),
       ),
       backgroundColor: const Color.fromARGB(255, 134, 24, 24),

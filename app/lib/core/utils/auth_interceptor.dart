@@ -39,7 +39,8 @@ class AuthInterceptor extends Interceptor {
     );
   }
 
- @override
+  // FIXME arrumar erro de interceptação
+  @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
    final isAuthEndPoint = _isAuthEndpoint(err.requestOptions.path);
 

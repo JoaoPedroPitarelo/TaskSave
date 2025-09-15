@@ -30,8 +30,8 @@ class Wrapper extends StatelessWidget {
                   ),
                   CircularProgressIndicator(
                     color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black,
+                      ? Colors.white
+                      : Colors.black,
                     strokeWidth: 4,
                     strokeAlign: 5,
                   ),
@@ -44,8 +44,8 @@ class Wrapper extends StatelessWidget {
         return child!;
       },
       child: authProvider.isAuthenticated
-          ? const HomeScreen()
-          : const FirstWelcomeScreen(),
+        ? const HomeScreen()
+        : const FirstWelcomeScreen(),
     );
   }
 }

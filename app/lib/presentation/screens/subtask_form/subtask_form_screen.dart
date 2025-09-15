@@ -228,11 +228,7 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
                     spacing: 10,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.list_rounded,
-                        color: Colors.white,
-                        size: 45
-                      ),
+                      Icon(Icons.list_rounded, color: Colors.white, size: 45),
                       Text(
                         widget.subtask != null
                           ? AppLocalizations.of(context)!.modifySubtask
@@ -255,7 +251,8 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
         child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height -
+              minHeight: 
+                MediaQuery.of(context).size.height -
                 MediaQuery.of(context).padding.top -
                 MediaQuery.of(context).padding.bottom
             ),
@@ -354,11 +351,7 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
                             alignment: Alignment.centerLeft,
                             child: Row(
                               children: [
-                                Icon(
-                                Icons.flag_rounded,
-                                  size: 30,
-                                  color: getPriorityColor(priority),
-                                ),
+                                Icon(Icons.flag_rounded, size: 30, color: getPriorityColor(priority)),
                                 SizedBox(width: 10),
                                 Text(
                                   getTranslatedPriority(priority),
@@ -407,8 +400,8 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
                                   Text(
                                     getTranslatedReminderType(reminderType),
                                     style: GoogleFonts.roboto(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400
                                     ),
                                   ),
                                 ],
@@ -440,13 +433,13 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
         label: subtaskFormViewmodel.isLoading
           ? CircularProgressIndicator(color: Colors.white)
           : Text(widget.subtask != null
-              ? AppLocalizations.of(context)!.modifySubtask
-              : AppLocalizations.of(context)!.addSubTask,
-            style: GoogleFonts.roboto(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.w400
-            ),
+            ? AppLocalizations.of(context)!.modifySubtask
+            : AppLocalizations.of(context)!.addSubTask,
+          style: GoogleFonts.roboto(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w400
+          ),
         ),
         icon: Icon(
           Icons.add_rounded,
@@ -458,5 +451,3 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
     );
   }
 }
-
-

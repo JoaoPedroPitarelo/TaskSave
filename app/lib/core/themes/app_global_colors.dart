@@ -28,7 +28,6 @@ class AppGlobalColors extends ThemeExtension<AppGlobalColors> {
   ThemeExtension<AppGlobalColors> copyWith({
     String? taskSaveLogo,
     Color? welcomeScreenCardColor,
-    // Task
     Color? taskCardColor,
     Color? taskFooterColor,
     Color? taskPriorityNeutralColor,
@@ -39,7 +38,6 @@ class AppGlobalColors extends ThemeExtension<AppGlobalColors> {
     return AppGlobalColors(
      taskSaveLogo: taskSaveLogo ?? this.taskSaveLogo,
      welcomeScreenCardColor: welcomeScreenCardColor ?? this.welcomeScreenCardColor,
-     // Task
      taskCardColor: taskCardColor ?? this.taskCardColor,
      taskFooterColor: taskFooterColor ?? this.taskFooterColor,
      taskPriorityNeutralColor: taskPriorityNeutralColor ?? this.taskPriorityNeutralColor,
@@ -57,7 +55,6 @@ class AppGlobalColors extends ThemeExtension<AppGlobalColors> {
     return AppGlobalColors(
       taskSaveLogo: t < 0.5 ? taskSaveLogo : other.taskSaveLogo,
       welcomeScreenCardColor: Color.lerp(welcomeScreenCardColor, other.welcomeScreenCardColor, t),
-      // Task
       taskCardColor: Color.lerp(taskCardColor, other.taskCardColor, t),
       taskFooterColor: Color.lerp(taskFooterColor, other.taskFooterColor, t),
       taskPriorityNeutralColor: Color.lerp(taskPriorityNeutralColor, other.taskPriorityNeutralColor, t),

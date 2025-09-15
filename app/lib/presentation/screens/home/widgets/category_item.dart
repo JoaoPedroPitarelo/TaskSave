@@ -64,7 +64,8 @@ class CategoryItem extends StatelessWidget {
               ),
           ],
         ),
-      ));
+      )
+    );
   }
 }
 
@@ -157,8 +158,7 @@ class _DeleteCategoryDialog extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Icon(Icons.warning_amber_rounded,
-                  color: Colors.red, size: 40),
+              const Icon(Icons.warning_amber_rounded, color: Colors.red, size: 40),
               const SizedBox(width: 10),
               Text(
                 AppLocalizations.of(context)!.wantToDelete,
@@ -178,20 +178,22 @@ class _DeleteCategoryDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  children: [
-                    const Icon(Icons.close, size: 24, color: Colors.green),
-                    const SizedBox(width: 10),
-                    Text(AppLocalizations.of(context)!.no,
-                        style: GoogleFonts.roboto(
-                          fontSize: 17,
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold)),
-                  ],
-                )),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Row(
+                children: [
+                  const Icon(Icons.close, size: 24, color: Colors.green),
+                  const SizedBox(width: 10),
+                  Text(AppLocalizations.of(context)!.no,
+                    style: GoogleFonts.roboto(
+                      fontSize: 17,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold)
+                    ),
+                ],
+              )
+            ),
             const SizedBox(width: 10),
             TextButton(
               onPressed: () {
@@ -206,9 +208,11 @@ class _DeleteCategoryDialog extends StatelessWidget {
                     style: GoogleFonts.roboto(
                       fontSize: 17,
                       color: Colors.red,
-                    ))
+                    )
+                  )
                 ],
-              ))
+              )
+            )
           ],
         ),
       ],

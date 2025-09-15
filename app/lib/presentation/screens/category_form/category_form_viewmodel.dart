@@ -21,7 +21,6 @@ class CategoryFormViewmodel extends ChangeNotifier {
 
   CategoryFormViewmodel(this._mapFailureToKey ,this._categoryRepository);
 
-  // TODO trocar esses campos por CategoryVo
   Future<void> saveCategory(String description, String hexColor) async {
     _loading = true;
     _errorKey = null;

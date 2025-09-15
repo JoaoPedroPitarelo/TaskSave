@@ -51,8 +51,6 @@ class LocalAttachmentRepository {
   Future<void> insertAttachment(AttachmentVo attachment) async {
     final db = await database;
 
-    print(attachment.id);
-
     if (await isExists(attachment.id)) {
       return;
     }
@@ -142,4 +140,3 @@ class LocalAttachmentRepository {
       : null;
   }
 }
-

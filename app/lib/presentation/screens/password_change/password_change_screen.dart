@@ -97,10 +97,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_outlined,
-                            size: 30
-                          ),
+                          icon: Icon(Icons.arrow_back_outlined, size: 30),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -113,16 +110,10 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   ),
                   Column(
                     children: [
-                      Text(
-                        AppLocalizations.of(context)!.resetPassword,
-                        style: theme.textTheme.displayLarge
-                      ),
+                      Text(AppLocalizations.of(context)!.resetPassword, style: theme.textTheme.displayLarge),
                      SizedBox(
-                       width: 350,
-                       child: Divider(
-                         thickness: 1.2,
-                         endIndent: 0.5,
-                       ),
+                        width: 350,
+                        child: Divider(thickness: 1.2, endIndent: 0.5),
                      )
                     ],
                   ),
@@ -217,11 +208,11 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                     ),
                     child: passwordRescueViewmodel.isLoading ? CircularProgressIndicator()
                     : Text(
-                      AppLocalizations.of(context)!.confirm,
-                      style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 25
-                      ),
+                        AppLocalizations.of(context)!.confirm,
+                        style: GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 25
+                        ),
                     ),
                   ),
                 ],

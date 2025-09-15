@@ -105,16 +105,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Column(
                     children: [
-                      Text(
-                        "Login",
-                        style: theme.textTheme.displayLarge
-                      ),
+                      Text("Login", style: theme.textTheme.displayLarge),
                       SizedBox(
                         width: 350,
-                        child: Divider(
-                          thickness: 1.2,
-                          endIndent: 0.5,
-                        ),
+                        child: Divider(thickness: 1.2, endIndent: 0.5),
                       )
                     ],
                   ),
@@ -166,7 +160,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (value == null || value.isEmpty) {
                                 return AppLocalizations.of(context)!.passwordIsObrigatoryValue;
                               }
-
                               return null;
                             },
                             autofillHints: [AutofillHints.password],
@@ -183,9 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 autofocus: false,
                                 child: Text(
-                                    AppLocalizations.of(context)!.forgetPassword,
-                                    textAlign: TextAlign.end,
-                                    style: theme.textTheme.displaySmall
+                                  AppLocalizations.of(context)!.forgetPassword,
+                                  textAlign: TextAlign.end,
+                                  style: theme.textTheme.displaySmall
                                 ),
                               )
                             ],
@@ -199,22 +192,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                          color: Colors.white12, strokeAlign: 1, width: 1.2
-                        )
+                        side: BorderSide(color: Colors.white12, strokeAlign: 1, width: 1.2)
                       ),
                       minimumSize: Size(350, 50),
                       backgroundColor: const Color.fromARGB(200, 25, 56, 189),
                     ),
                     child: loginViewModel.isLoading
-                    ?  CircularProgressIndicator()
-                    : Text(
-                      AppLocalizations.of(context)!.login,
-                      style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 30
+                      ? CircularProgressIndicator()
+                      : Text(
+                        AppLocalizations.of(context)!.login,
+                        style: GoogleFonts.roboto(color: Colors.white, fontSize: 30),
                       ),
-                    ),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterScreen())),
@@ -230,10 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.registerButton,
-                      style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 30
-                      ),
+                      style: GoogleFonts.roboto(color: Colors.white, fontSize: 30),
                     ),
                   ),
                 ],
@@ -245,5 +230,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-

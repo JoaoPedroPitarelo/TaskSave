@@ -115,4 +115,3 @@ class TaskExportPDFEvent extends TaskDataEvent {
 
   TaskExportPDFEvent({required this.success, this.failureKey, this.file});
 }
-

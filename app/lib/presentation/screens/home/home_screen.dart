@@ -18,6 +18,7 @@ import "package:task_save/presentation/screens/home/widgets/show_export_pdf.dart
 import "package:task_save/presentation/screens/home/widgets/widget_filter_mode.dart";
 import "package:task_save/presentation/screens/settings/settings_screen.dart";
 import "package:task_save/presentation/screens/home/widgets/category_item.dart";
+import "package:task_save/presentation/screens/task_details/task_details_screen.dart";
 import "package:task_save/presentation/screens/task_form/task_form_screen.dart";
 import "package:task_save/services/events/category_event_service.dart";
 import "package:task_save/services/events/task_event_service.dart";
@@ -59,8 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         loadCategories();
         loadTasks();
 
-        _categorySubscription =
-            _categoryEventService.onCategoryChanged.listen((event) {
+        _categorySubscription = _categoryEventService.onCategoryChanged.listen((event) {
           if (event is CategoryPrepareDeletionEvent) {
             _showUndoSnackBarCategory(event.category, event.originalIndex);
           }
@@ -152,60 +152,55 @@ class _HomeScreenState extends State<HomeScreen> {
   void loadTasks() async {
     await context.read<TaskViewmodel>().getTasks();
     if (mounted) {
-      await context
-          .read<TaskViewmodel>()
-          .scheduleNotifications(context.read<TaskViewmodel>().tasks, context);
+      await context.read<TaskViewmodel>()
+        .scheduleNotifications(context.read<TaskViewmodel>().tasks, context);
     }
   }
 
   void _showUndoSnackBarCategory(CategoryVo category, int originalIndex) {
     final categoryViewmodel = context.read<CategoryViewmodel>();
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-          showErrorSnackBar(
-            "${AppLocalizations.of(context)!.category} ${category.description} ${AppLocalizations.of(context)!.deleted}",
-            action: SnackBarAction(
-              label: AppLocalizations.of(context)!.undo,
-              textColor: const Color.fromARGB(255, 245, 175, 175),
-              onPressed: () {
-                categoryViewmodel.undoDeletionCategory(category, originalIndex);
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              },
-            ),
+    ScaffoldMessenger.of(context).showSnackBar(
+        showErrorSnackBar(
+          "${AppLocalizations.of(context)!.category} ${category.description} ${AppLocalizations.of(context)!.deleted}",
+          action: SnackBarAction(
+            label: AppLocalizations.of(context)!.undo,
+            textColor: const Color.fromARGB(255, 245, 175, 175),
+            onPressed: () {
+              categoryViewmodel.undoDeletionCategory(category, originalIndex);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
           ),
-        )
-        .closed
-        .then((reason) {
-      if (reason != SnackBarClosedReason.action) {
-        categoryViewmodel.confirmDeletionCategory(category, originalIndex);
+        ),
+      )
+      .closed.then((reason) {
+        if (reason != SnackBarClosedReason.action) {
+          categoryViewmodel.confirmDeletionCategory(category, originalIndex);
+        }
       }
-    });
+    );
   }
 
   void _showUndoSnackBarTask(TaskVo task, int originalIndex) {
     final taskViewmodel = context.read<TaskViewmodel>();
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-          showErrorSnackBar(
-            "${AppLocalizations.of(context)!.task} ${task.title} ${AppLocalizations.of(context)!.deleted}",
-            action: SnackBarAction(
-              label: AppLocalizations.of(context)!.undo,
-              textColor: Colors.white,
-              onPressed: () {
-                taskViewmodel.undoDeletionTask(task, originalIndex);
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              },
-            ),
-          ),
-        )
-        .closed
-        .then((reason) {
-      if (reason != SnackBarClosedReason.action) {
-        taskViewmodel.confirmTaskDeletion(task, originalIndex);
+    ScaffoldMessenger.of(context).showSnackBar(
+      showErrorSnackBar(
+        "${AppLocalizations.of(context)!.task} ${task.title} ${AppLocalizations.of(context)!.deleted}",
+        action: SnackBarAction(
+          label: AppLocalizations.of(context)!.undo,
+          textColor: Colors.white,
+          onPressed: () {
+            taskViewmodel.undoDeletionTask(task, originalIndex);
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      )).closed.then((reason) {
+        if (reason != SnackBarClosedReason.action) {
+          taskViewmodel.confirmTaskDeletion(task, originalIndex);
+        }
       }
-    });
+    );
   }
 
   void _showSuccessSnackBar(String message) {
@@ -219,11 +214,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _savePdfFile(File file) async {
     final pdfBytes = await file.readAsBytes();
     final result = await FilePicker.platform.saveFile(
-        dialogTitle: _localizations.exportToPdf,
-        fileName: "task_save_export.pdf",
-        type: FileType.custom,
-        allowedExtensions: ["pdf"],
-        bytes: pdfBytes);
+      dialogTitle: _localizations.exportToPdf,
+      fileName: "task_save_export.pdf",
+      type: FileType.custom,
+      allowedExtensions: ["pdf"],
+      bytes: pdfBytes
+    );
 
     if (result != null) {
       _showSuccessSnackBar("Exportado com sucesso!");
@@ -252,67 +248,71 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 8,
           shadowColor: Colors.black45,
           iconTheme: const IconThemeData(color: Colors.white, size: 30),
-          leading: Builder(builder: (context) {
-            return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(Icons.menu_rounded),
-            );
-          }),
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                icon: const Icon(Icons.menu_rounded),
+              );
+            }
+          ),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(8),
-          )),
+            )
+          ),
           actions: [
             PopupMenuButton<String>(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                color: theme.appBarTheme.backgroundColor,
-                onSelected: (value) {
-                  if (value == "export") {
-                    showExportTasksDialog(context);
-                  }
-                  if (value == "about") {
-                    showCustomAboutDialog(context);
-                  }
-                },
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                      PopupMenuItem<String>(
-                        value: "export",
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            const Icon(Icons.file_copy_rounded, size: 25),
-                            Text(
-                              AppLocalizations.of(context)!.exportToPdf,
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              color: theme.appBarTheme.backgroundColor,
+              onSelected: (value) {
+                if (value == "export") {
+                  showExportTasksDialog(context);
+                }
+                if (value == "about") {
+                  showCustomAboutDialog(context);
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(
+                  value: "export",
+                  child: Row(
+                    spacing: 10,
+                    children: [
+                      const Icon(Icons.file_copy_rounded, size: 25),
+                      Text(
+                        AppLocalizations.of(context)!.exportToPdf,
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Colors.white,
                         ),
                       ),
-                      PopupMenuItem<String>(
-                        value: "about",
-                        child: Row(
-                          spacing: 10,
-                          children: [
-                            const Icon(Icons.info_outline_rounded, size: 25),
-                            Text(
-                              AppLocalizations.of(context)!.about,
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: "about",
+                  child: Row(
+                    spacing: 10,
+                    children: [
+                      const Icon(Icons.info_outline_rounded, size: 25),
+                      Text(
+                        AppLocalizations.of(context)!.about,
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: Colors.white,
                         ),
-                      )
-                    ])
+                      ),
+                    ],
+                  ),
+                )
+              ]
+            )
           ],
           flexibleSpace: SafeArea(
             child: Padding(
@@ -327,8 +327,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       WidgetFilterMode(
-                          filterMode: taskViewmodel.filterMode,
-                          category: categoryViewmodel.selectedCategory)
+                        filterMode: taskViewmodel.filterMode,
+                        category: categoryViewmodel.selectedCategory
+                      )
                     ],
                   ),
                 ),
@@ -337,23 +338,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     SearchBar(
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.9,
-                          minHeight:
-                              MediaQuery.of(context).size.height * 0.061),
+                        maxWidth: MediaQuery.of(context).size.width * 0.9,
+                        minHeight: MediaQuery.of(context).size.height * 0.061
+                      ),
                       shape: const WidgetStatePropertyAll<OutlinedBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         ),
                       ),
-                      textStyle: const WidgetStatePropertyAll(
-                          TextStyle(color: Colors.white70)),
-                      backgroundColor:
-                          const WidgetStatePropertyAll(Colors.black38),
+                      textStyle: const WidgetStatePropertyAll(TextStyle(color: Colors.white70)),
+                      backgroundColor: const WidgetStatePropertyAll(Colors.black38),
                       elevation: const WidgetStatePropertyAll(2.0),
                       controller: searchController,
                       autoFocus: false,
-                      padding: const WidgetStatePropertyAll<EdgeInsets>(
-                          EdgeInsets.symmetric(horizontal: 16.0)),
+                      padding: const WidgetStatePropertyAll<EdgeInsets>(EdgeInsets.symmetric(horizontal: 16.0)),
                       onChanged: (query) {
                         taskViewmodel.searchTask(query);
                       },
@@ -363,8 +361,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 )
               ],
-            ),
-          )),
+            ))
+          ),
         ),
       ),
       body: taskViewmodel.tasks.isNotEmpty
@@ -398,6 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 task: task,
                 rightDismissedCallback: () => taskViewmodel.prepareTaskForDeletion(task),
                 leftDismissedCallback: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskFormScreen(task: task))),
+                onTapCallback: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => TaskDetailsScreen(task: task))),
               );
             },
             onReorder: (int oldIndex, int newIndex) {
@@ -407,69 +406,66 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         )
         : RefreshIndicator(
-          onRefresh: () async {
-            loadTasks();
-            loadCategories();
-            HapticFeedback.lightImpact();
-          },
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 80.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          "assets/images/no_tasks_stay_safe.png",
-                          width: MediaQuery.of(context).size.width * 0.79,
-                        ),
-                        const SizedBox(height: 20),
-                        Container(
-                          decoration: BoxDecoration(
+            onRefresh: () async {
+              loadTasks();
+              loadCategories();
+              HapticFeedback.lightImpact();
+            },
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 80.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            "assets/images/no_tasks_stay_safe.png",
+                            width: MediaQuery.of(context).size.width * 0.79,
+                          ),
+                          const SizedBox(height: 20),
+                          Container(
+                            decoration: BoxDecoration(
                               color: appColors.welcomeScreenCardColor,
                               borderRadius: BorderRadius.circular(10),
                               boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black54,
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 3))
-                              ]),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 5),
-                            child: Column(
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.staySafe,
-                                  style: GoogleFonts.roboto(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 32,
-                                  ),
-                                ),
-                                Text(
-                                  AppLocalizations.of(context)!.noHaveTasks,
-                                  style: GoogleFonts.roboto(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 32,
-                                  ),
-                                )
-                              ],
+                                BoxShadow(color: Colors.black54, blurRadius: 5, offset: const Offset(0, 3))
+                              ]
                             ),
-                          ),
-                        )
-                      ],
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.staySafe,
+                                    style: GoogleFonts.roboto(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 32,
+                                    ),
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.noHaveTasks,
+                                    style: GoogleFonts.roboto(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 32,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-            ],
-          ),
-          ),
+                )
+              ],
+            ),
+      ),
       // Menu lateral
       drawer: Drawer(
         backgroundColor: theme.appBarTheme.backgroundColor,
@@ -480,31 +476,25 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.only(top: 45),
           child: Column(
             children: <Widget>[
-              // Cabeçalho
-              Column(children: [
-                SizedBox(
+              Column(
+                children: [
+                  SizedBox(
                     height: 60,
-                    child: Image.asset('assets/images/tasksave_logo_light.png')),
-                const SizedBox(
-                  width: 250,
-                  child: Divider(
-                    thickness: 1.2,
-                    endIndent: 0.5,
-                    color: Colors.white,
+                    child: Image.asset('assets/images/tasksave_logo_light.png')
                   ),
-                ),
-              ]),
+                  const SizedBox(
+                    width: 250,
+                    child: Divider(thickness: 1.2, endIndent: 0.5, color: Colors.white),
+                  ),
+                ]
+              ),
               // Opções
               Expanded(
-                  child: ListView(
+                child: ListView(
                 children: [
                   buildDrawerItem(
                     context: context,
-                    icon: const Icon(
-                      Icons.filter_none_rounded,
-                      color: Colors.white,
-                      size: 28,
-                    ),
+                    icon: const Icon(Icons.filter_none_rounded, color: Colors.white, size: 28),
                     text: AppLocalizations.of(context)!.allTasks,
                     count: taskViewmodel.countAllTasks,
                     onTap: () {
@@ -515,11 +505,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 5),
                   buildDrawerItem(
                     context: context,
-                    icon: const Icon(
-                      Icons.today_rounded,
-                      size: 28,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.today_rounded, size: 28, color: Colors.white),
                     text: AppLocalizations.of(context)!.taskToday,
                     count: taskViewmodel.countTodayTasks,
                     onTap: () {
@@ -529,11 +515,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   buildDrawerItem(
                     context: context,
-                    icon: const Icon(
-                      Icons.calendar_today_rounded,
-                      size: 28,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.calendar_today_rounded, size: 28, color: Colors.white),
                     text: AppLocalizations.of(context)!.taskWeek,
                     count: taskViewmodel.countNextWeekTasks,
                     onTap: () {
@@ -543,26 +525,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   buildDrawerItem(
                     context: context,
-                    icon: const Icon(
-                      Icons.calendar_month_rounded,
-                      size: 28,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.calendar_month_rounded, size: 28, color: Colors.white),
                     text: AppLocalizations.of(context)!.taskMonth,
                     count: taskViewmodel.countNextMonthTasks,
                     onTap: () {
-                      taskViewmodel
-                          .filterTasks(FilteringTaskModeEnum.nextMonth);
+                      taskViewmodel.filterTasks(FilteringTaskModeEnum.nextMonth);
                       Navigator.pop(context);
                     },
                   ),
                   buildDrawerItem(
                     context: context,
-                    icon: const Icon(
-                      Icons.warning_rounded,
-                      size: 28,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.warning_rounded, size: 28, color: Colors.white),
                     text: AppLocalizations.of(context)!.taskLate,
                     count: taskViewmodel.countOverdueTasks,
                     onTap: () {
@@ -571,11 +544,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                   const SizedBox(
-                    child: Divider(
-                      thickness: 1.2,
-                      endIndent: 0.5,
-                      color: Colors.white,
-                    ),
+                    child: Divider(thickness: 1.2, endIndent: 0.5, color: Colors.white),
                   ),
                   // Categorias
                   ReorderableListView.builder(
@@ -590,12 +559,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: const Color.fromARGB(255, 12, 43, 170),
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
-                              BoxShadow(
-                                color: Colors.black54,
-                                blurRadius: 5,
-                                offset: Offset(0, 3))
-                            ]),
-                          child: child,
+                              BoxShadow(color: Colors.black54, blurRadius: 5, offset: Offset(0, 3))
+                            ]
+                          ),
+                          child: child
                         ),
                       );
                     },
@@ -619,26 +586,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                 ],
-              )),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ConfigurationScreen()));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.settings_rounded,
-                          color: Colors.white, size: 28),
-                      const SizedBox(width: 12),
-                      Text(AppLocalizations.of(context)!.settings,
-                          style: theme.textTheme.bodySmall),
-                    ],
-                  ),
-                ))
-            ],
-          ),
+              )
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ConfigurationScreen()
+                  )
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.settings_rounded, color: Colors.white, size: 28),
+                    const SizedBox(width: 12),
+                    Text(AppLocalizations.of(context)!.settings, style: theme.textTheme.bodySmall),
+                  ],
+                ),
+              )
+            )
+          ]),
         ),
       ),
       floatingActionButton: SpeedDial(
@@ -655,25 +623,30 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           SpeedDialChild(
             elevation: 2,
-              backgroundColor: theme.appBarTheme.backgroundColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: const Icon(Icons.dashboard_customize_rounded, color: Colors.white, size: 30),
-              label: AppLocalizations.of(context)!.addCategory,
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => CategoryFormScreen()));
-              }),
+            backgroundColor: theme.appBarTheme.backgroundColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: const Icon(Icons.dashboard_customize_rounded, color: Colors.white, size: 30),
+            label: AppLocalizations.of(context)!.addCategory,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CategoryFormScreen()
+                )
+              );
+            }
+          ),
           SpeedDialChild(
-              elevation: 2,
-              backgroundColor: theme.appBarTheme.backgroundColor,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: const Icon(Icons.add_task_rounded,
-                  color: Colors.white, size: 30),
-              label: AppLocalizations.of(context)!.addTask,
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => TaskFormScreen()));
-              }),
+            elevation: 2,
+            backgroundColor: theme.appBarTheme.backgroundColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: const Icon(Icons.add_task_rounded, color: Colors.white, size: 30),
+            label: AppLocalizations.of(context)!.addTask,
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => TaskFormScreen()
+                )
+              );
+            }
+          ),
         ],
       ),
     );

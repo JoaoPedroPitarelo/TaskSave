@@ -42,11 +42,11 @@ class AuthRepository {
   Future<Either<Failure, Map<String, dynamic>>> registerRequest(String email, String password) async {
     try {
       final response = await _dio.post(
-          '/login/create',
-          data: {
-            'login': email,
-            'password': password
-          }
+        '/login/create',
+        data: {
+          'login': email,
+          'password': password
+        }
       );
 
       return right(response.data);

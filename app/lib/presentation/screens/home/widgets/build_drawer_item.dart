@@ -16,10 +16,7 @@ Widget buildDrawerItem({
     title: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          text,
-          style: theme.textTheme.bodySmall,
-        ),
+        Text(text, style: theme.textTheme.bodySmall),
         if (count != null) ...[
           const SizedBox(width: 8),
           Container(

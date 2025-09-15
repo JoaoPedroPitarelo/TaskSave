@@ -4,7 +4,6 @@ import 'package:task_save/domain/enums/priority_enum.dart';
 import 'package:task_save/domain/enums/reminder_type_num.dart';
 import 'package:task_save/domain/models/task_vo.dart';
 import 'package:task_save/presentation/common/hex_to_color.dart';
-import 'package:task_save/presentation/screens/task_details/task_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:task_save/presentation/global_providers/app_preferences_provider.dart';
@@ -15,12 +14,14 @@ class TaskWidget extends StatefulWidget {
   final TaskVo task;
   final VoidCallback? rightDismissedCallback;
   final VoidCallback? leftDismissedCallback;
+  final VoidCallback? onTapCallback;
 
   const TaskWidget({
     super.key,
     required this.task,
     this.rightDismissedCallback,
-    this.leftDismissedCallback
+    this.leftDismissedCallback,
+    this.onTapCallback
   });
 
   @override
@@ -139,9 +140,7 @@ class _TaskWidgetState extends State<TaskWidget> {
             ),
           ],
           GestureDetector(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => TaskDetailsScreen(task: widget.task))
-            ),
+            onTap: widget.onTapCallback,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
               child: IntrinsicHeight(

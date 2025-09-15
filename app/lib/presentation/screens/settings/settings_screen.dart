@@ -67,18 +67,14 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                     spacing: 10,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.settings,
-                        color: Colors.white,
-                        size: 38
-                      ),
+                      Icon(Icons.settings, color: Colors.white, size: 38),
                       Text(
                         AppLocalizations.of(context)!.config,
                         style: GoogleFonts.roboto(
                           color: Colors.white,
                           fontSize: 28
                         ),
-                       ),
+                      ),
                     ]
                   ),
                 ],
@@ -99,7 +95,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 border: BoxBorder.all(
                   color: theme.brightness != Brightness.light ? Colors.white24 : Colors.black26
                 )
-                // boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
               ),
               child: Column(
                 children: [
@@ -128,8 +123,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         child: Text(
                           userEmail,
                           style: GoogleFonts.roboto(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500
                           ),
                         ),
                       ),
@@ -140,10 +135,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                             builder: (context) => _LogoutConfirmDialog(key: widget.key)
                           );
                         },
-                        icon: Icon(
-                          Icons.login_rounded,
-                          size: 34,
-                        )
+                        icon: Icon(Icons.login_rounded, size: 34)
                       )
                     ],
                   ),
@@ -155,7 +147,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
                 border: BoxBorder.all(
-                   color: theme.brightness != Brightness.light ? Colors.white24 : Colors.black26
+                  color: theme.brightness != Brightness.light ? Colors.white24 : Colors.black26
                 )
                 // boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
               ),
@@ -189,15 +181,15 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                             Text(
                               "${AppLocalizations.of(context)!.language}:",
                               style: GoogleFonts.roboto(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w400
+                                fontSize: 17,
+                                fontWeight: FontWeight.w400
                               ),
                             ),
                             Text(
                               keyToLanguage[preferencesProvider.appLanguage.languageCode]!,
                               style: GoogleFonts.roboto(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600
                               ),
                             )
                           ],
@@ -249,8 +241,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         Text(
                           AppLocalizations.of(context)!.theme,
                           style: GoogleFonts.roboto(
-                              fontSize: 25,
-                              fontWeight: FontWeight.w400
+                            fontSize: 25,
+                            fontWeight: FontWeight.w400
                           ),
                         ),
                         Icon(Icons.color_lens_outlined, size: 35),
@@ -262,8 +254,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         Text(
                           AppLocalizations.of(context)!.darkMode,
                           style: GoogleFonts.roboto(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w400
+                            fontSize: 17,
+                            fontWeight: FontWeight.w400
                           ),
                         ),
                         Switch(
@@ -289,7 +281,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                   border: BoxBorder.all(
                     color: theme.brightness != Brightness.light ? Colors.white24 : Colors.black26
                   )
-                  // boxShadow: [BoxShadow(color: Colors.black54, offset: Offset(0, 3),blurRadius: 3)]
                 ),
                 child: Column(
                   children: [
@@ -316,10 +307,10 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         Row(
                           children: [
                             IconButton(
-                                onPressed: () {
-                                  launchURL("https://github.com/JoaoPedroPitarelo/TaskSave");
-                                },
-                                icon: FaIcon(FontAwesomeIcons.github, size: 35)
+                              onPressed: () {
+                                launchURL("https://github.com/JoaoPedroPitarelo/TaskSave");
+                              },
+                              icon: FaIcon(FontAwesomeIcons.github, size: 35)
                             ),
                             IconButton(
                               onPressed: () {
@@ -424,9 +415,12 @@ class _LogoutConfirmDialog extends StatelessWidget {
                     style: GoogleFonts.roboto(
                       fontSize: 17,
                       color: Colors.green,
-                      fontWeight: FontWeight.bold)),
+                      fontWeight: FontWeight.bold
+                    )
+                  ),
                 ],
-              )),
+              )
+            ),
             const SizedBox(width: 10),
             TextButton(
               onPressed: () {
@@ -444,7 +438,8 @@ class _LogoutConfirmDialog extends StatelessWidget {
                     )
                   )
                 ],
-              ))
+              )
+            )
           ],
         ),
       ],

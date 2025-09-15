@@ -30,12 +30,10 @@ class TaskVo extends Notifiable {
   factory TaskVo.fromJson(Map<String, dynamic> json) { 
 
     final subTasksList = (json['subtasks'] as List)
-        .map((subtaskJson) => SubtaskVo.fromJson(subtaskJson))
-        .toList();
+      .map((subtaskJson) => SubtaskVo.fromJson(subtaskJson)).toList();
 
     final attachmentList = (json['attachments'] as List)
-        .map((attachmentJson) => AttachmentVo.fromJson(attachmentJson))
-        .toList();
+      .map((attachmentJson) => AttachmentVo.fromJson(attachmentJson)).toList();
 
     final TaskVo task = TaskVo(
       id: json['id'].toString(),
@@ -47,8 +45,8 @@ class TaskVo extends Notifiable {
       subtaskList: subTasksList,
       attachmentList: attachmentList,
       reminderType: json['reminderType'] != null
-          ? ReminderTypeNum.values.firstWhere((reminder) => reminder.name == json['reminderType'].toString().toLowerCase())
-          : null,
+        ? ReminderTypeNum.values.firstWhere((reminder) => reminder.name == json['reminderType'].toString().toLowerCase())
+        : null,
       completed: json['completed'],
     );
 

@@ -40,6 +40,10 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen>
     final appColors = AppGlobalColors.of(context);
     final theme = Theme.of(context);
 
+    final lightCategoryColor = "#CCCCCC";
+    final darkCategoryColor = "#3B3B3B";
+
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,11 +51,7 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen>
         children: [
           SizedBox(
             height: 450,
-            child: Image.asset(
-              appColors.taskSaveLogo!,
-              height: 250,
-              width: 250,
-            ),
+            child: Image.asset(appColors.taskSaveLogo!, height: 250, width: 250),
           ),
           Stack(
             clipBehavior: Clip.none,
@@ -68,19 +68,20 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen>
                     deadline: DateTime.now(),
                     priority: PriorityEnum.low,
                     category: CategoryVo(
-                        id: 0,
-                        description: "None",
-                        isDefault: false,
-                        color: theme.brightness != Brightness.dark
-                            ? "3B3B3B"
-                            : "#CCCCCC",
-                        activate: true,
-                        position: -1),
+                      id: 0,
+                      description: "",
+                      isDefault: false,
+                      color: theme.brightness != Brightness.dark
+                        ? darkCategoryColor
+                        : lightCategoryColor,
+                      activate: true,
+                      position: -1
+                    ),
                     completed: false,
                   ),
-                  rightDismissedCallback: () => Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute(
-                          builder: (context) => LoginScreen())),
+                  rightDismissedCallback: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => LoginScreen())
+                  ),
                 ),
               ),
               Positioned(
@@ -90,12 +91,8 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen>
                 child: SlideTransition(
                   position: _offsetAnimation,
                   child: FadeTransition(
-                    opacity:
-                        _controller.drive(CurveTween(curve: Curves.decelerate)),
-                    child: const Icon(
-                      Icons.double_arrow_outlined,
-                      size: 80,
-                    ),
+                    opacity: _controller.drive(CurveTween(curve: Curves.decelerate)),
+                    child: const Icon(Icons.double_arrow_outlined, size: 80),
                   ),
                 ),
               ),
@@ -109,14 +106,11 @@ class _FinalWelcomeScreenState extends State<FinalWelcomeScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       child: IconButton(
-                          icon: const Icon(
-                            Icons.arrow_back_ios_rounded,
-                            size: 40,
-                            weight: 200.0,
-                          ),
-                          onPressed: () => Navigator.of(context).pop()),
+                        icon: const Icon(Icons.arrow_back_ios_rounded, size: 40, weight: 200.0),
+                        onPressed: () => Navigator.of(context).pop()
+                      ),
                     ),
                   ],
                 )
