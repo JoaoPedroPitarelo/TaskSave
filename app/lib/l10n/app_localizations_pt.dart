@@ -347,6 +347,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get exportToPdf => 'Exportar tarefas';
 
   @override
+  String get export => 'Exportar';
+
+  @override
   String get about => 'Sobre';
 
   @override

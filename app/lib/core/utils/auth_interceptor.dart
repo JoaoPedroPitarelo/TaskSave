@@ -39,9 +39,12 @@ class AuthInterceptor extends Interceptor {
     );
   }
 
-  // FIXME arrumar erro de interceptação
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.requestOptions.extra['__isRetry'] == true) {
+      return handler.next(err);
+    }
+
    final isAuthEndPoint = _isAuthEndpoint(err.requestOptions.path);
 
     if (err.type == DioExceptionType.connectionTimeout || err.type == DioExceptionType.connectionError) {
@@ -69,6 +72,7 @@ class AuthInterceptor extends Interceptor {
       }
 
       await _handleTokenRefresh(err, handler);
+      return;
     }
 
     return super.onError(err, handler);
@@ -84,6 +88,10 @@ class AuthInterceptor extends Interceptor {
 
     if (currentRefreshToken == null) {
       print('AuthInterceptor: No refresh token available. Forçando logout.');
+      if (!_refreshTokenCompleterStack.isCompleted) {
+        _refreshTokenCompleterStack.completeError(DioException(requestOptions: err.requestOptions, error: 'No refresh token'));
+      }
+      _isRefreshing = false;
       return _forceLogout(err, handler); 
     }
 
@@ -93,6 +101,7 @@ class AuthInterceptor extends Interceptor {
       await refreshResult.fold(
         (failure) async {
           print('AuthInterceptor: Refresh Token falhou: $failure. Forçando logout.');
+          _refreshTokenCompleterStack.completeError(failure);
           return _forceLogout(err, handler);
         },
         (newTokens) async {
@@ -109,6 +118,7 @@ class AuthInterceptor extends Interceptor {
           print('AuthInterceptor: Tokens refreshed and saved successfully.');
 
           await _proceedRequestWithNewToken(err.requestOptions, newAccessToken, handler);
+          return;
         },
       );
     } catch (e) {
@@ -121,22 +131,51 @@ class AuthInterceptor extends Interceptor {
 
   
   Future<void> _proceedRequestWithNewToken(RequestOptions originalRequest, String newAccessToken, ErrorInterceptorHandler handler) async {
+    originalRequest.extra['__isRetry'] = true;
     originalRequest.headers['Authorization'] = 'Bearer $newAccessToken';
+
     try {
       final response = await _dio.fetch(originalRequest);
-      _refreshTokenCompleterStack.complete(response);
-      handler.resolve(response); 
-    } on DioException catch (e) { 
-      _refreshTokenCompleterStack.completeError(e);
+
+      if (!_refreshTokenCompleterStack.isCompleted) {
+        _refreshTokenCompleterStack.complete(response);
+      }
+
+      handler.resolve(response);
+    } on DioException catch (e) {
+      if (!_refreshTokenCompleterStack.isCompleted) {
+        _refreshTokenCompleterStack.completeError(e);
+      }
       handler.next(e);
+    } catch (e) {
+      if (!_refreshTokenCompleterStack.isCompleted) {
+        _refreshTokenCompleterStack.completeError(e);
+      }
+      handler.next(DioException(requestOptions: originalRequest, error: e));
     }
   }
 
   Future<void> _forceLogout(DioException err, ErrorInterceptorHandler handler) async {
     await _authService.clearAuthData();
     _authProvider.logout();
-    _refreshTokenCompleterStack.completeError(err); 
-    handler.next(err);
+
+    try {
+      if (_refreshTokenCompleterStack != null && !_refreshTokenCompleterStack.isCompleted) {
+        _refreshTokenCompleterStack.completeError(err);
+        print('AuthInterceptor: refresh completer marcado com erro (logout).');
+      } else {
+        print('AuthInterceptor: completer inexistente ou já completado (logout).');
+      }
+    } catch (e, s) {
+      print('AuthInterceptor: erro ao completar completer no logout: $e\n$s');
+    }
+
     _isRefreshing = false;
+
+    try {
+      handler.next(err);
+    } catch (e) {
+      print('AuthInterceptor: handler já foi chamado anteriormente, ignorando segunda chamada. ($e)');
+    }
   }
 }

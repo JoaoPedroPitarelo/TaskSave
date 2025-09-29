@@ -760,6 +760,12 @@ abstract class AppLocalizations {
   /// **'Exportar tarefas'**
   String get exportToPdf;
 
+  /// No description provided for @export.
+  ///
+  /// In pt, this message translates to:
+  /// **'Exportar'**
+  String get export;
+
   /// No description provided for @about.
   ///
   /// In pt, this message translates to:

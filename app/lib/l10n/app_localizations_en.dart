@@ -344,7 +344,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get yourSubtask => 'Your subtask with deadline for';
 
   @override
-  String get exportToPdf => 'Exportar tareas';
+  String get exportToPdf => 'Export Tasks';
+
+  @override
+  String get export => 'Export';
 
   @override
   String get about => 'About';

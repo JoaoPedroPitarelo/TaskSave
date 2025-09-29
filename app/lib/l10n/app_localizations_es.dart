@@ -348,7 +348,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yourSubtask => 'Su subtarea con fecha límite para';
 
   @override
-  String get exportToPdf => 'Export tasks';
+  String get exportToPdf => 'Exportar tareas';
+
+  @override
+  String get export => 'Exportar';
 
   @override
   String get about => 'Sobre';

@@ -62,7 +62,8 @@ void showExportTasksDialog(BuildContext context) {
                       children: [
                         const Icon(Icons.close, size: 28, color: Colors.red),
                         const SizedBox(width: 10),
-                        Text(AppLocalizations.of(context)!.cancel,
+                        Text(
+                          AppLocalizations.of(context)!.cancel,
                           style: GoogleFonts.roboto(
                             fontSize: 16  ,
                             color: Colors.white,
@@ -81,7 +82,8 @@ void showExportTasksDialog(BuildContext context) {
                       children: [
                         const Icon(Icons.file_download_rounded, size: 28, color: Colors.green),
                         const SizedBox(width: 10),
-                        Text("Exportar",
+                        Text(
+                          AppLocalizations.of(context)!.export,
                           style: GoogleFonts.roboto(
                             fontSize: 16,
                             color: Colors.white,
