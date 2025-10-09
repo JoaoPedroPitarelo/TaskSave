@@ -89,7 +89,7 @@ class _SubtaskFormScreenState extends State<SubtaskFormScreen> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _dateSelected ?? DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2101),
       helpText: AppLocalizations.of(context)!.selectDate,
       cancelText: AppLocalizations.of(context)!.cancel,

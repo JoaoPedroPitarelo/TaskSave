@@ -33,6 +33,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:task_save/core/enums/task_type_enum.dart';
 import 'package:task_save/domain/models/task_vo.dart';
@@ -59,10 +60,13 @@ Future<void> main() async {
 
   final authService = AuthService();
   await authService.init();
-
   await initializeDateFormatting();
-
   final notificationService = NotificationService();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   runApp(MultiProvider(
     providers: [

@@ -26,7 +26,8 @@
     "dontHaveAccount": "Ainda não tem uma conta? ",
     "createNow": "Crie agora!",
     "register": "Cadastro",
-    "registerButton": "Cadastrar-se",
+    "registerButton": "Ainda não possuí uma conta?",
+    "clickHere": "Clique aqui!",
     "emailIsObrigatoryValue": "Email é um campo obrigatório",
     "passwordIsObrigatoryValue": "Senha é um campo obrigatório",
     "minimumLengthPassword": "Mínimo de 8 caracteres",
@@ -146,5 +147,10 @@
     "allTheRightReserved": "Todos os direitos reservados",
     "version": "Versão",
     "and": "e",
-    "license": "Licenciado sob a licença MIT"
+    "license": "Licenciado sob a licença MIT",
+    "initialConfig": "Configurações Iniciais",
+    "customYourExperience": "Personalize sua experiência!",
+    "youCanChangeItLater": "Você pode alterar isso mais tarde...",
+    "light": "Claro",
+    "dark": "Escuro"
 }

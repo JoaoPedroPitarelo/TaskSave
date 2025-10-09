@@ -1,9 +1,11 @@
 import 'package:task_save/core/themes/app_global_colors.dart';
 import 'package:task_save/presentation/screens/home/home_screen.dart';
-import 'package:task_save/presentation/screens/welcome/first_welcome_screen.dart';
+import 'package:task_save/presentation/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_save/presentation/global_providers/auth_provider.dart';
+import 'package:task_save/presentation/screens/welcome/initial_settings_screen.dart';
+import 'package:task_save/presentation/global_providers/app_preferences_provider.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});
@@ -11,6 +13,7 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final appPreferencesProvider = Provider.of<AppPreferencesProvider>(context);
     final appColor = AppGlobalColors.of(context);
 
     return TweenAnimationBuilder<double>(
@@ -45,7 +48,9 @@ class Wrapper extends StatelessWidget {
       },
       child: authProvider.isAuthenticated
         ? const HomeScreen()
-        : const FirstWelcomeScreen(),
+        : appPreferencesProvider.isFirstLogin
+          ? const InitialSettingsScreen()
+          : const LoginScreen()
     );
   }
 }

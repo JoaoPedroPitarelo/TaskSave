@@ -95,7 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             child: IntrinsicHeight(
               child: Column(
-                spacing: 20,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset(
@@ -117,7 +116,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
                       child: Column(
-                        spacing: 16,
                         children: [
                           TextFormField(
                             controller: _emailController,
@@ -138,6 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             autofillHints: [AutofillHints.email],
                           ),
+                          SizedBox(height: 12),
                           TextFormField(
                             obscureText: _obscureText,
                             controller: _passwordController,
@@ -187,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: loginViewModel.isLoading ? null : () => _handleLogin(),
                     style: ElevatedButton.styleFrom(
@@ -204,23 +204,49 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: GoogleFonts.roboto(color: Colors.white, fontSize: 30),
                       ),
                   ),
-                  ElevatedButton(
-                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterScreen())),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                          color: Colors.white12, strokeAlign: 1, width: 1.2
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    child: Row(
+                      spacing: 0,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          style: ButtonStyle(
+                            padding: WidgetStatePropertyAll(
+                              EdgeInsets.zero
+                            )
+                          ),
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => RegisterScreen()
+                            )
+                          ),
+                          autofocus: false,
+                          child: Text(
+                            AppLocalizations.of(context)!.registerButton,
+                            textAlign: TextAlign.end,
+                            style: theme.textTheme.displaySmall
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => RegisterScreen()
+                            )
+                          ),
+                          autofocus: false,
+                          child: Text(
+                            AppLocalizations.of(context)!.clickHere,
+                            textAlign: TextAlign.end,
+                            style: GoogleFonts.roboto(
+                              color:  Color.fromARGB(200, 25, 56, 189),
+                              fontWeight: FontWeight.bold
+                            )
+                          ),
                         )
-                      ),
-                      minimumSize: Size(350, 50),
-                      backgroundColor: const Color.fromARGB(192, 2, 117, 33),
+                      ],
                     ),
-                    child: Text(
-                      AppLocalizations.of(context)!.registerButton,
-                      style: GoogleFonts.roboto(color: Colors.white, fontSize: 30),
-                    ),
-                  ),
+                  )
                 ],
               ),
             ),

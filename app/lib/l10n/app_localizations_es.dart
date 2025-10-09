@@ -90,7 +90,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get register => 'Registro';
 
   @override
-  String get registerButton => 'Registrarse';
+  String get registerButton => '¿Aún no tienes cuenta?';
+
+  @override
+  String get clickHere => 'Haz clic aquí!';
 
   @override
   String get emailIsObrigatoryValue =>
@@ -460,4 +463,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get license => 'Con licencia MIT';
+
+  @override
+  String get initialConfig => 'Configuración inicial';
+
+  @override
+  String get customYourExperience => 'Personaliza tu experiencia!';
+
+  @override
+  String get youCanChangeItLater => 'Puedes cambiarlo más tarde...';
+
+  @override
+  String get light => 'Claro';
+
+  @override
+  String get dark => 'Oscuro';
 }

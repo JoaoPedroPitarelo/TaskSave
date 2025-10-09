@@ -113,7 +113,7 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _dateSelected ?? DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2101),
       helpText: AppLocalizations.of(context)!.selectDate,
       cancelText: AppLocalizations.of(context)!.cancel,
@@ -149,6 +149,14 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
+          final categoryViewmodel = context.read<CategoryViewmodel>();
+
+          if (categoryViewmodel.selectedCategory != null) {
+            setState(() {
+              _selectedCategory = categoryViewmodel.selectedCategory;
+            });
+          }
+
           _creationSubscription = _taskEventsService.onTaskChanged.listen((event) {
             if (event is TaskCreationEvent && event.success) {
               if (mounted) {

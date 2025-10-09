@@ -259,8 +259,14 @@ abstract class AppLocalizations {
   /// No description provided for @registerButton.
   ///
   /// In pt, this message translates to:
-  /// **'Cadastrar-se'**
+  /// **'Ainda não possuí uma conta?'**
   String get registerButton;
+
+  /// No description provided for @clickHere.
+  ///
+  /// In pt, this message translates to:
+  /// **'Clique aqui!'**
+  String get clickHere;
 
   /// No description provided for @emailIsObrigatoryValue.
   ///
@@ -981,6 +987,36 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Licenciado sob a licença MIT'**
   String get license;
+
+  /// No description provided for @initialConfig.
+  ///
+  /// In pt, this message translates to:
+  /// **'Configurações Iniciais'**
+  String get initialConfig;
+
+  /// No description provided for @customYourExperience.
+  ///
+  /// In pt, this message translates to:
+  /// **'Personalize sua experiência!'**
+  String get customYourExperience;
+
+  /// No description provided for @youCanChangeItLater.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você pode alterar isso mais tarde...'**
+  String get youCanChangeItLater;
+
+  /// No description provided for @light.
+  ///
+  /// In pt, this message translates to:
+  /// **'Claro'**
+  String get light;
+
+  /// No description provided for @dark.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escuro'**
+  String get dark;
 }
 
 class _AppLocalizationsDelegate

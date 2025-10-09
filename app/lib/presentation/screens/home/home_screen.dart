@@ -10,6 +10,7 @@ import "package:task_save/l10n/app_localizations.dart";
 import "package:task_save/presentation/common/error_snackbar.dart";
 import "package:task_save/presentation/common/sucess_snackbar.dart";
 import "package:task_save/presentation/common/task_widget.dart";
+import "package:task_save/presentation/global_providers/app_preferences_provider.dart";
 import "package:task_save/presentation/screens/category_form/category_form_screen.dart";
 import "package:task_save/presentation/screens/home/category_viewmodel.dart";
 import "package:task_save/presentation/screens/home/task_viewmodel.dart";
@@ -55,6 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_isInit) {
       _isInit = false;
       _localizations = AppLocalizations.of(context)!;
+
+      final preferencesProvider = Provider.of<AppPreferencesProvider>(context);
+      preferencesProvider.setFirstLogin();
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         loadCategories();

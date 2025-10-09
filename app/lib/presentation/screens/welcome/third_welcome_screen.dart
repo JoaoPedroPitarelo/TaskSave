@@ -45,12 +45,16 @@ class ThirdWelcomeScreen extends StatelessWidget {
                         style: theme.textTheme.displayMedium
                       ),
                     ),
-                    SizedBox(
-                      width: 250,
-                      height: 500,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(18.0),
-                        child: Image.asset("assets/images/list_categories_example.png")
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(18.0),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        widthFactor: 0.85,
+                        heightFactor: 0.52,
+                        child: Image.asset(
+                          "assets/images/list_categories_example.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     )
                   ],

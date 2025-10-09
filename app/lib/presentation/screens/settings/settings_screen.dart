@@ -45,7 +45,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
     final theme = Theme.of(context);
 
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(90),

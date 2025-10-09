@@ -1,4 +1,5 @@
 import 'package:task_save/core/themes/app_global_colors.dart';
+import 'package:task_save/presentation/screens/welcome/initial_settings_screen.dart';
 import 'package:task_save/presentation/screens/welcome/second_welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:task_save/l10n/app_localizations.dart';
@@ -33,20 +34,19 @@ class FirstWelcomeScreen extends StatelessWidget {
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 40,
-                    weight: 200.0,
-                  ),
-                  onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => SecondWelcomeScreen())
-                  )
-                ),
+                  icon: Icon(Icons.arrow_back_ios_rounded, size: 40, weight: 200.0),
+                  onPressed: () => Navigator.of(context).pop()),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: IconButton(
+                  icon: Icon(Icons.arrow_forward_ios_rounded, size: 40, weight: 200.0),
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => SecondWelcomeScreen()))),
               ),
             ],
           )
